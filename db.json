@@ -1,0 +1,202 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Thunder X1 Off-Road Buggy",
+      "category": "Off-Road Buggy",
+      "brand": "RaceCore",
+      "price": 129.99,
+      "stock": 15,
+      "images": ["https://placehold.co/600x400?text=Thunder+X1"],
+      "description": "High-torque 4WD off-road buggy built for rough terrain, with waterproof electronics and adjustable suspension.",
+      "specs": {
+        "scale": "1:10",
+        "speed": "45 km/h",
+        "battery": "7.4V 2200mAh LiPo",
+        "runtime": "20 mins",
+        "driveType": "4WD"
+      },
+      "rating": 4.5,
+      "reviewsCount": 32
+    },
+    {
+      "id": 2,
+      "name": "Velocity Drift King",
+      "category": "Drift Car",
+      "brand": "DriftTech",
+      "price": 149.99,
+      "stock": 8,
+      "images": ["https://placehold.co/600x400?text=Drift+King"],
+      "description": "Precision drift car with low-grip tires and tunable steering angle for smooth, controlled slides.",
+      "specs": {
+        "scale": "1:10",
+        "speed": "50 km/h",
+        "battery": "7.4V 2600mAh LiPo",
+        "runtime": "18 mins",
+        "driveType": "RWD"
+      },
+      "rating": 4.2,
+      "reviewsCount": 21
+    },
+    {
+      "id": 3,
+      "name": "Monster Crusher MT-8",
+      "category": "Monster Truck",
+      "brand": "CrushForce",
+      "price": 189.99,
+      "stock": 0,
+      "images": ["https://placehold.co/600x400?text=MT-8"],
+      "description": "Massive monster truck with oversized tires and reinforced chassis, built to crush obstacles.",
+      "specs": {
+        "scale": "1:8",
+        "speed": "40 km/h",
+        "battery": "11.1V 3000mAh LiPo",
+        "runtime": "25 mins",
+        "driveType": "4WD"
+      },
+      "rating": 4.7,
+      "reviewsCount": 47
+    },
+    {
+      "id": 4,
+      "name": "Nitro Blaze Rally",
+      "category": "Rally Car",
+      "brand": "RaceCore",
+      "price": 109.99,
+      "stock": 22,
+      "images": ["https://placehold.co/600x400?text=Nitro+Blaze"],
+      "description": "Lightweight rally car with responsive handling, ideal for tight tracks and quick cornering.",
+      "specs": {
+        "scale": "1:12",
+        "speed": "42 km/h",
+        "battery": "7.4V 1800mAh LiPo",
+        "runtime": "15 mins",
+        "driveType": "AWD"
+      },
+      "rating": 4.0,
+      "reviewsCount": 14
+    },
+    {
+      "id": 5,
+      "name": "Apex Speedster Pro",
+      "category": "On-Road Car",
+      "brand": "ApexRC",
+      "price": 219.99,
+      "stock": 5,
+      "images": ["https://placehold.co/600x400?text=Apex+Speedster"],
+      "description": "High-speed on-road racer with aerodynamic body and brushless motor for maximum top speed.",
+      "specs": {
+        "scale": "1:10",
+        "speed": "70 km/h",
+        "battery": "11.1V 3200mAh LiPo",
+        "runtime": "22 mins",
+        "driveType": "RWD"
+      },
+      "rating": 4.8,
+      "reviewsCount": 58
+    },
+    {
+      "id": 6,
+      "name": "Rock Ranger Crawler",
+      "category": "Rock Crawler",
+      "brand": "CrushForce",
+      "price": 159.99,
+      "stock": 12,
+      "images": ["https://placehold.co/600x400?text=Rock+Ranger"],
+      "description": "Slow and steady rock crawler with high ground clearance and articulating suspension for extreme terrain.",
+      "specs": {
+        "scale": "1:10",
+        "speed": "15 km/h",
+        "battery": "7.4V 2000mAh LiPo",
+        "runtime": "30 mins",
+        "driveType": "4WD"
+      },
+      "rating": 4.3,
+      "reviewsCount": 19
+    },
+    {
+      "id": 7,
+      "name": "Mini Racer Compact",
+      "category": "Mini RC",
+      "brand": "DriftTech",
+      "price": 39.99,
+      "stock": 40,
+      "images": ["https://placehold.co/600x400?text=Mini+Racer"],
+      "description": "Compact and affordable RC car perfect for beginners and indoor racing.",
+      "specs": {
+        "scale": "1:24",
+        "speed": "20 km/h",
+        "battery": "3.7V 500mAh LiPo",
+        "runtime": "10 mins",
+        "driveType": "RWD"
+      },
+      "rating": 3.9,
+      "reviewsCount": 63
+    },
+    {
+      "id": 8,
+      "name": "Storm Chaser SC-5",
+      "category": "Off-Road Buggy",
+      "brand": "ApexRC",
+      "price": 174.99,
+      "stock": 9,
+      "images": ["https://placehold.co/600x400?text=Storm+Chaser"],
+      "description": "Rugged off-road buggy with long-travel suspension for jumps and rough trails.",
+      "specs": {
+        "scale": "1:10",
+        "speed": "48 km/h",
+        "battery": "7.4V 2600mAh LiPo",
+        "runtime": "20 mins",
+        "driveType": "4WD"
+      },
+      "rating": 4.4,
+      "reviewsCount": 26
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin User",
+      "email": "admin@rccarstore.com",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "name": "Test User",
+      "email": "user@example.com",
+      "password": "user123",
+      "role": "user"
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "userId": 2,
+      "items": [
+        {
+          "productId": 1,
+          "name": "Thunder X1 Off-Road Buggy",
+          "price": 129.99,
+          "quantity": 1
+        },
+        {
+          "productId": 7,
+          "name": "Mini Racer Compact",
+          "price": 39.99,
+          "quantity": 2
+        }
+      ],
+      "totalAmount": 209.97,
+      "status": "delivered",
+      "orderDate": "2026-08-15T10:30:00.000Z",
+      "shippingAddress": {
+        "line1": "12 Palm Street",
+        "city": "Kozhikode",
+        "state": "Kerala",
+        "postalCode": "673001",
+        "country": "India"
+      }
+    }
+  ]
+}
