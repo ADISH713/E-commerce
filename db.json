@@ -2,155 +2,328 @@
   "products": [
     {
       "id": 1,
-      "name": "Thunder X1 Off-Road Buggy",
+      "name": "ZP1005 RC Offroad Car",
       "category": "Off-Road Buggy",
-      "brand": "RaceCore",
-      "price": 129.99,
+      "brand": "HB Toy",
+      "price": 14490,
       "stock": 15,
-      "images": ["https://placehold.co/600x400?text=Thunder+X1"],
-      "description": "High-torque 4WD off-road buggy built for rough terrain, with waterproof electronics and adjustable suspension.",
+      "images": [
+        "/images/hb1.jpg",
+        "/images/hb2.jpg",
+        "/images/hb3.jpg",
+        "/images/hb4.jpg"
+      ],
+      "description": "Full-time 4WD system with independent suspension for stability on rough terrain,High-grip off-road tires designed for dirt, gravel, grass, and sand,Durable ABS body shell with impact-resistant structure,Shock-absorbing system with oil-filled dampers for smooth handling,Proportional throttle & steering for precise control,Splash-resistant electronics for all-terrain adaptability,Quick battery swap system for extended play with spare packs,Lightweight yet strong chassis for better acceleration and durability",
       "specs": {
         "scale": "1:10",
         "speed": "45 km/h",
-        "battery": "7.4V 2200mAh LiPo",
+        "battery": " 7.4V 1500mAh Li-ion Battery",
         "runtime": "20 mins",
         "driveType": "4WD"
       },
       "rating": 4.5,
-      "reviewsCount": 32
+      "reviewsCount": 32,
+      "grade": "hobby"
     },
     {
       "id": 2,
-      "name": "Velocity Drift King",
-      "category": "Drift Car",
-      "brand": "DriftTech",
-      "price": 149.99,
+      "name": "LC80",
+      "category": "Rock Crawler",
+      "brand": "FMS",
+      "price": 21490,
       "stock": 8,
-      "images": ["https://placehold.co/600x400?text=Drift+King"],
-      "description": "Precision drift car with low-grip tires and tunable steering angle for smooth, controlled slides.",
+      "images": [
+        "/images/LC1.jpg",
+        "/images/LC2.jpg",
+        "/images/LC3.jpg",
+        "/images/LC4.jpg"
+      ],
+      "description": "Licensed Toyota Land Cruiser LC80 Body – Scale-accurate design with rich detailing,2-Speed Transmission – Switch between low torque crawling and higher speed driving,4WD Drivetrain – Strong traction and stability across rocky and uneven terrain,Oil-Filled Shock Absorbers – Smooth suspension performance with excellent impact absorption,4-Link Suspension System – Enhances balance, climbing ability and control,Metal Gear Steering Servo – Provides durability and precise steering response,Smart LED Lighting System – Realistic headlights for visibility and scale appearance,Metal Connecting Rods & Bearings – Boost stability and reduce drivetrain noise,Compact Yet Powerful – Lightweight 535g build with excellent climbing angles.",
+      "specs": {
+        "scale": "1:18",
+        "speed": "50 km/h",
+        "battery": "7.4V 900mAh Li-ion",
+        "runtime": "18 mins",
+        "driveType": "4WD"
+      },
+      "rating": 4.2,
+      "reviewsCount": 21,
+      "grade": "toy"
+    },
+    {
+      "id": 3,
+      "name": "Panther",
+      "category": "Drift car",
+      "brand": "HNR",
+      "price": 34990,
+      "stock": 8,
+      "images": [
+        "/images/hn1.jpg",
+        "/images/hn2.jpg",
+        "/images/hn3.jpg",
+        "/images/hn4.jpg"
+      ],
+      "description": "The HNR H9802 Panther is a 1/10 scale professional-grade drift and on-road RC car, engineered for speed, precision, and style. Featuring a powerful Hobbywing brushless motor and ESC combo, and a 2.4GHz remote system, this Panther is built for competitive drifting and high-speed racing. With a striking red body design, it’s as aggressive in looks as it is in performance.",
       "specs": {
         "scale": "1:10",
         "speed": "50 km/h",
         "battery": "7.4V 2600mAh LiPo",
         "runtime": "18 mins",
-        "driveType": "RWD"
-      },
-      "rating": 4.2,
-      "reviewsCount": 21
-    },
-    {
-      "id": 3,
-      "name": "Monster Crusher MT-8",
-      "category": "Monster Truck",
-      "brand": "CrushForce",
-      "price": 189.99,
-      "stock": 0,
-      "images": ["https://placehold.co/600x400?text=MT-8"],
-      "description": "Massive monster truck with oversized tires and reinforced chassis, built to crush obstacles.",
-      "specs": {
-        "scale": "1:8",
-        "speed": "40 km/h",
-        "battery": "11.1V 3000mAh LiPo",
-        "runtime": "25 mins",
         "driveType": "4WD"
       },
-      "rating": 4.7,
-      "reviewsCount": 47
+      "rating": 4.2,
+      "reviewsCount": 21,
+      "grade": "hobby"
     },
     {
       "id": 4,
-      "name": "Nitro Blaze Rally",
+      "name": "Ford F-100",
+      "category": "Monster Truck",
+      "brand": "FMS",
+      "price": 24990,
+      "stock": 2,
+      "images": [
+        "/images/ford1.jpg",
+        "/images/ford2.jpg",
+        "/images/ford3.jpg",
+        "/images/ford4.jpg"
+      ],
+      "description": "The F-100 is particularly suitable for beginners thanks to its straightforward drivetrain and durable construction. The adjustable wheelie bar also allows drivers to tune the truck for different driving styles and control rear-wheel lift during hard acceleration.",
+      "specs": {
+        "scale": "1:10",
+        "speed": "40 km/h",
+        "battery": "11.1V 3000mAh LiPo",
+        "runtime": "25 mins",
+        "driveType": "2WD"
+      },
+      "rating": 4.7,
+      "reviewsCount": 47,
+      "grade": "hobby"
+    },
+    {
+      "id": 5,
+      "name": "Hyper Go",
       "category": "Rally Car",
-      "brand": "RaceCore",
-      "price": 109.99,
+      "brand": "MJX",
+      "price": 29990,
       "stock": 22,
-      "images": ["https://placehold.co/600x400?text=Nitro+Blaze"],
-      "description": "Lightweight rally car with responsive handling, ideal for tight tracks and quick cornering.",
+      "images": [
+        "/images/MJX1.jpg",
+        "/images/MJX2.jpg",
+        "/images/MJX3.jpg",
+        "/images/MJX4.jpg"
+      ],
+      "description": "Built for both rally driving and controlled drifting, the Hyper Go 10303 combines aggressive styling with durable construction and responsive handling. Its 4WD drivetrain ensures excellent traction across pavement, gravel, and drift surfaces, while the brushless power system provides rapid acceleration and strong top-end speed.",
       "specs": {
         "scale": "1:12",
-        "speed": "42 km/h",
-        "battery": "7.4V 1800mAh LiPo",
+        "speed": " 70 km/h",
+        "battery": "7.4V 5000mAh 35C LiPo",
         "runtime": "15 mins",
         "driveType": "AWD"
       },
       "rating": 4.0,
-      "reviewsCount": 14
-    },
-    {
-      "id": 5,
-      "name": "Apex Speedster Pro",
-      "category": "On-Road Car",
-      "brand": "ApexRC",
-      "price": 219.99,
-      "stock": 5,
-      "images": ["https://placehold.co/600x400?text=Apex+Speedster"],
-      "description": "High-speed on-road racer with aerodynamic body and brushless motor for maximum top speed.",
-      "specs": {
-        "scale": "1:10",
-        "speed": "70 km/h",
-        "battery": "11.1V 3200mAh LiPo",
-        "runtime": "22 mins",
-        "driveType": "RWD"
-      },
-      "rating": 4.8,
-      "reviewsCount": 58
+      "reviewsCount": 14,
+      "grade": "hobby"
     },
     {
       "id": 6,
-      "name": "Rock Ranger Crawler",
+      "name": "Truggy",
+      "category": "Off-Road Buggy",
+      "brand": "ApexRC",
+      "price": 9990,
+      "stock": 5,
+      "images": [
+        "/images/hs1.jpg",
+        "/images/hs2.jpg",
+        "/images/hs3.jpg",
+        "/images/hs4.jpg"
+      ],
+      "description": "The HS14321 RC Truggy is a versatile off-road and drift-ready model designed for RC enthusiasts who want speed, stability, and durability in one package. Powered by a high-performance motor and supported by a 2.4 GHz radio system, this truggy reaches speeds of up to 40 km/h, delivering thrilling performance for beginners and hobbyists alike.",
+      "specs": {
+        "scale": "1:14",
+        "speed": "40 km/h",
+        "battery": "7.4V rechargeable Li-Po",
+        "runtime": "22 mins",
+        "driveType": "4WD"
+      },
+      "rating": 4.8,
+      "reviewsCount": 58,
+      "grade": "hobby"
+    },
+    {
+      "id": 7,
+      "name": "H1 HURTLE",
       "category": "Rock Crawler",
       "brand": "CrushForce",
-      "price": 159.99,
+      "price": 13990,
       "stock": 12,
-      "images": ["https://placehold.co/600x400?text=Rock+Ranger"],
-      "description": "Slow and steady rock crawler with high ground clearance and articulating suspension for extreme terrain.",
+      "images": [
+        "/images/h1.jpg",
+        "/images/h2.jpg",
+        "/images/h1.jpg",
+        "/images/h1.jpg"
+      ],
+      "description": "The JJRC Q121 is a durable and versatile 1/12 scale 4WD RC off-road truck designed for adventure, stability, and long-lasting fun. Powered by a 370 brushed motor with high torque and Its robust build, metal reinforcements, and waterproof design make it perfect for tackling rough terrain while maintaining excellent handling.",
       "specs": {
-        "scale": "1:10",
+        "scale": "1:12",
         "speed": "15 km/h",
-        "battery": "7.4V 2000mAh LiPo",
+        "battery": "7.4V 650mAh Li-ion",
         "runtime": "30 mins",
         "driveType": "4WD"
       },
       "rating": 4.3,
-      "reviewsCount": 19
-    },
-    {
-      "id": 7,
-      "name": "Mini Racer Compact",
-      "category": "Mini RC",
-      "brand": "DriftTech",
-      "price": 39.99,
-      "stock": 40,
-      "images": ["https://placehold.co/600x400?text=Mini+Racer"],
-      "description": "Compact and affordable RC car perfect for beginners and indoor racing.",
-      "specs": {
-        "scale": "1:24",
-        "speed": "20 km/h",
-        "battery": "3.7V 500mAh LiPo",
-        "runtime": "10 mins",
-        "driveType": "RWD"
-      },
-      "rating": 3.9,
-      "reviewsCount": 63
+      "reviewsCount": 19,
+      "grade": "hobby"
     },
     {
       "id": 8,
-      "name": "Storm Chaser SC-5",
+      "name": "Power Wagon RTR",
       "category": "Off-Road Buggy",
-      "brand": "ApexRC",
-      "price": 174.99,
-      "stock": 9,
-      "images": ["https://placehold.co/600x400?text=Storm+Chaser"],
-      "description": "Rugged off-road buggy with long-travel suspension for jumps and rough trails.",
+      "brand": "FMS",
+      "price": 15490,
+      "stock": 40,
+      "images": [
+        "/images/RTR1.jpg",
+        "/images/RTR2.jpg",
+        "/images/RTR3.jpg",
+        "/images/RTR4.jpg"
+      ],
+      "description": "The FMS FCX24 Power Wagon is a meticulously designed 1:24 scale crawler, redefining what small-scale climbing RC cars can achieve. Inspired by the classic 1949 Power Wagon mud off-road truck, this model blends authentic retro styling with cutting-edge RC engineering.",
       "specs": {
-        "scale": "1:10",
-        "speed": "48 km/h",
-        "battery": "7.4V 2600mAh LiPo",
-        "runtime": "20 mins",
+        "scale": "1:24",
+        "speed": "20 km/h",
+        "battery": "7.4V 380mAh Li-ion",
+        "runtime": "25 mins",
+        "driveType": "AWD"
+      },
+      "rating": 4.2,
+      "reviewsCount": 63,
+      "grade": "hobby"
+    },
+    {
+      "id": 9,
+      "name": "ENOZE",
+      "category": "Drift car",
+      "brand": "ApexRC",
+      "price": 3990,
+      "stock": 9,
+      "images": [
+        "/images/enose1.png",
+        "/images/enose2.png",
+        "/images/enose3.png",
+        "/images/enose4.png"
+      ],
+      "description": "The ENOZE 8500 / 8501 1:43 RC Drift Car is a compact yet powerful mini drift vehicle designed for high-speed fun and precise control. With a durable PVC explosion-proof shell, realistic LED lights, and a smooth 2WD system, this desktop racer delivers an exciting drift experience for both kids and RC enthusiasts.",
+      "specs": {
+        "scale": "1:43",
+        "speed": "38 km/h",
+        "battery": "3.7V 150mAh",
+        "runtime": "18 mins",
+        "driveType": "RWD"
+      },
+      "rating": 4.4,
+      "reviewsCount": 26,
+      "grade": "hobby"
+    },
+    {
+      "id": 10,
+      "name": "MAX SMASHER",
+      "category": "Monster Truck",
+      "brand": "FMS",
+      "price": 14990,
+      "stock": 17,
+      "images": [
+        "/images/max1.jpg",
+        "/images/max2.jpg",
+        "/images/max3.jpg",
+        "/images/max4.jpg"
+      ],
+      "description": "The FMS FCX24 Max Smasher is a 1/24 scale 4WD climbing RC pickup truck built for performance and realism. Powered by a 2S battery system, this compact crawler combines strong torque, durable suspension, and precise control with an authentic scale design. Whether indoors or outdoors, the Max Smasher delivers stable off-road climbing, flexible handling, and detailed simulation styling, making it perfect for hobbyists, collectors, and RC enthusiasts.",
+      "specs": {
+        "scale": "1:24",
+        "speed": "20 km/h",
+        "battery": "7V 750mAh",
+        "runtime": "30 mins",
         "driveType": "4WD"
       },
       "rating": 4.4,
-      "reviewsCount": 26
+      "reviewsCount": 26,
+      "grade": "hobby"
+    },
+    {
+      "id": 11,
+      "name": "BMW",
+      "category": "Drift car",
+      "brand": "LOT",
+      "price": 2098,
+      "stock": 8,
+      "images": [
+        "/images/bm1.jpg",
+        "/images/bm2.jpg",
+        "/images/bm3.jpg",
+        "/images/bm4.jpg"
+      ],
+      "description": "Ghost clocks up to 20 km/h, giving you high-speed thrills in a sleek, low-profile body.Smooth digital steering and responsive throttle for tight turns and clean slides",
+      "specs": {
+        "scale": "1:24",
+        "speed": "30 km/h",
+        "battery": "2 AA",
+        "runtime": "30 mins",
+        "driveType": "RWD"
+      },
+      "rating": 3.7,
+      "reviewsCount": 12,
+      "grade": "toy"
+    },
+    {
+      "id": 12,
+      "name": "Lambo",
+      "category": "Drift car",
+      "brand": "Lifelong",
+      "price": 899,
+      "stock": 24,
+      "images": [
+        "/images/L1.jpg",
+        "/images/L2.jpg",
+        "/images/L3.jpg",
+        "/images/L4.jpg"
+      ],
+      "description": "Bring home the thrill of racing with this Lifelong Cuppy Raptor RC Car in striking Black & Red. Equipped with a 2.4 GHz long-range remote (125+ ft), multi-directional drift capabilities, and realistic LED headlights, it’s built for fun, day or night.",
+      "specs": {
+        "scale": "1:24",
+        "speed": "15 km/h",
+        "battery": "500 mAh Li-ion",
+        "runtime": "25 mins",
+        "driveType": "RWD"
+      },
+      "rating": 4.0,
+      "reviewsCount": 18,
+      "grade": "toy"
+    },
+    {
+      "id": 13,
+      "name": "Cuppy",
+      "category": "Monster Truck",
+      "brand": "Lifelong",
+      "price": 922,
+      "stock": 16,
+      "images": [
+        "/images/cuppy1.jpg",
+        "/images/cuppy2.jpg",
+        "/images/cuppy3.jpg",
+        "/images/cuppy4.jpg"
+      ],
+      "description": "Lifelong Cuppy Monster Drift Car gives kids fast, exciting spins and smooth drifting action on any surface. With its sturdy build and easy controls, it’s perfect for fun races and cool stunt play. A great pick for kids who love speed, slides, and adventure.",
+      "specs": {
+        "scale": "1:14",
+        "speed": "15 km/h",
+        "battery": "500 mAh Li-ion",
+        "runtime": "25 mins",
+        "driveType": "RWD"
+      },
+      "rating": 3.4,
+      "reviewsCount": 56,
+      "grade": "toy"
     }
   ],
   "users": [
@@ -169,34 +342,5 @@
       "role": "user"
     }
   ],
-  "orders": [
-    {
-      "id": 1,
-      "userId": 2,
-      "items": [
-        {
-          "productId": 1,
-          "name": "Thunder X1 Off-Road Buggy",
-          "price": 129.99,
-          "quantity": 1
-        },
-        {
-          "productId": 7,
-          "name": "Mini Racer Compact",
-          "price": 39.99,
-          "quantity": 2
-        }
-      ],
-      "totalAmount": 209.97,
-      "status": "delivered",
-      "orderDate": "2026-08-15T10:30:00.000Z",
-      "shippingAddress": {
-        "line1": "12 Palm Street",
-        "city": "Kozhikode",
-        "state": "Kerala",
-        "postalCode": "673001",
-        "country": "India"
-      }
-    }
-  ]
+  "orders": []
 }
