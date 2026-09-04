@@ -6,7 +6,7 @@ function Navbar() {
     <div>
       {/* Utility bar */}
       <div className="flex items-center justify-between px-8 py-2 bg-gray-50 text-xs text-gray-600">
-        <span>Free shipping on orders over <span className="text-orange-600 font-medium">$150</span></span>
+        <span>Free shipping on orders over <span className="text-orange-600 font-medium">1999</span></span>
         <div className="flex gap-6">
           <span>Track order</span>
           <span>Wishlist</span>
@@ -28,8 +28,9 @@ function Navbar() {
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 bg-gray-100 rounded-md px-3 py-1.5 text-xs text-gray-400 w-36">
-            <IconSearch size={14} />
-            Search cars...
+            <IconSearch size={14}/>
+            <input type="text"
+            placeholder='search here..'/>
           </div>
           <IconHeart size={18} className="text-gray-700" />
           <IconShoppingCart size={18} className="text-gray-700" />

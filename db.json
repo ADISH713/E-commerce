@@ -17,7 +17,7 @@
       "specs": {
         "scale": "1:10",
         "speed": "45 km/h",
-        "battery": " 7.4V 1500mAh Li-ion Battery",
+        "battery": " 7.4V 1500mAh Li-ion",
         "runtime": "20 mins",
         "driveType": "4WD"
       },

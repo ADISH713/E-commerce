@@ -86,7 +86,7 @@ function Home() {
             <p className="text-gray-900 text-xs font-medium">Off-road buggy</p>
           </Link>
           <Link
-            to="/products?category=Drift Car"
+            to="/products?category=Drift car"
             className="border border-gray-200 rounded-xl p-4 text-center hover:border-orange-300 transition"
           >
             <IconSteeringWheel size={24} className="text-gray-600 mx-auto mb-2" stroke={1.5} />
