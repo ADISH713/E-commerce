@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Navbar from './components/Navbar'
 import Home from './components/Home'
+import ProductDetail from './pages/ProductDetail'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path="/products" element={<Productlist/>}/>
       <Route path="/login" element={<Login/>}/>
       <Route path='/register' element={<Register/>}/>
+      <Route path="/product/:id" element={<ProductDetail />} />
     </Routes>
     </BrowserRouter>
   )

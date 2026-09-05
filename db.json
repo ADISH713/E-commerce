@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "name": "ZP1005 RC Offroad Car",
       "category": "Off-Road Buggy",
       "brand": "HB Toy",
@@ -26,7 +26,7 @@
       "grade": "hobby"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "LC80",
       "category": "Rock Crawler",
       "brand": "FMS",
@@ -51,7 +51,7 @@
       "grade": "hobby"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Panther",
       "category": "Drift car",
       "brand": "HNR",
@@ -76,7 +76,7 @@
       "grade": "hobby"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Ford F-100",
       "category": "Monster Truck",
       "brand": "FMS",
@@ -101,7 +101,7 @@
       "grade": "hobby"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Hyper Go",
       "category": "Rally Car",
       "brand": "MJX",
@@ -121,12 +121,12 @@
         "runtime": "15 mins",
         "driveType": "AWD"
       },
-      "rating": 4.0,
+      "rating": 4,
       "reviewsCount": 14,
       "grade": "hobby"
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "Truggy",
       "category": "Off-Road Buggy",
       "brand": "ApexRC",
@@ -151,7 +151,7 @@
       "grade": "hobby"
     },
     {
-      "id": 7,
+      "id": "7",
       "name": "H1 HURTLE",
       "category": "Rock Crawler",
       "brand": "CrushForce",
@@ -176,7 +176,7 @@
       "grade": "hobby"
     },
     {
-      "id": 8,
+      "id": "8",
       "name": "Power Wagon RTR",
       "category": "Off-Road Buggy",
       "brand": "FMS",
@@ -201,7 +201,7 @@
       "grade": "hobby"
     },
     {
-      "id": 9,
+      "id": "9",
       "name": "ENOZE",
       "category": "Drift car",
       "brand": "ApexRC",
@@ -226,7 +226,7 @@
       "grade": "hobby"
     },
     {
-      "id": 10,
+      "id": "10",
       "name": "MAX SMASHER",
       "category": "Monster Truck",
       "brand": "FMS",
@@ -251,7 +251,7 @@
       "grade": "hobby"
     },
     {
-      "id": 11,
+      "id": "11",
       "name": "BMW",
       "category": "Drift car",
       "brand": "LOT",
@@ -276,7 +276,7 @@
       "grade": "toy"
     },
     {
-      "id": 12,
+      "id": "12",
       "name": "Lambo",
       "category": "Drift car",
       "brand": "Lifelong",
@@ -296,12 +296,12 @@
         "runtime": "25 mins",
         "driveType": "RWD"
       },
-      "rating": 4.0,
+      "rating": 4,
       "reviewsCount": 18,
       "grade": "toy"
     },
     {
-      "id": 13,
+      "id": "13",
       "name": "Cuppy",
       "category": "Monster Truck",
       "brand": "Lifelong",
@@ -326,7 +326,7 @@
       "grade": "toy"
     },
     {
-      "id": 14,
+      "id": "14",
       "name": "Rocker",
       "category": "Rock Crawler",
       "brand": "APJ",
@@ -351,7 +351,7 @@
       "grade": "toy"
     },
     {
-      "id": 15,
+      "id": "15",
       "name": "Porshe 911",
       "category": "Drift car",
       "brand": "TAMIYA",
@@ -378,19 +378,27 @@
   ],
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Admin User",
       "email": "admin@rccarstore.com",
       "password": "admin123",
       "role": "admin"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Test User",
       "email": "user@example.com",
       "password": "user123",
       "role": "user"
+    },
+    {
+      "name": "rashik",
+      "email": "rashik@gmail.com",
+      "password": "rashi123",
+      "role": "user",
+      "id": "9sQCVARKYnI"
     }
   ],
-  "orders": []
+  "orders": [],
+  "$schema": "./node_modules/json-server/schema.json"
 }
