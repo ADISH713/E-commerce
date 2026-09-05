@@ -2,7 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getProductById } from '../services/productServices';
-import { IconCar } from '@tabler/icons-react';
+import { formatPrice } from '../utils/formatPrice';
+import { IconCar, IconMinus, IconPlus } from '@tabler/icons-react';
 
 function ProductDetail() {
     const {id} = useParams();
@@ -16,7 +17,7 @@ function ProductDetail() {
 
     if(isLoading) return <p className='px-8 py-6'>Loading product...</p>;
     if(isError) return <p className='px-8 py-6 text-red-600'>Error:{error.message}</p>
-    const outOfStock = product.stock === 0;
+    const isOutOfStock = product.stock === 0;
     const increaseQty = ()=>{
         if(quantity<product.stock) setQuantity(quantity + 1);
     }
@@ -59,10 +60,63 @@ function ProductDetail() {
 
         <h1 className='text-2xl font-medium text-gray-900 mb-1'>{product.name}</h1>
         <p className='text-gray-500 text-sm mb-4'>{product.brand} {product.category}</p>
-{/* 
+        <p className="text-2xl font-medium text-gray-900 mb-4">{formatPrice(product.price)}</p>
+
         {isOutOfStock ? (
-            <p className='text-red-600 text-sm font-medium mb-6'>Out of stock</p>
-        ):(<p className='text-green-600 text-sm font-medium mb-6'>In stock {product.stock} available</p>)} */}
+          <p className="text-red-600 text-sm font-medium mb-6">Out of stock</p>
+        ) : (
+          <p className="text-green-600 text-sm font-medium mb-6">In stock ({product.stock} available)</p>
+        )}
+
+        {/* Quantity selector */}
+        {!isOutOfStock && (
+          <div className="flex items-center gap-4 mb-6">
+            <span className="text-sm text-gray-700">Quantity</span>
+            <div className="flex items-center border border-gray-200 rounded-md">
+              <button onClick={decreaseQty} className="p-2">
+                <IconMinus size={14} />
+              </button>
+              <span className="px-4 text-sm">{quantity}</span>
+              <button onClick={increaseQty} className="p-2">
+                <IconPlus size={14} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        <button
+          disabled={isOutOfStock}
+          className={`w-full py-3 rounded-md text-sm font-medium mb-8 ${
+            isOutOfStock
+              ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+              : 'bg-orange-600 text-white hover:bg-orange-700 transition'
+          }`}
+        >
+          {isOutOfStock ? 'Out of stock' : 'Add to cart'}
+        </button>
+
+        {/* Specs */}
+        <div className="border-t border-gray-200 pt-6 mb-6">
+          <h3 className="text-sm font-medium text-gray-900 mb-3">Specifications</h3>
+          <div className="grid grid-cols-2 gap-y-2 text-sm">
+            <span className="text-gray-500">Scale</span>
+            <span className="text-gray-900">{product.specs.scale}</span>
+            <span className="text-gray-500">Top speed</span>
+            <span className="text-gray-900">{product.specs.speed}</span>
+            <span className="text-gray-500">Battery</span>
+            <span className="text-gray-900">{product.specs.battery}</span>
+            <span className="text-gray-500">Runtime</span>
+            <span className="text-gray-900">{product.specs.runtime}</span>
+            <span className="text-gray-500">Drive type</span>
+            <span className="text-gray-900">{product.specs.driveType}</span>
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="border-t border-gray-200 pt-6">
+          <h3 className="text-sm font-medium text-gray-900 mb-3">Description</h3>
+          <p className="text-gray-600 text-sm leading-relaxed">{product.description}</p>
+        </div>
       </div>
 
     </div>
