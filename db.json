@@ -48,7 +48,7 @@
       },
       "rating": 4.2,
       "reviewsCount": 21,
-      "grade": "toy"
+      "grade": "hobby"
     },
     {
       "id": 3,
@@ -324,6 +324,56 @@
       "rating": 3.4,
       "reviewsCount": 56,
       "grade": "toy"
+    },
+    {
+      "id": 14,
+      "name": "Rocker",
+      "category": "Rock Crawler",
+      "brand": "APJ",
+      "price": 557,
+      "stock": 45,
+      "images": [
+        "/images/apj1.webp",
+        "/images/apj2.webp",
+        "/images/apj3.webp",
+        "/images/apj4.webp"
+      ],
+      "description": "Full Direction Control – Easily move forward, backward, left, and right with responsive handling., Long-Range Signal Response – Maintains stable control from a good distance without lag., One-Hand Easy Controller – Ergonomic remote designed for comfortable grip and simple operation., Quick Response Steering – Immediate turning action for precise off-road maneuvering.",
+      "specs": {
+        "scale": "1:12",
+        "speed": "15 km/h",
+        "battery": "500 mAh Li-ion",
+        "runtime": "20 mins",
+        "driveType": "4WD"
+      },
+      "rating": 3.7,
+      "reviewsCount": 39,
+      "grade": "toy"
+    },
+    {
+      "id": 15,
+      "name": "Porshe 911",
+      "category": "Drift car",
+      "brand": "TAMIYA",
+      "price": 14760,
+      "stock": 23,
+      "images": [
+        "/images/por1.webp",
+        "/images/por2.webp",
+        "/images/por3.webp",
+        "/images/por4.webp"
+      ],
+      "description": "The shaft-driven 4WD chassis employs a longitudinal layout with the battery on the left and the motor on the right, to give excellent stability. In addition, it features identical left and right suspension arms and uprights for ease of assembly, plus easy-to-maintain gearboxes",
+      "specs": {
+        "scale": "1:10",
+        "speed": "67 km/h",
+        "battery": "5500 mAh Li-ion",
+        "runtime": "45 mins",
+        "driveType": "AWD"
+      },
+      "rating": 4.9,
+      "reviewsCount": 58,
+      "grade": "hobby"
     }
   ],
   "users": [
