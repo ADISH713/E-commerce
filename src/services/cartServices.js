@@ -1,15 +1,22 @@
 import axios from "axios";
-import { data } from "react-router-dom";
+
 
 const API_URL = 'http://localhost:3001/carts';
 
-export const getCartByUserId = async (UserId) =>{
-    const{data} = await axios.get(`${API_URL}?userId=${UserId}`);
-    return data[0]||null;
+export const getCartByUserId = async (userId) =>{
+    const{data} = await axios.get(`${API_URL}?userId=${userId}`);
+    return data[0] || null;
+    // return data.length > 0 ? data[0] : null;
 }
 
-export const createCart = async (UserId,items)=>{
-    const {data} = await axios.post(API_URL,{UserId,items});
+export const createCart = async (userId,items)=>{
+    // const existingCart = await getCartByUserId(userId);
+
+    // if(existingCart){
+    //     return updateCart(existingCart.id,items);
+    // }
+
+    const {data} = await axios.post(API_URL,{userId,items});
     return data;
 }
 

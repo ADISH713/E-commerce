@@ -4,6 +4,8 @@ import {Link, useNavigate} from 'react-router-dom'
 import {useMutation} from '@tanstack/react-query'
 import { setUser } from '../redux/slices/authSlice';
 import {loginUser} from '../services/userServices'
+import { getCartByUserId } from '../services/cartServices';
+import { setCart } from '../redux/slices/cartSlice';
 
 function Login() {
     const [email,setEmail] = useState('');
@@ -14,8 +16,12 @@ function Login() {
 
     const{mutate,isPending,isError,error} = useMutation({
         mutationFn :()=>loginUser(email,password),
-        onSuccess:(user)=>{
+        onSuccess: async (user)=>{
             dispatch(setUser(user));
+            const existingCart = await getCartByUserId(user.id);
+            if (existingCart){
+              dispatch(setCart(existingCart));
+            }
             navigate('/');
         }
     });

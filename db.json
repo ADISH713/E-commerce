@@ -400,6 +400,35 @@
     }
   ],
   "orders": [],
-  "carts": [],
+  "carts": [
+    {
+      "userId": "2",
+      "items": [
+        {
+          "id": "2",
+          "name": "LC80",
+          "price": 21490,
+          "image": "/images/LC1.jpg",
+          "stock": 8,
+          "quantity": 1
+        }
+      ],
+      "id": "O6rUjSsUHGY"
+    },
+    {
+      "userId": "2",
+      "items": [
+        {
+          "id": "2",
+          "name": "LC80",
+          "price": 21490,
+          "image": "/images/LC1.jpg",
+          "stock": 8,
+          "quantity": 1
+        }
+      ],
+      "id": "AQv6B2XOdMI"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
