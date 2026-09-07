@@ -24,37 +24,86 @@ function ProductDetail() {
         queryFn : () => getProductById(id),
     });
 
-    const addToCartMutation = useMutation({
-  mutationFn: async () => {
-    const existingCart = await getCartByUserId(user.id);
+//     const addToCartMutation = useMutation({
+//   mutationFn: async () => {
+//     const existingCart = await getCartByUserId(user.id);
     
-    // const currentItems = existingCart ? existingCart.items : [];
-    const currentItems = existingCart?.items || [];
-    // const existingItem = currentItems.find((item) => item.id === product.id);
-    const existingItem = currentItems.find((item)=>String(item.id)===String(product.id));
+//     // const currentItems = existingCart ? existingCart.items : [];
+//     const currentItems = existingCart?.items || [];
+//     // const existingItem = currentItems.find((item) => item.id === product.id);
+//     const existingItem = currentItems.find((item)=>String(item.id)===String(product.id));
      
+
+//     let newItems;
+//     if (existingItem) {
+    
+//     const newQuantity = existingItem.quantity + quantity;
+//       if (newQuantity > product.stock) {
+//         throw new Error(
+//           `Only ${product.stock} item are available.`
+//         );
+//       }
+
+//       // newItems = currentItems.map((item) =>
+//       //   item.id === product.id
+//       //     ? { ...item, quantity: item.quantity + quantity }
+//       //     : item
+//       // );
+//        newItems = currentItems.map((item) =>
+//         String(item.id) === String(product.id)
+//           ? {
+//               ...item,
+//               quantity: newQuantity,
+//             }
+//           : item
+//       );
+//     } else {
+//       newItems = [
+//         ...currentItems,
+//         {
+//           id: product.id,
+//           name: product.name,
+//           price: product.price,
+//           image: product.images?.[0] || '',
+//           stock: product.stock,
+//           quantity: quantity,
+//         },
+//       ];
+//     }
+
+// if (existingCart) {
+//       return updateCart(existingCart.id, newItems);
+//     }
+
+//     return createCart(user.id, newItems);
+//   },
+//   onSuccess: (updatedCart) => {
+//     dispatch(setCart(updatedCart));
+//     addingToCartRef.current = false;
+//   },
+
+//   onError: (error)=>{
+//     console.error('Add to cart error:',error);
+//     addingToCartRef.current = false;
+//   }
+// });
+
+const cart = useSelector((state) => state.cart);
+
+const addToCartMutation = useMutation({
+  mutationFn: async () => {
+    const currentItems = cart.items || [];
+    const existingItem = currentItems.find((item) => String(item.id) === String(product.id));
 
     let newItems;
     if (existingItem) {
-    
-    const newQuantity = existingItem.quantity + quantity;
+      const newQuantity = existingItem.quantity + quantity;
       if (newQuantity > product.stock) {
-        throw new Error(
-          `Only ${product.stock} item are available.`
-        );
+        throw new Error(`Only ${product.stock} item are available.`);
       }
-
-      // newItems = currentItems.map((item) =>
-      //   item.id === product.id
-      //     ? { ...item, quantity: item.quantity + quantity }
-      //     : item
-      // );
-       newItems = currentItems.map((item) =>
+      newItems = currentItems.map((item) =>
         String(item.id) === String(product.id)
-          ? {
-              ...item,
-              quantity: newQuantity,
-            }
+          ? { ...item, quantity: newQuantity }
           : item
       );
     } else {
@@ -71,19 +120,17 @@ function ProductDetail() {
       ];
     }
 
-if (existingCart) {
-      return updateCart(existingCart.id, newItems);
+    if (cart.cartId) {
+      return updateCart(cart.cartId, newItems);
     }
-
     return createCart(user.id, newItems);
   },
   onSuccess: (updatedCart) => {
     dispatch(setCart(updatedCart));
     addingToCartRef.current = false;
   },
-
-  onError: (error)=>{
-    console.error('Add to cart error:',error);
+  onError: (error) => {
+    console.error('Add to cart error:', error);
     addingToCartRef.current = false;
   }
 });
@@ -109,7 +156,7 @@ if (existingCart) {
 
 const handleAddToCart = (e) => {
   e.preventDefault();
-  console.log('BUTTON CLICKED');
+  console.log('Button cliked');
 
   if (!user) {
     navigate('/login');
