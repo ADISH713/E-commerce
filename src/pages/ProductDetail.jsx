@@ -7,6 +7,10 @@ import { IconCar, IconMinus, IconPlus } from '@tabler/icons-react';
 import {useDispatch, useSelector} from 'react-redux'
 import { createCart,updateCart,getCartByUserId } from '../services/cartServices';
 import { setCart } from '../redux/slices/cartSlice';
+import { getWishlistByUserId, createWishlist, updateWishlist } from '../services/wishlistServices';
+import { setWishlist } from '../redux/slices/wishlistSlice';
+import { IconHeart } from '@tabler/icons-react';
+
 
 function ProductDetail() {
     const {id} = useParams();
@@ -17,12 +21,16 @@ function ProductDetail() {
     const dispatch = useDispatch()
 
     const user = useSelector((state)=>state.auth.user);
-   
+    const wishlist = useSelector((state) => state.wishlist);   
 
     const {data:product,isLoading,isError,error}=useQuery({
         queryKey : ['product',id],
         queryFn : () => getProductById(id),
     });
+
+     const isWishlisted = wishlist?.items?.some(
+    (item) => String(item.id) === String(product?.id)
+    ) || false;
 
 //     const addToCartMutation = useMutation({
 //   mutationFn: async () => {
@@ -90,17 +98,71 @@ function ProductDetail() {
 
 const cart = useSelector((state) => state.cart);
 
+// const addToCartMutation = useMutation({
+//   mutationFn: async () => {
+//     const currentItems = cart.items || [];
+//     const existingItem = currentItems.find((item) => String(item.id) === String(product.id));
+
+//     let newItems;
+//     if (existingItem) {
+//       const newQuantity = existingItem.quantity + quantity;
+//       if (newQuantity > product.stock) {
+//         throw new Error(`Only ${product.stock} item are available.`);
+//       }
+//       newItems = currentItems.map((item) =>
+//         String(item.id) === String(product.id)
+//           ? { ...item, quantity: newQuantity }
+//           : item
+//       );
+//     } else {
+//       newItems = [
+//         ...currentItems,
+//         {
+//           id: product.id,
+//           name: product.name,
+//           price: product.price,
+//           image: product.images?.[0] || '',
+//           stock: product.stock,
+//           quantity: quantity,
+//         },
+//       ];
+//     }
+
+//     if (cart.cartId) {
+//       return updateCart(cart.cartId, newItems);
+//     }
+//     return createCart(user.id, newItems);
+//   },
+//   onSuccess: (updatedCart) => {
+//     dispatch(setCart(updatedCart));
+//     addingToCartRef.current = false;
+//   },
+//   onError: (error) => {
+//     console.error('Add to cart error:', error);
+//     addingToCartRef.current = false;
+//   }
+// });
+
 const addToCartMutation = useMutation({
   mutationFn: async () => {
-    const currentItems = cart.items || [];
-    const existingItem = currentItems.find((item) => String(item.id) === String(product.id));
+    // Always get the latest cart from the backend
+    const existingCart = await getCartByUserId(user.id);
+
+    const currentItems = existingCart?.items || [];
+
+    const existingItem = currentItems.find(
+      (item) => String(item.id) === String(product.id)
+    );
 
     let newItems;
+
     if (existingItem) {
       const newQuantity = existingItem.quantity + quantity;
+
       if (newQuantity > product.stock) {
-        throw new Error(`Only ${product.stock} item are available.`);
+        throw new Error(`Only ${product.stock} items are available.`);
       }
+
       newItems = currentItems.map((item) =>
         String(item.id) === String(product.id)
           ? { ...item, quantity: newQuantity }
@@ -120,21 +182,69 @@ const addToCartMutation = useMutation({
       ];
     }
 
-    if (cart.cartId) {
-      return updateCart(cart.cartId, newItems);
+    // Update existing cart
+    if (existingCart) {
+      return updateCart(existingCart.id, newItems);
     }
+
+    // Create cart only if user has no cart
     return createCart(user.id, newItems);
   },
+
   onSuccess: (updatedCart) => {
     dispatch(setCart(updatedCart));
     addingToCartRef.current = false;
   },
+
   onError: (error) => {
     console.error('Add to cart error:', error);
     addingToCartRef.current = false;
-  }
+  },
 });
 
+const wishlistMutation = useMutation({
+  mutationFn: async () => {
+    const existingWishlist = await getWishlistByUserId(user.id);
+
+    const currentItems = existingWishlist?.items || [];
+
+    const isAlreadyWishlisted = currentItems.some(
+      (item) => String(item.id) === String(product.id)
+    );
+
+    let updatedItems;
+
+    if (isAlreadyWishlisted) {
+      updatedItems = currentItems.filter(
+        (item) => String(item.id) !== String(product.id)
+      );
+    } else {
+      updatedItems = [
+        ...currentItems,
+        {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.images?.[0] || '',
+        },
+      ];
+    }
+
+    if (existingWishlist) {
+      return updateWishlist(existingWishlist.id, updatedItems);
+    }
+
+    return createWishlist(user.id, updatedItems);
+  },
+
+  onSuccess: (updatedWishlist) => {
+    dispatch(setWishlist(updatedWishlist));
+  },
+
+  onError: (error) => {
+    console.error('Wishlist error:', error);
+  },
+});
     if(isLoading) return <p className='px-8 py-6'>Loading product...</p>;
     if(isError) return <p className='px-8 py-6 text-red-600'>Error:{error.message}</p>
     const isOutOfStock = product.stock === 0;
@@ -206,6 +316,25 @@ const handleAddToCart = () => {
         <h1 className='text-2xl font-medium text-gray-900 mb-1'>{product.name}</h1>
         <p className='text-gray-500 text-sm mb-4'>{product.brand} {product.category}</p>
         <p className="text-2xl font-medium text-gray-900 mb-4">{formatPrice(product.price)}</p>
+        <button
+          type="button"
+          onClick={() => {
+            if (!user) {
+              navigate('/login');
+              return;
+            }
+
+            wishlistMutation.mutate();
+          }}
+          disabled={wishlistMutation.isPending}
+          className="flex items-center gap-2 text-sm text-gray-600 hover:text-orange-600 transition mb-6"
+        >
+          <IconHeart
+            size={18}
+            className={isWishlisted ? "fill-orange-600 text-orange-600" : ""}
+          />
+          {isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        </button>
 
         {isOutOfStock ? (
           <p className="text-red-600 text-sm font-medium mb-6">Out of stock</p>

@@ -12,20 +12,34 @@ import { getCartByUserId } from './services/cartServices';
 import { setCart } from './redux/slices/cartSlice';
 import Cart from './pages/Cart'
 import ProtectedRoute from './routes/ProtectedRoute'
+import Wishlist from './pages/Wishlist'
+import { getWishlistByUserId } from './services/wishlistServices';
+import { setWishlist } from './redux/slices/wishlistSlice';
+import Checkout from './pages/Checkout'
 
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-
+  const cart = useSelector((state)=>state.cart);
   useEffect(() => {
-    if (user) {
-      getCartByUserId(user.id).then((existingCart) => {
-        if (existingCart) {
-          dispatch(setCart(existingCart));
-        }
-      });
-    }
-  }, [user, dispatch]);
+  if (user) {
+    console.log("Logged in user:", user);
+
+    getCartByUserId(user.id).then((existingCart) => {
+      if (existingCart) {
+        dispatch(setCart(existingCart));
+      }
+    });
+
+    getWishlistByUserId(user.id).then((existingWishlist) => {
+      if (existingWishlist) {
+        dispatch(setWishlist(existingWishlist));
+      }
+    });
+  }
+}, [user, dispatch]);
+  console.log("USER:", user);
+  console.log("CART:", cart);
   return (
     <BrowserRouter>
     <Navbar/>
@@ -36,6 +50,8 @@ function App() {
       <Route path='/register' element={<Register/>}/>
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path='/cart' element={<ProtectedRoute><Cart/></ProtectedRoute>}/>
+      <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>}/>
+      <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>}/>
     </Routes>
     </BrowserRouter>
   )

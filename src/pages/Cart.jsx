@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../utils/formatPrice';
 import { IconMinus,IconPlus, IconTrash } from '@tabler/icons-react';
+import { updateCart } from '../services/cartServices';
+import { setCart } from '../redux/slices/cartSlice';
 
 function Cart() {
     const dispatch = useDispatch();
@@ -10,22 +12,46 @@ function Cart() {
 
     const subtotal = items.reduce((total,item)=>total+item.price*item.quantity,0);
 
-    const increaseQuantity = (item)=>{
-        if(item.quantity < item.stock){
+    const increaseQuantity =async (item)=>{
+        if (item.quantity >= item.stock) return;
 
+        const updatedItems = items.map((cartItem)=>cartItem.id === item.id ? {...cartItem,quantity: cartItem.quantity + 1} : cartItem);
+        
+        try{
+          const updatedCart = await updateCart(cartId,updatedItems);
+          dispatch(setCart(updatedCart));
+        }
+        catch (error){
+          console.error("failed to increase quantity : error");
         }
     };
 
 
-  const decreaseQuantity = (item) => {
-    if (item.quantity > 1) {
-     
+  const decreaseQuantity =async (item) => {
+    if (item.quantity <= 1) return;
+
+    const updatedItems = items.map((cartItem)=>cartItem.id === item.id ? {...cartItem,quantity:cartItem.quantity -1}: cartItem);
+    try{
+      const updatedCart = await updateCart(cartId,updatedItems);
+      dispatch(setCart(updatedCart));
+    }
+    catch(error){
+      console.error('Failed to decrease quantity:',error);
     }
   };
 
-  const removeItem = (item)=>{
+  const removeItem = async (item) => {
+    const updatedItems = items.filter(
+        (cartItem) => String(cartItem.id) !== String(item.id)
+    );
 
-  };
+    try {
+        const updatedCart = await updateCart(cartId, updatedItems);
+        dispatch(setCart(updatedCart));
+    } catch (error) {
+        console.error('Failed to remove item:', error);
+    }
+};
 
   if(items.length===0){
     return (
@@ -61,9 +87,21 @@ function Cart() {
                             {item.quantity}
                         </span>
 
-                        <button type='button' onClick={()=>increaseQuantity(item)}></button>
-                        <button type='button' onClick={()=>removeItem(item)}  className="text-gray-400 hover:text-red-500 transition"><IconTrash size={17} /><IconPlus size={14}/></button>
-                        
+                        <button
+    type='button'
+    onClick={() => increaseQuantity(item)}
+    className="p-2 hover:bg-gray-50"
+>
+    <IconPlus size={14} />
+</button>
+
+<button
+    type='button'
+    onClick={() => removeItem(item)}
+    className="p-2 text-gray-400 hover:text-red-500 transition"
+>
+    <IconTrash size={17} />
+</button>
                     </div>
                 </div>
             </div>
@@ -99,12 +137,12 @@ function Cart() {
             </span>
           </div>
 
-          <button
-            type="button"
-            className="w-full mt-5 bg-orange-600 text-white text-sm font-medium py-3 rounded-md hover:bg-orange-700 transition"
+          <Link
+            to="/checkout"
+            className="block w-full mt-5 bg-orange-600 text-white text-sm font-medium py-3 rounded-md hover:bg-orange-700 transition text-center"
           >
             Proceed to checkout
-          </button>
+          </Link>
 
           <Link
             to="/products"
