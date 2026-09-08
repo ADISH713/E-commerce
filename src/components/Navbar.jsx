@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { IconHeart, IconShoppingCart, IconSearch } from '@tabler/icons-react';
+import { useSelector } from 'react-redux';
 
 function Navbar() {
+  const items = useSelector((state)=>state.cart.items);
+  const cartCount = items.reduce((total,item)=>total+item.quantity,0);
   return (
     <div>
       {/* Utility bar */}
@@ -33,7 +36,9 @@ function Navbar() {
             placeholder='search here..'/>
           </div>
           <IconHeart size={18} className="text-gray-700" />
-          <IconShoppingCart size={18} className="text-gray-700" />
+          <Link to="/cart"><IconShoppingCart size={18} className="text-gray-700 hover:text-orange-600"/>
+          {cartCount>0 && ( <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-[9px] font-medium w-4 h-4 rounded-full flex items-center justify-center">{cartCount}</span>)}
+          </Link>
         </div>
       </nav>
     </div>

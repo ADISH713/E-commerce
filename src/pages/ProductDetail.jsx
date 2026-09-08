@@ -154,9 +154,7 @@ const addToCartMutation = useMutation({
 //   addToCartMutation.mutate();
 // };
 
-const handleAddToCart = (e) => {
-  e.preventDefault();
-  console.log('Button cliked');
+const handleAddToCart = () => {
 
   if (!user) {
     navigate('/login');

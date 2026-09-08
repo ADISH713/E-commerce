@@ -15,7 +15,7 @@ function ProductCard({product}) {
                 className='w-full h-full object-cover'
                 />
             ):(
-                <div className='w-full h-full flex item-center justify-center'>
+                <div className='w-full h-full flex items-center justify-center'>
                     <IconCar size={48} className='text-gray-300' stroke={1.5}/>
                 </div>
             )}
