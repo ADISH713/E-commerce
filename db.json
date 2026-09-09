@@ -397,84 +397,66 @@
       "password": "rashi123",
       "role": "user",
       "id": "9sQCVARKYnI"
+    },
+    {
+      "name": "Aswin",
+      "email": "aswin@gmail.com",
+      "password": "aswin0000",
+      "role": "user",
+      "id": "jmnd2An9eXA"
     }
   ],
   "orders": [
     {
-      "userId": "2",
+      "userId": "jmnd2An9eXA",
       "items": [
         {
-          "id": "3",
-          "name": "Panther",
-          "price": 34990,
-          "image": "/images/hn1.jpg",
+          "id": "11",
+          "name": "BMW",
+          "price": 2098,
+          "image": "/images/bm1.jpg",
           "stock": 8,
           "quantity": 1
-        },
-        {
-          "id": "10",
-          "name": "MAX SMASHER",
-          "price": 14990,
-          "image": "/images/max1.jpg",
-          "stock": 17,
-          "quantity": 2
         }
       ],
       "shippingAddress": {
-        "email": "adishadi7559@gmail.com",
-        "fullName": "Adish Cp",
-        "phone": "07559087713",
-        "addressLine1": "Near kallampara bridge",
+        "email": "aswin@gmail.com",
+        "fullName": "Aswin",
+        "phone": "123456789",
+        "addressLine1": "asdadaa",
         "addressLine2": "Mannur valav",
         "city": "Kozhikode",
         "state": "Kerala",
-        "pincode": "673328"
+        "pincode": "673330"
       },
       "paymentMethod": "cod",
-      "subtotal": 64970,
+      "subtotal": 2098,
       "shipping": 0,
-      "total": 64970,
+      "total": 2098,
       "status": "placed",
-      "createdAt": "2026-09-08T16:56:13.253Z",
-      "id": "lBjP8pd0WYg"
+      "createdAt": "2026-09-09T09:51:24.703Z",
+      "id": "9v8qwcdoWTc"
     }
   ],
   "carts": [
     {
-      "userId": "2",
-      "items": [
-        {
-          "id": "3",
-          "name": "Panther",
-          "price": 34990,
-          "image": "/images/hn1.jpg",
-          "stock": 8,
-          "quantity": 1
-        },
-        {
-          "id": "10",
-          "name": "MAX SMASHER",
-          "price": 14990,
-          "image": "/images/max1.jpg",
-          "stock": 17,
-          "quantity": 2
-        }
-      ],
-      "id": "Tg6cEqY1GXQ"
+      "userId": "jmnd2An9eXA",
+      "items": [],
+      "id": "gVWCbiaoMNE"
     }
   ],
   "wishlists": [
     {
-      "userId": "2",
+      "userId": "jmnd2An9eXA",
       "items": [
         {
-          "id": "10",
-          "name": "MAX SMASHER",
-          "price": 14990,
-          "image": "/images/max1.jpg"
+          "id": "11",
+          "name": "BMW",
+          "price": 2098,
+          "image": "/images/bm1.jpg"
         }
       ],
-      "id": "yGZ8zj5to1g"
+      "id": "q5MIYpVauI8"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

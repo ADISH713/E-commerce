@@ -16,6 +16,7 @@ import Wishlist from './pages/Wishlist'
 import { getWishlistByUserId } from './services/wishlistServices';
 import { setWishlist } from './redux/slices/wishlistSlice';
 import Checkout from './pages/Checkout'
+import Orders from './pages/Orders'
 
 function App() {
   const dispatch = useDispatch();
@@ -50,6 +51,7 @@ function App() {
       <Route path='/register' element={<Register/>}/>
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path='/cart' element={<ProtectedRoute><Cart/></ProtectedRoute>}/>
+      <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>}/>
       <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>}/>
       <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>}/>
     </Routes>

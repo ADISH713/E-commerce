@@ -7,11 +7,12 @@ import {IconCreditCard,IconWallet,IconCash} from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createOrder } from '../services/orderServices';
 import { clearCartState } from '../redux/slices/cartSlice';
+import { updateCart } from '../services/cartServices';
 
 function Checkout() {
     const [step, setStep] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState('');
-    const { items } = useSelector((state) => state.cart);
+    const { items,cartId } = useSelector((state) => state.cart);
     const user = useSelector((state) => state.auth.user);
     const dispatch = useDispatch();
     const [formData, setFormData] = useState({
@@ -62,6 +63,9 @@ function Checkout() {
 
         await createOrder(orderData);
 
+        if (cartId){
+            await updateCart(cartId,[]);
+        }
         dispatch(clearCartState());
 
         alert("Order placed successfully!");
@@ -423,21 +427,6 @@ function Checkout() {
                                 </div>
 
                             </section>
-
-
-                            {/* Save Information */}
-
-                            <label className="flex items-center gap-3 mt-6 text-sm text-gray-600 cursor-pointer">
-
-                                <input
-                                    type="checkbox"
-                                    className="accent-orange-600 w-4 h-4"
-                                />
-
-                                Save this information for next time
-
-                            </label>
-
 
                             {/* Continue */}
 

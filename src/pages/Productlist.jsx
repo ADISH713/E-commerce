@@ -9,6 +9,8 @@ function Productlist() {
     const [searchParams] = useSearchParams();
     const gradeFilter = searchParams.get('grade')
     const categoryFilter = searchParams.get('category');
+    const searchFilter = searchParams.get('search');
+    const sortFilter = searchParams.get('sort');
 
     const {data:products,isLoading,isError,error} = useQuery({
         queryKey : ['products'],
@@ -21,11 +23,19 @@ function Productlist() {
     const filteredProducts = products.filter((product)=>{
         const matchesGrade = gradeFilter ? product.grade === gradeFilter : true;
         const matchesCategory = categoryFilter ? product.category === categoryFilter : true;
-        return matchesGrade && matchesCategory;
-    })
+        const matchesSearch = searchFilter ? product.name.toLowerCase().includes(searchFilter.toLowerCase()) : true;
+        return matchesGrade && matchesCategory && matchesSearch;
+    });
+    if (sortFilter === 'price-low') {
+    filteredProducts.sort((a, b) => a.price - b.price);
+    }
+
+    if (sortFilter === 'price-high') {
+    filteredProducts.sort((a, b) => b.price - a.price);
+    }
   return (
     <div className='px-8 py-8'>
-        <h2 className='text-2xl font-medium text-gray-900 mb-6'>{categoryFilter?categoryFilter:gradeFilter?`${gradeFilter==='hobby'?'Hobby':'Toy'} grade cars`:'RC cars'}</h2>
+        <h2 className='text-2xl font-medium text-gray-900 mb-6'>{searchFilter ? `Search results for "${searchFilter}"` : categoryFilter ? categoryFilter : gradeFilter ? `${gradeFilter === 'hobby' ? 'Hobby' : 'Toy'} grade cars` : 'RC cars'}</h2>
         {filteredProducts.length === 0?(
             <p className='text-gray-500 text-sm'>No cars matches</p>):
         (<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
