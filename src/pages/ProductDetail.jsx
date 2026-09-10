@@ -10,6 +10,7 @@ import { setCart } from '../redux/slices/cartSlice';
 import { getWishlistByUserId, createWishlist, updateWishlist } from '../services/wishlistServices';
 import { setWishlist } from '../redux/slices/wishlistSlice';
 import { IconHeart } from '@tabler/icons-react';
+import toast from 'react-hot-toast';
 
 
 function ProductDetail() {
@@ -194,6 +195,7 @@ const addToCartMutation = useMutation({
   onSuccess: (updatedCart) => {
     dispatch(setCart(updatedCart));
     addingToCartRef.current = false;
+    toast.success('Added to cart')
   },
 
   onError: (error) => {
@@ -239,6 +241,7 @@ const wishlistMutation = useMutation({
 
   onSuccess: (updatedWishlist) => {
     dispatch(setWishlist(updatedWishlist));
+    
   },
 
   onError: (error) => {
@@ -305,6 +308,21 @@ const handleAddToCart = () => {
                     ))}
                 </div>
             )}
+            <div className="mt-16 text-left pl-14">
+            <h2 className='text-3xl pl-7 underline'>Rating & Review</h2>
+            <p className="text-9xl font-medium text-gray-900 ">
+              {product.rating}<span>/5</span>
+            </p>
+            
+
+            <div className="text-orange-500 text-6xl tracking-wide mt-1 pl-9">
+              {'★'.repeat(Math.round(product.rating))}
+            </div>
+
+            <p className="text-xl text-gray-80000 mt-1 pl-20">
+              ({product.reviewsCount} reviews)
+            </p>
+          </div>
         </div>
       
       <div>

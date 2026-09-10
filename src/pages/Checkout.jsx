@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createOrder } from '../services/orderServices';
 import { clearCartState } from '../redux/slices/cartSlice';
 import { updateCart } from '../services/cartServices';
+import toast from 'react-hot-toast';
 
 function Checkout() {
     const [step, setStep] = useState(1);
@@ -68,10 +69,10 @@ function Checkout() {
         }
         dispatch(clearCartState());
 
-        alert("Order placed successfully!");
+        toast.success("Order placed successfully!");
     } catch (error) {
         console.error("Failed to place order:", error);
-        alert("Failed to place order. Please try again.");
+        toast.error("Failed to place order. Please try again.");
     }
 };
 
@@ -100,26 +101,6 @@ function Checkout() {
 
     return (
         <div className="min-h-screen bg-white">
-
-            {/* Header */}
-
-            <header className="border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex items-center justify-between">
-
-                    <Link
-                        to="/"
-                        className="text-xl font-bold tracking-tight text-gray-900"
-                    >
-                        TORQUE
-                    </Link>
-
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <IconLock size={16} />
-                        Secure Checkout
-                    </div>
-
-                </div>
-            </header>
 
 
             {/* Main */}
@@ -546,7 +527,7 @@ function Checkout() {
                                         type="button"
                                         onClick={() => {
                                             if (!paymentMethod) {
-                                                alert('Please select a payment method.');
+                                                toast.error('Please select a payment method.');
                                                 return;
                                             }
 

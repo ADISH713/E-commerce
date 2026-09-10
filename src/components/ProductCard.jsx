@@ -28,6 +28,9 @@ function ProductCard({product}) {
         <div className='p-3'>
             <p className='text-gray-900 text-sm font-medium mb-1 truncate'>{product.name}</p>
             <p className='text-gray-500 text-xs mb-2'>{product.category}</p>
+            <div className="text-orange-500 text-sm tracking-wide mb-2">
+                {'★'.repeat(Math.round(product.rating))} <span className='text-xs text-gray-500'>({product.reviewsCount})</span>
+            </div>
             <div className='flex items-center justify-between'>
             <p className='text-gray-900 text-sm font-medium'>{formatPrice(product.price)}</p>
             <span className={`text-[10px] font-medium px-2 py-1 rounded-full ${product.grade === "hobby"?'bg-orange-100 text-orange-700':'bg-blue-100 text-blue-700'}`}>

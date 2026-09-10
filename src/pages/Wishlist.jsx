@@ -196,40 +196,48 @@ function Wishlist() {
                         />
 
                         <div className="p-4">
+                            <div>
+                            <div>
+                                <h2 className="font-medium text-gray-800">
+                                {item.name}
+                                </h2>
 
-                            <div className="flex items-start justify-between gap-4">
-
-                                <div>
-                                    <h2 className="font-medium text-gray-800">
-                                        {item.name}
-                                    </h2>
-
-                                    <p className="text-orange-600 font-medium mt-2">
-                                        {formatPrice(item.price)}
-                                    </p>
-                                </div>
+                                <div className="flex items-center justify-between mt-2">
+                                <p className="text-orange-600 font-medium">
+                                    {formatPrice(item.price)}
+                                </p>
 
                                 <button
                                     type="button"
                                     onClick={() => removeMutation.mutate(item.id)}
                                     disabled={removeMutation.isPending}
-                                    className="text-gray-400 hover:text-red-500 transition"
+                                    className="text-gray-600 hover:text-red-500 transition"
                                 >
                                     <IconTrash size={18} />
                                 </button>
-                                {String(cartError?.productId) === String(item.id) &&(
-                                    <p className="text-sm text-red-500 mt-2">
-                                        {cartError.message}
-                                    </p>
-                                )}
-                                <button type="button" onClick={() => {setCartError(null);addToCartMutation.mutate(item);}}disabled={addToCartMutation.isPending}
-                                     className="w-full mt-4 flex items-center justify-center gap-2 bg-orange-600 text-white py-2 rounded-md hover:bg-orange-700 transition">
-                                    
-                                    <IconShoppingCart size={17} />
-                                    Add to Cart
-                                </button>
-
+                                </div>
                             </div>
+
+                            {String(cartError?.productId) === String(item.id) && (
+                                <p className="text-sm text-red-500 mt-2">
+                                {cartError.message}
+                                </p>
+                            )}
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                setCartError(null);
+                                addToCartMutation.mutate(item);
+                                }}
+                                disabled={addToCartMutation.isPending}
+                                className="w-full mt-4 flex items-center justify-center gap-2 bg-orange-600 text-white py-2 rounded-md hover:bg-orange-700 transition"
+                            >
+                                <IconShoppingCart size={17} />
+                                Add to Cart
+                            </button>
+                            </div>
+                    
 
                         </div>
 

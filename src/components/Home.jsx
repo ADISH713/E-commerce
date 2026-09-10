@@ -13,8 +13,16 @@ import {
   IconCheck,
   IconX,
 } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
+import { getProducts } from '../services/productServices';
+import ProductCard from './ProductCard';
 
 function Home() {
+  const {data: products = []} = useQuery({
+    queryKey : ['products'],
+    queryFn : getProducts
+  });
+  const featuredProducts = [...products].sort((a,b)=>b.rating - a.rating).slice(0,8)
   return (
     <div className="bg-white">
 
@@ -28,12 +36,9 @@ function Home() {
 
   {/* Content */}
   <div className="relative z-10 max-w-lg">
-    <p className="text-orange-600 text-xs font-medium tracking-widest mb-3">
-      1:8 SCALE // OFF-ROAD BUGGY
-    </p>
     <h1 className="text-4xl md:text-5xl font-medium leading-tight text-gray-900 mb-4">
-      Built<br />
-      <span className="text-orange-600">to run.</span>
+      Chase<br />
+      <span className="text-orange-600">the adrenaline</span>
     </h1>
     <p className="text-gray-700 text-sm max-w-xs mb-6 leading-relaxed">
       Engineered for serious performance. Race-proven, adventure-ready.
@@ -45,6 +50,37 @@ function Home() {
       Shop RC cars <IconArrowRight size={16} />
     </Link>
   </div>
+</section>
+<section className="px-8 py-12">
+  <div className="flex items-center justify-between mb-6">
+    <div>
+      <h2 className="text-2xl font-medium text-gray-900">
+        Featured products
+      </h2>
+      <p className="text-sm text-gray-500 mt-1">
+        Top picks from our collection
+      </p>
+    </div>
+
+    <Link
+      to="/products"
+      className="text-sm text-orange-600 hover:text-orange-700"
+    >
+      View all
+    </Link>
+  </div>
+
+    <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide" style={{scrollbarWidth: 'none'}}>
+    {featuredProducts.map((product) => (
+      <div
+        key={product.id}
+        className="min-w-[240px] md:min-w-[260px] flex-shrink-0"
+      >
+        <ProductCard product={product} />
+      </div>
+    ))}
+  </div>
+  
 </section>
 
       {/* Shop by grade */}
@@ -111,12 +147,11 @@ function Home() {
 
       {/* Grade comparison table */}
       <section className="px-8 pb-10">
-        <p className="text-gray-400 text-xs uppercase tracking-widest mb-2">Side by side</p>
         <h2 className="text-2xl font-medium text-gray-900 mb-4">Which grade is right for you?</h2>
 
         <div className="border-t border-gray-200">
           <div className="grid grid-cols-3 py-3">
-            <div className="text-gray-400 text-xs uppercase tracking-wide">Feature</div>
+            <div className="text-gray-700 text-xs uppercase tracking-wide">Feature</div>
             <div className="text-center text-gray-900 text-sm font-medium border-b-2 border-orange-600 pb-1 mx-auto">
               Toy grade
             </div>
@@ -126,73 +161,40 @@ function Home() {
           </div>
 
           <div className="grid grid-cols-3 py-3 border-t border-gray-200 items-center">
-            <div className="text-gray-400 text-xs uppercase">Price range</div>
-            <div className="text-center text-gray-700 text-sm">$39 – $149</div>
-            <div className="text-center text-gray-700 text-sm">$159 – $220+</div>
+            <div className="text-gray-700 text-xs uppercase">Price range</div>
+            <div className="text-center text-gray-700 text-sm">₹499 – ₹2999</div>
+            <div className="text-center text-gray-700 text-sm">$3999 – $50000+</div>
           </div>
 
           <div className="grid grid-cols-3 py-3 border-t border-gray-200 items-center">
-            <div className="text-gray-400 text-xs uppercase">Top speed</div>
+            <div className="text-gray-700 text-xs uppercase">Top speed</div>
             <div className="text-center text-gray-700 text-sm">15 – 42 km/h</div>
             <div className="text-center text-gray-700 text-sm">45 – 70 km/h</div>
           </div>
 
           <div className="grid grid-cols-3 py-3 border-t border-gray-200 items-center">
-            <div className="text-gray-400 text-xs uppercase">Drive type</div>
-            <div className="text-center text-gray-700 text-sm">RWD / AWD</div>
-            <div className="text-center text-gray-700 text-sm">4WD</div>
+            <div className="text-gray-700 text-xs uppercase">Drive type</div>
+            <div className="text-center text-gray-700 text-sm">2WD</div>
+            <div className="text-center text-gray-700 text-sm">4WD/AWD</div>
           </div>
 
           <div className="grid grid-cols-3 py-3 border-t border-gray-200 items-center">
-            <div className="text-gray-400 text-xs uppercase">Upgradeable parts</div>
+            <div className="text-gray-700 text-xs uppercase">Upgradeable parts</div>
             <div className="flex justify-center">
-              <IconX size={16} className="text-gray-300" />
+              <IconX size={16} className="text-red-500" />
             </div>
             <div className="flex justify-center">
-              <IconCheck size={16} className="text-green-600" />
+              <IconCheck size={17} className="text-green-600" />
             </div>
           </div>
 
           <div className="grid grid-cols-3 py-3 border-t border-b border-gray-200 items-center">
-            <div className="text-gray-400 text-xs uppercase">Battery</div>
+            <div className="text-gray-700 text-xs uppercase">Battery</div>
             <div className="text-center text-gray-700 text-sm">3.7V – 7.4V LiPo</div>
             <div className="text-center text-gray-700 text-sm">7.4V – 11.1V LiPo</div>
           </div>
         </div>
       </section>
-
-      {/* Trust badges */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-6 px-8 py-8 bg-gray-50 border-t border-gray-200">
-        <div className="flex items-center gap-3">
-          <IconTruckDelivery size={22} className="text-gray-600" stroke={1.5} />
-          <div>
-            <p className="text-gray-900 text-xs font-medium">Free shipping</p>
-            <p className="text-gray-500 text-[11px]">On orders over $150</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <IconShieldCheck size={22} className="text-gray-600" stroke={1.5} />
-          <div>
-            <p className="text-gray-900 text-xs font-medium">Secure payments</p>
-            <p className="text-gray-500 text-[11px]">Protected checkout</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <IconRefresh size={22} className="text-gray-600" stroke={1.5} />
-          <div>
-            <p className="text-gray-900 text-xs font-medium">Easy returns</p>
-            <p className="text-gray-500 text-[11px]">30-day hassle free</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <IconHeadset size={22} className="text-gray-600" stroke={1.5} />
-          <div>
-            <p className="text-gray-900 text-xs font-medium">Expert support</p>
-            <p className="text-gray-500 text-[11px]">We're here to help</p>
-          </div>
-        </div>
-      </section>
-
     </div>
   );
 }
