@@ -1,9 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { registerUser } from '../services/userServices'
-import { setUser } from '../redux/slices/authSlice'
 import { Link } from 'react-router-dom'
 
 function Register() {
@@ -13,13 +11,11 @@ function Register() {
     const[cpassword,setCpassword] = useState('')
     const [validationError, setValidationError] = useState('');
 
-    const dispatch = useDispatch();
     const navigate = useNavigate()
     const {mutate,isPending,isError,error} = useMutation({
         mutationFn :(userData)=>registerUser(userData),
-        onSuccess:(user)=>{
-            dispatch(setUser(user));
-            navigate('/login');
+        onSuccess:()=>{;
+            navigate('/login',{ replace: true });
         },
     });
 
@@ -44,6 +40,12 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setValidationError('Password must be at least 6 characters');
     return;
   }
+
+    if (/^\d+$/.test(password)) {
+      setValidationError('Password cannot contain only numbers');
+      return;
+  }
+
 
   if (password !== cpassword) {
     setValidationError('Passwords do not match');

@@ -4,10 +4,7 @@ import {Link, useNavigate} from 'react-router-dom'
 import {useMutation} from '@tanstack/react-query'
 import { setUser } from '../redux/slices/authSlice';
 import {loginUser} from '../services/userServices'
-import { getCartByUserId } from '../services/cartServices';
-import { setCart,clearCartState } from '../redux/slices/cartSlice';
-import { getWishlistByUserId } from '../services/wishlistServices';
-import { setWishlist, clearWishlistState } from '../redux/slices/wishlistSlice';
+
 
 function Login() {
     const [email,setEmail] = useState('');
@@ -18,28 +15,11 @@ function Login() {
 
     const{mutate,isPending,isError,error} = useMutation({
         mutationFn :()=>loginUser(email,password),
-        onSuccess: async (user) => {
+        onSuccess:  (user) => {
         dispatch(setUser(user));
-
-        const existingCart = await getCartByUserId(user.id);
-
-        if (existingCart) {
-            dispatch(setCart(existingCart));
-        } else {
-            dispatch(clearCartState());
+        navigate('/', { replace: true});
         }
-
-        const existingWishlist = await getWishlistByUserId(user.id);
-
-        if (existingWishlist) {
-            dispatch(setWishlist(existingWishlist));
-        } else {
-            dispatch(clearWishlistState());
-        }
-
-    navigate('/');
-}
-    });
+        });
 
     const handleSubmit = (e)=>{
         e.preventDefault();

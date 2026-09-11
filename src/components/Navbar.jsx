@@ -28,7 +28,7 @@ function Navbar() {
       </div>
 
       {/* Main navbar */}
-      <nav className="relative flex items-center justify-between px-8 h-[60px] border-b border-gray-200">
+      <nav className="relative flex items-center justify-between px-8 h-[60px] border-b border-orange-300 shadow-md">
         <img src="/images/Logo.png" alt="Torque" className="h-16 w-auto object-contain"/>
 
         <div className="flex gap-7 text-m text-gray-700">

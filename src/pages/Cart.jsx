@@ -68,7 +68,7 @@ function Cart() {
       <h1 className="text-2xl font-medium text-gray-900 mb-6">Shopping Cart</h1>
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
         {items.map((item)=>(
-            <div key={item.id} className='border border-gray-200 rounded-xl p-4 flex gap-4'>
+            <div key={item.id} className='border border-gray-200 hover:border-orange-300 rounded-xl p-4 flex gap-4'>
                 <div className='w-24 h-24 bg-gray-50 rounded-lg overflow-hidden shrink-0'>
                     {item.image ? (<img src={item.image} alt={item.name} className='w-full h-full object-cover'/>)
                     :(<div className='w-full h-full flex items-center justify-center'>No image</div>)}
@@ -108,7 +108,7 @@ function Cart() {
         </div>
         ))}
       </div>
-      <div className="border border-gray-200 rounded-xl p-5 h-fit">
+      <div className="border border-orange-300 shadow-md rounded-xl p-5 h-fit mt-8">
           <h2 className="text-sm font-medium text-gray-900 mb-5">
             Order Summary
           </h2>
