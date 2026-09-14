@@ -14,15 +14,15 @@ function Footer() {
     <footer className="border-t border-orange-300">
 
       {/* Main footer */}
-      <div className="px-8 md:px-16 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+      <div className="px-5 sm:px-8 lg:px-16 py-10 sm:py-14">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
 
           {/* Brand */}
           <div>
             <img
               src="/images/Logo.png"
               alt="TORQUE"
-              className="h-12 w-auto object-contain mb-5"
+              className="h-10 sm:h-12 w-auto object-contain mb-5"
             />
 
             <p className="text-sm font-medium text-gray-900 leading-relaxed">
@@ -96,11 +96,11 @@ function Footer() {
       </div>
 
       {/* Bottom bar */}
-    <div className="bg-orange-600 px-8 md:px-16 py-5">
-  <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+   <div className="bg-orange-600 px-5 sm:px-8 lg:px-16 py-5"> 
+  <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
 
     {/* Benefits */}
-    <div className="flex flex-wrap items-center justify-center gap-10">
+    <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
 
       <div className="flex items-center gap-3">
         <IconShieldCheck
@@ -153,7 +153,7 @@ function Footer() {
     </div>
 
     {/* Copyright + social */}
-    <div className="flex items-center gap-5">
+    <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-5">
 
       <p className="text-xs text-white/80">
         © 2026 TORQUE

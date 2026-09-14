@@ -425,6 +425,13 @@
       "password": "fideyyy",
       "role": "user",
       "id": "4SDp3LzUMO8"
+    },
+    {
+      "name": "Rizal",
+      "email": "rizal@gmail.com",
+      "password": "r123123",
+      "role": "user",
+      "id": "CY9H7BTJPxI"
     }
   ],
   "orders": [
@@ -898,6 +905,42 @@
       "userId": "kWMSNQzVRhc",
       "items": [],
       "id": "vOo-f0LVV4A"
+    },
+    {
+      "userId": "4SDp3LzUMO8",
+      "items": [
+        {
+          "id": "2",
+          "name": "LC80",
+          "price": 21490,
+          "image": "/images/LC1.jpg",
+          "stock": 8,
+          "quantity": 2
+        }
+      ],
+      "id": "HOSl6QTJeaI"
+    },
+    {
+      "userId": "CY9H7BTJPxI",
+      "items": [
+        {
+          "id": "2",
+          "name": "LC80",
+          "price": 21490,
+          "image": "/images/LC1.jpg",
+          "stock": 8,
+          "quantity": 2
+        },
+        {
+          "id": "3",
+          "name": "Panther",
+          "price": 34990,
+          "image": "/images/hn1.jpg",
+          "stock": 8,
+          "quantity": 8
+        }
+      ],
+      "id": "4dOGk90M_UA"
     }
   ],
   "wishlists": [
@@ -929,6 +972,30 @@
         }
       ],
       "id": "6hose3VHa5c"
+    },
+    {
+      "userId": "4SDp3LzUMO8",
+      "items": [
+        {
+          "id": "2",
+          "name": "LC80",
+          "price": 21490,
+          "image": "/images/LC1.jpg"
+        }
+      ],
+      "id": "-WFE03JFKi8"
+    },
+    {
+      "userId": "CY9H7BTJPxI",
+      "items": [
+        {
+          "id": "6",
+          "name": "Truggy",
+          "price": 9990,
+          "image": "/images/hs1.jpg"
+        }
+      ],
+      "id": "OtjBLXq29Uc"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

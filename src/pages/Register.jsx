@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { registerUser } from '../services/userServices'
 import { Link } from 'react-router-dom'
+import { IconEye, IconEyeOff } from '@tabler/icons-react'
 
 function Register() {
     const [name,setName] = useState('')
@@ -10,6 +11,8 @@ function Register() {
     const [password,setPassword] = useState('')
     const[cpassword,setCpassword] = useState('')
     const [validationError, setValidationError] = useState('');
+    const [showPassword,setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const navigate = useNavigate()
     const {mutate,isPending,isError,error} = useMutation({
@@ -106,30 +109,47 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           <label className="block text-xs font-medium text-white mb-1">
             Password
           </label>
-
+          <div className="relative">
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full placeholder-gray-300 bg-white/10 border border-white/20 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-orange-400 text-white"
+            className="w-full placeholder-gray-300 bg-white/10 border border-white/20 rounded-md px-3 py-2 pr-10 text-sm focus:outline-none focus:border-orange-400 text-white"
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-white"
+          >
+            {showPassword ? <IconEye/>:<IconEyeOff/>}
+          </button>
+
+        </div>
         </div>
 
         <div>
           <label className="block text-xs font-medium text-white mb-1">
             Confirm Password
           </label>
-
+            <div className='relative'>
           <input
-            type="password"
+            type={showConfirmPassword ? "text" : "password"}
             placeholder="Confirm your password"
             value={cpassword}
             onChange={(e) => setCpassword(e.target.value)}
             required
-            className="w-full placeholder-gray-300 bg-white/10 border border-white/20 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-orange-400 text-white"
+            className="w-full placeholder-gray-300 bg-white/10 border border-white/20 rounded-md px-3 py-2 pr-10 text-sm focus:outline-none focus:border-orange-400 text-white"
           />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-white"
+          >
+            {showConfirmPassword ? <IconEye/> : <IconEyeOff/>}
+          </button>
+          </div>
         </div>
 
         {isError && (

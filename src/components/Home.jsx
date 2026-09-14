@@ -5,10 +5,6 @@ import {
   IconSteeringWheel,
   IconTruck,
   IconMountain,
-  IconTruckDelivery,
-  IconShieldCheck,
-  IconRefresh,
-  IconHeadset,
   IconArrowRight,
   IconCheck,
   IconX,
@@ -26,17 +22,17 @@ function Home() {
   return (
     <div className="bg-white">
 
-    <section className="relative px-8 py-24 flex items-center min-h-[420px] overflow-hidden">
+    <section className="relative min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex items-center px-5 sm:px-8 lg:px-12 py-16 sm:py-20 overflow-hidden">
   {/* Background image */}
   <img
     src="/images/RC-bg.png"
     alt=""
-    className="absolute inset-0 w-full h-full object-cover"
+    className="absolute inset-0 w-full h-full object-cover object-center"
   />
 
   {/* Content */}
   <div className="relative z-10 max-w-lg">
-    <h1 className="text-4xl md:text-5xl font-medium leading-tight text-gray-900 mb-4">
+    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium leading-tight text-gray-900 mb-4">
       Chase<br />
       <span className="text-orange-600">the adrenaline</span>
     </h1>
@@ -51,10 +47,10 @@ function Home() {
     </Link>
   </div>
 </section>
-<section className="px-8 py-12">
-  <div className="flex items-center justify-between mb-6">
+<section className="px-5 sm:px-8 lg:px-12 py-8 sm:py-10 lg:py-12">
+  <div className="flex items-end justify-between gap-4 mb-6">
     <div>
-      <h2 className="text-2xl font-medium text-gray-900">
+      <h2 className="text-xl sm:text-2xl font-medium text-gray-900">
         Featured products
       </h2>
       <p className="text-sm text-gray-500 mt-1">
@@ -74,7 +70,7 @@ function Home() {
     {featuredProducts.map((product) => (
       <div
         key={product.id}
-        className="min-w-[240px] md:min-w-[260px] flex-shrink-0"
+        className="min-w-[210px] sm:min-w-[240px] md:min-w-[260px] flex-shrink-0"
       >
         <ProductCard product={product} />
       </div>
@@ -84,9 +80,9 @@ function Home() {
 </section>
 
       {/* Shop by grade */}
-      <section className="px-8 pb-6">
+      <section className="px-5 sm:px-8 lg:px-12 pb-6">
         <p className="text-gray-400 text-xs uppercase tracking-widest mb-3">Shop by grade</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
           <Link
             to="/products?grade=toy"
             className="border border-gray-200 rounded-xl p-5 flex items-center gap-4 hover:border-orange-300 transition"
@@ -111,33 +107,33 @@ function Home() {
       </section>
 
       {/* Shop by type */}
-      <section className="px-8 pb-10">
+      <section className="px-5 sm:px-8 lg:px-12 pb-10">
         <p className="text-gray-400 text-xs uppercase tracking-widest mb-3">Shop by type</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
           <Link
             to="/products?category=Off-Road Buggy"
-            className="border border-gray-200 rounded-xl p-4 text-center hover:border-orange-300 transition"
+            className="border border-gray-200 rounded-xl overflow-x-auto p-4 text-center hover:border-orange-300 transition"
           >
             <IconCar size={24} className="text-gray-600 mx-auto mb-2" stroke={1.5} />
             <p className="text-gray-900 text-xs font-medium">Off-road buggy</p>
           </Link>
           <Link
             to="/products?category=Drift car"
-            className="border border-gray-200 rounded-xl p-4 text-center hover:border-orange-300 transition"
+            className="border border-gray-200 rounded-xl overflow-x-auto p-4 text-center hover:border-orange-300 transition"
           >
             <IconSteeringWheel size={24} className="text-gray-600 mx-auto mb-2" stroke={1.5} />
             <p className="text-gray-900 text-xs font-medium">Drift car</p>
           </Link>
           <Link
             to="/products?category=Monster Truck"
-            className="border border-gray-200 rounded-xl p-4 text-center hover:border-orange-300 transition"
+            className="border border-gray-200 rounded-xl overflow-x-auto p-4 text-center hover:border-orange-300 transition"
           >
             <IconTruck size={24} className="text-gray-600 mx-auto mb-2" stroke={1.5} />
             <p className="text-gray-900 text-xs font-medium">Monster truck</p>
           </Link>
           <Link
             to="/products?category=Rock Crawler"
-            className="border border-gray-200 rounded-xl p-4 text-center hover:border-orange-300 transition"
+            className="border border-gray-200 rounded-xl overflow-x-auto p-4 text-center hover:border-orange-300 transition"
           >
             <IconMountain size={24} className="text-gray-600 mx-auto mb-2" stroke={1.5} />
             <p className="text-gray-900 text-xs font-medium">Rock crawler</p>
@@ -146,11 +142,12 @@ function Home() {
       </section>
 
       {/* Grade comparison table */}
-      <section className="px-8 pb-10">
-        <h2 className="text-2xl font-medium text-gray-900 mb-4">Which grade is right for you?</h2>
+      <section className="px-5 sm:px-8 lg:px-12 pb-10">
+        <h2 className="text-xl sm:text-2xl font-medium text-gray-900 mb-4">Which grade is right for you?</h2>
 
-        <div className="border-t border-gray-200">
-          <div className="grid grid-cols-3 py-3">
+        <div className="border border-gray-200 rounded-xl overflow-x-auto">
+          <div className="min-w-[600px]">
+            <div className="grid grid-cols-3 py-3">
             <div className="text-gray-700 text-xs uppercase tracking-wide">Feature</div>
             <div className="text-center text-gray-900 text-sm font-medium border-b-2 border-orange-600 pb-1 mx-auto">
               Toy grade
@@ -163,7 +160,7 @@ function Home() {
           <div className="grid grid-cols-3 py-3 border-t border-gray-200 items-center">
             <div className="text-gray-700 text-xs uppercase">Price range</div>
             <div className="text-center text-gray-700 text-sm">₹499 – ₹2999</div>
-            <div className="text-center text-gray-700 text-sm">$3999 – $50000+</div>
+            <div className="text-center text-gray-700 text-sm">₹3999 – ₹50000+</div>
           </div>
 
           <div className="grid grid-cols-3 py-3 border-t border-gray-200 items-center">
@@ -193,6 +190,7 @@ function Home() {
             <div className="text-center text-gray-700 text-sm">3.7V – 7.4V LiPo</div>
             <div className="text-center text-gray-700 text-sm">7.4V – 11.1V LiPo</div>
           </div>
+        </div>
         </div>
       </section>
     </div>

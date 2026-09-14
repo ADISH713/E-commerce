@@ -60,7 +60,7 @@ function App() {
     }, [dispatch]);
 
 
-    // Load cart and wishlist whenever the user is available
+
     useEffect(() => {
 
         if (!user?.id) {

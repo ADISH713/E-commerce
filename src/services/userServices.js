@@ -2,28 +2,10 @@ import axios from "axios";
 
 const API_URL = 'http://localhost:3001/users';
 
-// export const loginUser = async (email, password) => {
-//     const { data } = await axios.get(
-//         `${API_URL}?email=${email}&password=${password}`
-//     );
-
-//     if (data.length === 0) {
-//         throw new Error('Invalid email or password');
-//     }
-
-//     return data[0];
-// };
-
 export const loginUser = async (email, password) => {
-
-    console.log("LOGIN EMAIL:", email);
-    console.log("LOGIN PASSWORD:", password);
-
     const { data } = await axios.get(
         `${API_URL}?email=${email}&password=${password}`
     );
-
-    console.log("LOGIN RESPONSE:", data);
 
     if (data.length === 0) {
         throw new Error('Invalid email or password');
@@ -31,6 +13,7 @@ export const loginUser = async (email, password) => {
 
     return data[0];
 };
+
 export const getUserById = async (userId) => {
     const { data } = await axios.get(
         `${API_URL}?id=${userId}`

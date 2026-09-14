@@ -192,7 +192,7 @@ function Orders() {
                         </p>
                         </div>
 
-                        {/* Price Breakdown */}
+                        {/* Price*/}
                         <div>
                         <h3 className="font-semibold mb-3">
                             Order Summary

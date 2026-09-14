@@ -34,56 +34,6 @@ function Wishlist() {
 
         },
     });
-    //     const addToCartMutation = useMutation({
-    //     mutationFn: async (item) => {
-    //         const existingCart = await getCartByUserId(user.id);
-
-    //         const currentItems = existingCart?.items || [];
-
-    //         const existingItem = currentItems.find(
-    //             (cartItem) => String(cartItem.id) === String(item.id)
-    //         );
-
-    //         let updatedItems;
-
-    //         if (existingItem) {
-    //             updatedItems = currentItems.map((cartItem) =>
-    //                 String(cartItem.id) === String(item.id)
-    //                     ? {
-    //                         ...cartItem,
-    //                         quantity: cartItem.quantity + 1
-    //                     }
-    //                     : cartItem
-    //             );
-    //         } else {
-    //             updatedItems = [
-    //                 ...currentItems,
-    //                 {
-    //                     id: item.id,
-    //                     name: item.name,
-    //                     price: item.price,
-    //                     image: item.image,
-    //                     quantity: 1
-    //                 }
-    //             ];
-    //         }
-
-    //         if (existingCart) {
-    //             return updateCart(existingCart.id, updatedItems);
-    //         }
-
-    //         return createCart(user.id, updatedItems);
-    //     },
-
-    //     onSuccess: (updatedCart) => {
-    //         dispatch(setCart(updatedCart));
-    //     },
-
-    //     onError: (error) => {
-    //         console.error('Failed to add to cart:', error);
-    //     },
-    // });
-
         const addToCartMutation = useMutation({
     mutationFn: async (item) => {
 

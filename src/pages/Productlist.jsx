@@ -1,8 +1,7 @@
 import React from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { getProducts } from '../services/productServices'
 import ProductCard from '../components/ProductCard';
 import { useSearchParams } from 'react-router-dom';
+import { useProducts } from '../hooks/useProducts';
 
 
 function Productlist() {
@@ -12,13 +11,9 @@ function Productlist() {
     const searchFilter = searchParams.get('search');
     const sortFilter = searchParams.get('sort');
 
-    const {data:products,isLoading,isError,error} = useQuery({
-        queryKey : ['products'],
-        queryFn : getProducts
-    });
-
-    if(isLoading) return <p className='px-8 py-6'>Loading...</p>;
-    if(isError) return <p className='px-8 py-6 text-red-600'>Error:{error.message}</p>
+    const { data:products = [],isLoading,isError,error } = useProducts();
+    if(isLoading) return <p className='px-5 sm:px-8 lg:px-12 py-6'>Loading...</p>;
+    if(isError) return <p className='px-5 sm:px-8 lg:px-12 py-6 text-red-600'>Error:{error.message}</p>
 
     const filteredProducts = products.filter((product)=>{
         const matchesGrade = gradeFilter ? product.grade === gradeFilter : true;
@@ -34,11 +29,11 @@ function Productlist() {
     filteredProducts.sort((a, b) => b.price - a.price);
     }
   return (
-    <div className='px-8 py-8'>
-        <h2 className='text-2xl font-medium text-gray-900 mb-6'>{searchFilter ? `Search results for "${searchFilter}"` : categoryFilter ? categoryFilter : gradeFilter ? `${gradeFilter === 'hobby' ? 'Hobby' : 'Toy'} grade cars` : 'RC cars'}</h2>
+    <div className='px-5 sm:px-8 lg:px-12 py-6 sm:py-8'>
+        <h2 className='text-xl sm:text-2xl font-medium text-gray-900 mb-6'>{searchFilter ? `Search results for "${searchFilter}"` : categoryFilter ? categoryFilter : gradeFilter ? `${gradeFilter === 'hobby' ? 'Hobby' : 'Toy'} grade cars` : 'RC cars'}</h2>
         {filteredProducts.length === 0?(
             <p className='text-gray-500 text-sm'>No cars matches</p>):
-        (<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+        (<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
             {filteredProducts.map((product)=>(
                 <ProductCard key={product.id} product={product}/>
             ))}
