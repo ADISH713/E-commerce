@@ -11,7 +11,8 @@ import { getWishlistByUserId, createWishlist, updateWishlist } from '../services
 import { setWishlist } from '../redux/slices/wishlistSlice';
 import { IconHeart } from '@tabler/icons-react';
 import toast from 'react-hot-toast';
-
+import { useProducts } from '../hooks/useProducts';
+import ProductCard from '../components/ProductCard';
 
 function ProductDetail() {
     const {id} = useParams();
@@ -24,6 +25,8 @@ function ProductDetail() {
     const user = useSelector((state)=>state.auth.user);
     const wishlist = useSelector((state) => state.wishlist);   
 
+    const { data: products = [] } = useProducts();
+
     const {data:product,isLoading,isError,error}=useQuery({
         queryKey : ['product',id],
         queryFn : () => getProductById(id),
@@ -34,9 +37,10 @@ function ProductDetail() {
     ) || false;
 
 
-  const cart = useSelector((state) => state.cart);
+     const cart = useSelector((state) => state.cart);
 
-
+   
+   
 const addToCartMutation = useMutation({
   mutationFn: async () => {
 
@@ -94,6 +98,7 @@ const addToCartMutation = useMutation({
   onError: (error) => {
     console.error('Add to cart error:', error);
     addingToCartRef.current = false;
+    toast.error(error.message);
   },
 });
 
@@ -143,6 +148,14 @@ const wishlistMutation = useMutation({
 });
     if(isLoading) return <p className='px-8 py-6'>Loading product...</p>;
     if(isError) return <p className='px-8 py-6 text-red-600'>Error:{error.message}</p>
+
+     const similarProducts = products.filter(
+    (item) =>
+        item.category === product.category &&
+        String(item.id) !== String(product.id)
+    ).slice(0, 4);
+
+ 
     const isOutOfStock = product.stock === 0;
     const increaseQty = ()=>{
         if(quantity<product.stock) setQuantity(quantity + 1);
@@ -170,8 +183,10 @@ const handleAddToCart = () => {
 
 
   return (
-    <div className='px-5 sm:px-8 lg:px-12 py-6 sm:py-8 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10'>
-        <div>
+        <div className='px-5 sm:px-8 lg:px-12 py-6 sm:py-8'>
+        
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10'>
+            <div>
             <div className='bg-gray-50 rounded-xl h-[320px] sm:h-[380px] lg:h-96 flex items-center justify-center overflow-hidden mb-4'>
                 {product.images && product.images[selectedImage] ? (
                     <img src = {product.images[selectedImage]}
@@ -297,6 +312,23 @@ const handleAddToCart = () => {
           <p className="text-gray-600 text-sm leading-relaxed">{product.description}</p>
         </div>
       </div>
+      {similarProducts.length > 0 && (
+        <div className="mt-12 border-t border-gray-200 pt-8">
+            <h2 className="text-xl font-medium text-gray-900 mb-6">
+                Similar Products
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {similarProducts.map((item) => (
+                    <ProductCard
+                        key={item.id}
+                        product={item}
+                    />
+                ))}
+            </div>
+        </div>
+    )}
+    </div>
 
     </div>
   )

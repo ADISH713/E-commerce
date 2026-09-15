@@ -432,6 +432,20 @@
       "password": "r123123",
       "role": "user",
       "id": "CY9H7BTJPxI"
+    },
+    {
+      "name": "anzil",
+      "email": "anzil@gmail.com",
+      "password": "a123123",
+      "role": "user",
+      "id": "baXcNS95iCQ"
+    },
+    {
+      "name": "rethin",
+      "email": "rethin@gmail.com",
+      "password": "r123123",
+      "role": "user",
+      "id": "w3hwPW0xeXc"
     }
   ],
   "orders": [
@@ -888,6 +902,96 @@
       "status": "placed",
       "createdAt": "2026-09-11T13:59:55.947Z",
       "id": "OhTK_WsZJl4"
+    },
+    {
+      "userId": "w3hwPW0xeXc",
+      "items": [
+        {
+          "id": "11",
+          "name": "BMW",
+          "price": 2098,
+          "image": "/images/bm1.jpg",
+          "stock": 8,
+          "quantity": 3
+        }
+      ],
+      "shippingAddress": {
+        "email": "adishadi7559@gmail",
+        "fullName": "Adish Cp",
+        "phone": "07559087713",
+        "addressLine1": "Near kallampara bridge",
+        "addressLine2": "Mannur valav",
+        "city": "Kozhikode",
+        "state": "Kerala",
+        "pincode": "673328"
+      },
+      "paymentMethod": "upi",
+      "subtotal": 6294,
+      "shipping": 0,
+      "total": 6294,
+      "status": "placed",
+      "createdAt": "2026-09-15T05:14:57.646Z",
+      "id": "66Tt6_oDU2c"
+    },
+    {
+      "userId": "w3hwPW0xeXc",
+      "items": [
+        {
+          "id": "2",
+          "name": "LC80",
+          "price": 21490,
+          "image": "/images/LC1.jpg",
+          "stock": 8,
+          "quantity": 1
+        }
+      ],
+      "shippingAddress": {
+        "email": "aswin@gmail.com",
+        "fullName": "Aswin",
+        "phone": "123456789",
+        "addressLine1": "asdadaa",
+        "addressLine2": "M.G. Nagar, Mathara",
+        "city": "Kozhikode",
+        "state": "Kerala",
+        "pincode": "673328"
+      },
+      "paymentMethod": "cod",
+      "subtotal": 21490,
+      "shipping": 0,
+      "total": 21490,
+      "status": "placed",
+      "createdAt": "2026-09-15T08:57:37.484Z",
+      "id": "xH-apVzx1v4"
+    },
+    {
+      "userId": "w3hwPW0xeXc",
+      "items": [
+        {
+          "id": "14",
+          "name": "Rocker",
+          "price": 557,
+          "image": "/images/apj1.webp",
+          "stock": 45,
+          "quantity": 1
+        }
+      ],
+      "shippingAddress": {
+        "email": "adishadi7559@gmail.com",
+        "fullName": "ADISH C P",
+        "phone": "09995017713",
+        "addressLine1": "Mannur Valav",
+        "addressLine2": "",
+        "city": "Kozhikode",
+        "state": "Kerala",
+        "pincode": "673328"
+      },
+      "paymentMethod": "upi",
+      "subtotal": 557,
+      "shipping": 0,
+      "total": 557,
+      "status": "placed",
+      "createdAt": "2026-09-15T08:58:05.251Z",
+      "id": "qQgEffL9_V0"
     }
   ],
   "carts": [
@@ -924,23 +1028,37 @@
       "userId": "CY9H7BTJPxI",
       "items": [
         {
-          "id": "2",
-          "name": "LC80",
-          "price": 21490,
-          "image": "/images/LC1.jpg",
-          "stock": 8,
-          "quantity": 2
-        },
-        {
           "id": "3",
           "name": "Panther",
           "price": 34990,
           "image": "/images/hn1.jpg",
           "stock": 8,
           "quantity": 8
+        },
+        {
+          "id": "2",
+          "name": "LC80",
+          "price": 21490,
+          "image": "/images/LC1.jpg",
+          "stock": 8,
+          "quantity": 8
         }
       ],
       "id": "4dOGk90M_UA"
+    },
+    {
+      "userId": "w3hwPW0xeXc",
+      "items": [
+        {
+          "id": "1",
+          "name": "ZP1005 RC Offroad Car",
+          "price": 14490,
+          "image": "/images/hb1.jpg",
+          "stock": 15,
+          "quantity": 1
+        }
+      ],
+      "id": "OI_hczexgWQ"
     }
   ],
   "wishlists": [
@@ -996,6 +1114,30 @@
         }
       ],
       "id": "OtjBLXq29Uc"
+    },
+    {
+      "userId": "w3hwPW0xeXc",
+      "items": [
+        {
+          "id": "11",
+          "name": "BMW",
+          "price": 2098,
+          "image": "/images/bm1.jpg"
+        },
+        {
+          "id": "15",
+          "name": "Porsche 911",
+          "price": 14760,
+          "image": "/images/por1.webp"
+        },
+        {
+          "id": "8",
+          "name": "Power Wagon RTR",
+          "price": 15490,
+          "image": "/images/RTR1.jpg"
+        }
+      ],
+      "id": "Q82c1V-40Vc"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

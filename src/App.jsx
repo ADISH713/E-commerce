@@ -1,28 +1,16 @@
 import React, { useEffect } from 'react';
-import Productlist from './pages/Productlist';
-import {BrowserRouter,Routes,Route,useLocation} from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import {BrowserRouter,useLocation} from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Home from './components/Home';
-import ProductDetail from './pages/ProductDetail';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUserById } from './services/userServices';
 import { setUser, logout } from './redux/slices/authSlice';
 import { getCartByUserId } from './services/cartServices';
 import {setCart,clearCartState} from './redux/slices/cartSlice';
-import Cart from './pages/Cart';
-import ProtectedRoute from './routes/ProtectedRoute';
-import Wishlist from './pages/Wishlist';
 import { getWishlistByUserId } from './services/wishlistServices';
 import {setWishlist,clearWishlistState} from './redux/slices/wishlistSlice';
-import Checkout from './pages/Checkout';
-import Orders from './pages/Orders';
-import About from './pages/About';
 import Footer from './components/Footer';
 import { Toaster } from 'react-hot-toast';
-import NotFound from './pages/NotFound';
-
+import AppRoutes from './routes/AppRoutes';
 
 function App() {
 
@@ -125,82 +113,9 @@ function App() {
         return (
             <>
                 {!hideNavbar && <Navbar />}
-
-                <Routes>
-
-                    <Route
-                        path="/"
-                        element={<Home />}
-                    />
-
-                    <Route
-                        path="/products"
-                        element={<Productlist />}
-                    />
-
-                    <Route
-                        path="/login"
-                        element={<Login />}
-                    />
-
-                    <Route
-                        path="/register"
-                        element={<Register />}
-                    />
-
-                    <Route
-                        path="/product/:id"
-                        element={<ProductDetail />}
-                    />
-
-                    <Route
-                        path="/cart"
-                        element={
-                            <ProtectedRoute>
-                                <Cart />
-                            </ProtectedRoute>
-                        }
-                    />
-
-                    <Route
-                        path="/orders"
-                        element={
-                            <ProtectedRoute>
-                                <Orders />
-                            </ProtectedRoute>
-                        }
-                    />
-
-                    <Route
-                        path="/wishlist"
-                        element={
-                            <ProtectedRoute>
-                                <Wishlist />
-                            </ProtectedRoute>
-                        }
-                    />
-
-                    <Route
-                        path="/checkout"
-                        element={
-                            <ProtectedRoute>
-                                <Checkout />
-                            </ProtectedRoute>
-                        }
-                    />
-
-                    <Route
-                        path="/about"
-                        element={<About />}
-                    />
-
-                    <Route
-                        path="*"
-                        element={<NotFound />}
-                    />
-
-                </Routes>
-
+                <div className="pt-[100px]">
+                    <AppRoutes />
+                </div>
                 {!hideNavbar && <Footer />}
             </>
         );

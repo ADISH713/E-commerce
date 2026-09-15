@@ -5,6 +5,7 @@ import { formatPrice } from '../utils/formatPrice';
 import { IconMinus, IconPlus, IconTrash } from '@tabler/icons-react';
 import { updateCart } from '../services/cartServices';
 import { setCart } from '../redux/slices/cartSlice';
+import Swal from 'sweetalert2';
 
 function Cart() {
     const dispatch = useDispatch();
@@ -50,6 +51,20 @@ function Cart() {
     };
 
     const removeItem = async (item) => {
+            const result = await Swal.fire({
+            title: 'Remove item?',
+            text: `Are you sure you want to remove ${item.name} from your cart?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Remove',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#ea580c',
+            cancelButtonColor: '#6b7280',
+            width: '400px',
+        });
+
+        if (!result.isConfirmed) return;
+
         const updatedItems = items.filter(
             (cartItem) => String(cartItem.id) !== String(item.id)
         );
@@ -57,6 +72,14 @@ function Cart() {
         try {
             const updatedCart = await updateCart(cartId, updatedItems);
             dispatch(setCart(updatedCart));
+
+            Swal.fire({
+            title: 'Removed!',
+            text: `${item.name} has been removed from your cart.`,
+            icon: 'success',
+            confirmButtonColor: '#ea580c',
+            });
+            
         } catch (error) {
             console.error('Failed to remove item:', error);
         }

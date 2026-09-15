@@ -16,6 +16,7 @@ import { clearWishlistState } from '../redux/slices/wishlistSlice';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useProducts } from '../hooks/useProducts';
+import Swal from 'sweetalert2';
 
 function Navbar() {
   const [searchParams] = useSearchParams();
@@ -49,6 +50,26 @@ function Navbar() {
   };
 
   const handleLogout = () => {
+    // const confirmed = window.confirm('Are you sure you want to logout?');
+
+    // if (!confirmed) {
+    //   return;
+    // }
+    Swal.fire({
+      title: "Are you sure ",
+      text : "You will be logged out of your account",
+      icon : "warning",
+      width : '400px',
+      padding:'1rem',
+      background:'#ffffff',
+      confirmButtonColor:'#ea580c',
+      cancelButtonColor:'#6b7280',
+      showCancelButton: true,
+      confirmButtonText: 'Logout',
+      cancelButtonText: 'cancel',
+    }).then((result)=>{
+      if(result.isConfirmed){
+
     dispatch(logout());
     dispatch(clearCartState());
     dispatch(clearWishlistState());
@@ -57,14 +78,16 @@ function Navbar() {
     setShowMobileMenu(false);
 
     toast.success('Logged out successfully');
+    }
+    });
   };
-
+    
   const closeMobileMenu = () => {
     setShowMobileMenu(false);
   };
 
   return (
-    <div>
+    <div className="fixed top-0 left-0 right-0 z-50 bg-white">
       {/*  UTILITY BAR  */}
       <div className="flex items-center justify-center px-4 py-2 bg-gray-50 text-lg sm:text-xl md:text-2xl text-orange-600 font-bold tracking-wider">
         TORQUE
