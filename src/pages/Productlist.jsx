@@ -1,39 +1,28 @@
 import React from 'react'
 import ProductCard from '../components/ProductCard';
-import {useNavigate, useSearchParams } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
-
+import { useProductFilters } from '../hooks/useProductFilters';
 
 function Productlist() {
-    const [searchParams] = useSearchParams();
-    const gradeFilter = searchParams.get('grade')
-    const categoryFilter = searchParams.get('category');
-    const searchFilter = searchParams.get('search');
-    const sortFilter = searchParams.get('sort');
-    const minPrice = searchParams.get('minPrice');
-    const maxPrice = searchParams.get('maxPrice');
     const navigate = useNavigate();
 
     const { data:products = [],isLoading,isError,error } = useProducts();
+
+    const {
+      filteredProducts,
+      gradeFilter,
+      categoryFilter,
+      searchFilter,
+      sortFilter,
+      minPrice,
+      maxPrice,
+      searchParams,
+    } = useProductFilters(products);
+
+    
     if(isLoading) return <p className='px-5 sm:px-8 lg:px-12 py-6'>Loading...</p>;
     if(isError) return <p className='px-5 sm:px-8 lg:px-12 py-6 text-red-600'>Error:{error.message}</p>
-
-    const filteredProducts = products.filter((product)=>{
-        const matchesGrade = gradeFilter ? product.grade === gradeFilter : true;
-        const matchesCategory = categoryFilter ? product.category === categoryFilter : true;
-        const matchesSearch = searchFilter ? product.name.toLowerCase().includes(searchFilter.toLowerCase()) : true;
-        const matchesMinPrice = minPrice ? product.price >= Number(minPrice) : true;
-        const matchesMaxPrice = maxPrice ? product.price <= Number(maxPrice) : true;
-        return matchesGrade && matchesCategory && matchesSearch && matchesMinPrice && matchesMaxPrice;
-        });
-        if (sortFilter === 'price-low') {
-        filteredProducts.sort((a, b) => a.price - b.price);
-        }
-
-        if (sortFilter === 'price-high') {
-        filteredProducts.sort((a, b) => b.price - a.price);
-        }
-
     return (
   <div className='px-5 sm:px-8 lg:px-12 py-6 sm:py-8'>
 

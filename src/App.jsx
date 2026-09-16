@@ -34,12 +34,14 @@ function App() {
             }
 
             getUserById(userId)
-                .then((fullUser) => {
-                    dispatch(setUser(fullUser));
-                })
-                .catch(() => {
+            .then((fullUser) => {
+                dispatch(setUser(fullUser));
+            })
+            .catch((err) => {
+                if (err.message === 'User not found') {
                     dispatch(logout());
-                });
+                }
+            });
 
         } catch {
             dispatch(logout());
@@ -90,10 +92,12 @@ function App() {
     function AppContent() {
 
         const location = useLocation();
+        const showNavbar = !['/login', '/register'].includes(location.pathname) && !location.pathname.startsWith('/admin');
 
         const hideNavbar =
             location.pathname === '/login' ||
             location.pathname === '/register' ||
+            location.pathname.startsWith('/admin') ||
             (
                 ![
                     '/',
@@ -113,7 +117,7 @@ function App() {
         return (
             <>
                 {!hideNavbar && <Navbar />}
-                <div className="pt-[100px]">
+                <div className={showNavbar ? "pt-[100px]" : ""}>
                     <AppRoutes />
                 </div>
                 {!hideNavbar && <Footer />}

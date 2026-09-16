@@ -1,9 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { registerUser } from '../services/userServices'
 import { Link } from 'react-router-dom'
 import { IconEye, IconEyeOff } from '@tabler/icons-react'
+import { useSelector } from 'react-redux';
 
 function Register() {
     const [name,setName] = useState('')
@@ -13,8 +14,17 @@ function Register() {
     const [validationError, setValidationError] = useState('');
     const [showPassword,setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
     const navigate = useNavigate()
+    
+    useEffect(() => {
+      if (isAuthenticated) {
+        navigate('/', { replace: true });
+      }
+    }, [isAuthenticated, navigate]);
+
+
     const {mutate,isPending,isError,error} = useMutation({
         mutationFn :(userData)=>registerUser(userData),
         onSuccess:()=>{;

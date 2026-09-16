@@ -15,15 +15,15 @@ export const loginUser = async (email, password) => {
 };
 
 export const getUserById = async (userId) => {
-    const { data } = await axios.get(
-        `${API_URL}?id=${userId}`
-    );
-
-    if (data.length === 0) {
-        throw new Error('User not found');
+    try {
+        const { data } = await axios.get(`${API_URL}/${userId}`);
+        return data;
+    } catch (err) {
+        if (err.response?.status === 404) {
+            throw new Error('User not found');
+        }
+        throw err;
     }
-
-    return data[0];
 };
 
 

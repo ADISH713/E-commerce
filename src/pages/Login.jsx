@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
-import {useDispatch} from 'react-redux';
+import React, {  useEffect,useState } from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import {useMutation} from '@tanstack/react-query'
 import { setUser } from '../redux/slices/authSlice';
 import {loginUser} from '../services/userServices'
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
-
+import { useSelector, useDispatch } from 'react-redux';
 
 function Login() {
     const [email,setEmail] = useState('');
@@ -14,13 +13,45 @@ function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const {user,isAuthenticated} = useSelector((state) => state.auth);
+
+    // useEffect(() => {
+    //   if (isAuthenticated) {
+    //     const user = JSON.parse(localStorage.getItem('user'));
+        
+    //     if(user?.role === 'admin'){
+    //       navigate('/admin',{ replace: true });
+    //     }
+    //     else{
+    //     navigate('/', { replace: true });
+    //     }
+    //   }
+    // }, [isAuthenticated,user, navigate]);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            if (user?.role === 'admin') {
+                navigate('/admin', { replace: true });
+            } else {
+                navigate('/', { replace: true });
+            }
+        }
+    }, [isAuthenticated, user, navigate]);
+
     const{mutate,isPending,isError,error} = useMutation({
         mutationFn :()=>loginUser(email,password),
+
         onSuccess:  (user) => {
         dispatch(setUser(user));
-        navigate('/', { replace: true});
+
+        if(user.role === 'admin'){
+          navigate('/admin',{ replace : true});
         }
-        });
+        else{
+          navigate('/', { replace: true});
+        }
+      }
+    });
 
     const handleSubmit = (e)=>{
         e.preventDefault();

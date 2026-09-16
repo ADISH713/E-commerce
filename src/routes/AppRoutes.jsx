@@ -12,12 +12,42 @@ import Wishlist from '../pages/Wishlist';
 import Checkout from '../pages/Checkout';
 import About from '../pages/About';
 import NotFound from '../pages/NotFound';
-
+import AdminProtectedRoute from './AdminProtectedRoute';
 import ProtectedRoute from './ProtectedRoute';
+import AdminLayout from '../admin/AdminLayout';
+import AdminProducts from '../admin/pages/AdminProducts';
 
 function AppRoutes() {
   return (
     <Routes>
+      <Route
+        path="/admin"
+        element={
+            <AdminProtectedRoute>
+                <AdminLayout />
+            </AdminProtectedRoute>
+        }
+    >
+        <Route
+            index
+            element={<h2>Admin Dashboard</h2>}
+        />
+
+        <Route
+            path="products"
+            element={<AdminProducts />}
+        />
+
+        <Route
+            path="users"
+            element={<h2>Admin Users</h2>}
+        />
+
+        <Route
+            path="orders"
+            element={<h2>Admin Orders</h2>}
+        />
+    </Route>
 
       <Route
         path="/"
