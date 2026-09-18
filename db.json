@@ -6,7 +6,7 @@
       "category": "Off-Road Buggy",
       "brand": "HB Toy",
       "price": 14490,
-      "stock": 15,
+      "stock": 16,
       "images": [
         "/images/hb1.jpg",
         "/images/hb2.jpg",
@@ -373,7 +373,19 @@
       },
       "rating": 4.9,
       "reviewsCount": 58,
-      "grade": "hobby"
+      "grade": "hobby",
+      "deleted": false
+    },
+    {
+      "name": "Test RC Car",
+      "category": "Drift car",
+      "price": 18000,
+      "stock": 5,
+      "images": [
+        "/images/LC1.jpg"
+      ],
+      "id": "eJWGmo1nhDo",
+      "deleted": true
     }
   ],
   "users": [
@@ -389,63 +401,72 @@
       "name": "Test User",
       "email": "user@example.com",
       "password": "user123",
-      "role": "user"
+      "role": "user",
+      "blocked": false
     },
     {
       "name": "rashik",
       "email": "rashik@gmail.com",
       "password": "rashi123",
       "role": "user",
-      "id": "9sQCVARKYnI"
+      "id": "9sQCVARKYnI",
+      "blocked": false
     },
     {
       "name": "Aswin",
       "email": "aswin@gmail.com",
       "password": "aswin0000",
       "role": "user",
-      "id": "jmnd2An9eXA"
+      "id": "jmnd2An9eXA",
+      "blocked": false
     },
     {
       "name": "Athira",
       "email": "athira@gmail.com",
       "password": "athira0000",
       "role": "user",
-      "id": "kWMSNQzVRhc"
+      "id": "kWMSNQzVRhc",
+      "blocked": false
     },
     {
       "name": "Mufeeda",
       "email": "mufeeda@gmail.com",
       "password": "mufu0000",
       "role": "user",
-      "id": "pp8WE9pCJOk"
+      "id": "pp8WE9pCJOk",
+      "blocked": false
     },
     {
       "name": "Fida",
       "email": "fida@gmail.com",
       "password": "fideyyy",
       "role": "user",
-      "id": "4SDp3LzUMO8"
+      "id": "4SDp3LzUMO8",
+      "blocked": false
     },
     {
       "name": "Rizal",
       "email": "rizal@gmail.com",
       "password": "r123123",
       "role": "user",
-      "id": "CY9H7BTJPxI"
+      "id": "CY9H7BTJPxI",
+      "blocked": false
     },
     {
       "name": "anzil",
       "email": "anzil@gmail.com",
       "password": "a123123",
       "role": "user",
-      "id": "baXcNS95iCQ"
+      "id": "baXcNS95iCQ",
+      "blocked": false
     },
     {
       "name": "rethin",
       "email": "rethin@gmail.com",
       "password": "r123123",
       "role": "user",
-      "id": "w3hwPW0xeXc"
+      "id": "w3hwPW0xeXc",
+      "blocked": false
     }
   ],
   "orders": [
@@ -1059,6 +1080,11 @@
         }
       ],
       "id": "OI_hczexgWQ"
+    },
+    {
+      "userId": "1",
+      "items": [],
+      "id": "_CdWnLy4u34"
     }
   ],
   "wishlists": [
@@ -1138,6 +1164,11 @@
         }
       ],
       "id": "Q82c1V-40Vc"
+    },
+    {
+      "userId": "1",
+      "items": [],
+      "id": "pXZN5M_lDQk"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

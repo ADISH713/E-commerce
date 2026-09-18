@@ -16,3 +16,21 @@ export const createProduct = async (product) => {
     const { data } = await axios.post(API_URL, product);
     return data;
 };
+
+export const updateProduct = async (id, product) => {
+    const { data } = await axios.patch(`${API_URL}/${id}`,product);
+    return data;
+};
+
+export const softDeleteProduct = async (id) => {
+    const { data } = await axios.patch(
+        `${API_URL}/${id}`,
+        { deleted: true }
+    );
+
+    return data;
+};
+
+export const permanentlyDeleteProduct = async (id) => {
+    await axios.delete(`${API_URL}/${id}`);
+};

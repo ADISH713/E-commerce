@@ -13,47 +13,52 @@ export const useProductFilters = (products) => {
 
   const filteredProducts = useMemo(() => {
     const result = products.filter((product) => {
-      const matchesGrade = gradeFilter
-        ? product.grade === gradeFilter
-        : true;
 
-      const matchesCategory = categoryFilter
-        ? product.category === categoryFilter
-        : true;
+        if (product.deleted) {
+            return false;
+        }
 
-      const matchesSearch = searchFilter
-        ? product.name
-            .toLowerCase()
-            .includes(searchFilter.toLowerCase())
-        : true;
+        const matchesGrade = gradeFilter
+            ? product.grade === gradeFilter
+            : true;
 
-      const matchesMinPrice = minPrice
-        ? product.price >= Number(minPrice)
-        : true;
+        const matchesCategory = categoryFilter
+            ? product.category === categoryFilter
+            : true;
 
-      const matchesMaxPrice = maxPrice
-        ? product.price <= Number(maxPrice)
-        : true;
+        const matchesSearch = searchFilter
+            ? product.name
+                .toLowerCase()
+                .includes(searchFilter.toLowerCase())
+            : true;
 
-      return (
-        matchesGrade &&
-        matchesCategory &&
-        matchesSearch &&
-        matchesMinPrice &&
-        matchesMaxPrice
-      );
+        const matchesMinPrice = minPrice
+            ? product.price >= Number(minPrice)
+            : true;
+
+        const matchesMaxPrice = maxPrice
+            ? product.price <= Number(maxPrice)
+            : true;
+
+        return (
+            matchesGrade &&
+            matchesCategory &&
+            matchesSearch &&
+            matchesMinPrice &&
+            matchesMaxPrice
+        );
     });
 
     if (sortFilter === "price-low") {
-      result.sort((a, b) => a.price - b.price);
+        result.sort((a, b) => a.price - b.price);
     }
 
     if (sortFilter === "price-high") {
-      result.sort((a, b) => b.price - a.price);
+        result.sort((a, b) => b.price - a.price);
     }
 
     return result;
-  }, [
+}, [
     products,
     gradeFilter,
     categoryFilter,
@@ -61,8 +66,7 @@ export const useProductFilters = (products) => {
     sortFilter,
     minPrice,
     maxPrice,
-  ]);
-
+]);
   return {
     filteredProducts,
     gradeFilter,

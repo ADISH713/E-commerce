@@ -43,6 +43,31 @@ const productSlice = createSlice({
         setError: (state, action) => {
             state.error = action.payload;
         },
+        softDeleteProduct: (state, action) => {
+            const product = state.items.find(
+                (product) =>
+                    String(product.id) === String(action.payload)
+            );
+
+            if (product) {
+                product.deleted = true;
+            }
+        },
+        deleteProduct: (state, action) => {
+            state.items = state.items.filter(
+                (product) =>
+                    String(product.id) !== String(action.payload)
+            );
+        },
+        restoreProduct: (state, action) => {
+            const product = state.items.find(
+                (product) => String(product.id) === String(action.payload)
+            );
+
+            if (product) {
+                product.deleted = false;
+            }
+        },
     },
 });
 
@@ -51,6 +76,8 @@ export const {
     addProduct,
     updateProduct,
     deleteProduct,
+    softDeleteProduct,
+    restoreProduct,
     setLoading,
     setError,
 } = productSlice.actions;

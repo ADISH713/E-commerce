@@ -1,11 +1,43 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { createProduct } from '../../services/productServices';
+import { addProduct } from '../../redux/slices/productSlice';
+import { useNavigate } from 'react-router-dom';
 
 function AddProduct() {
     const [name, setName] = useState('');
     const [category, setCategory] = useState('');
     const [price, setPrice] = useState('');
     const [stock, setStock] = useState('');
+    const [images, setImages] = useState(['', '', '', '']);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const validImages = images.filter(
+            (image) => image.trim() !== ''
+        );
+
+        const newProduct = {
+            name,
+            category,
+            price: Number(price),
+            stock: Number(stock),
+            images: validImages,
+        };
+
+        try {
+            const createdProduct = await createProduct(newProduct);
+
+            dispatch(addProduct(createdProduct));
+            navigate('/admin/products');
+            console.log(createdProduct);
+        } catch (error) {
+            console.error(error);
+        }
+    };
     return (
         <div>
             <h2 className="text-2xl font-bold mb-6">
@@ -74,7 +106,31 @@ function AddProduct() {
                     />
                 </div>
 
+                {/* Product Image */}
+                <div className="mb-4">
+                    <label className="block mb-2 font-medium">
+                        Product Images
+                    </label>
+
+                    {images.map((image, index) => (
+                        <input
+                            key={index}
+                            type="text"
+                            value={image}
+                            onChange={(e) => {
+                                const updatedImages = [...images];
+                                updatedImages[index] = e.target.value;
+                                setImages(updatedImages);
+                            }}
+                            className="w-full border rounded-lg px-4 py-2 mb-2"
+                            placeholder={`/images/image${index + 1}.jpg`}
+                        />
+                    ))}
+                </div>
+
                 <button
+                    type="button"
+                    onClick={handleSubmit}
                     className="bg-orange-600 text-white px-5 py-2 rounded-lg"
                 >
                     Add Product

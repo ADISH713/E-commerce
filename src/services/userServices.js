@@ -11,7 +11,13 @@ export const loginUser = async (email, password) => {
         throw new Error('Invalid email or password');
     }
 
-    return data[0];
+    const user = data[0];
+
+    if (user.blocked) {
+        throw new Error('Your account has been blocked.');
+    }
+
+    return user;
 };
 
 export const getUserById = async (userId) => {
@@ -26,6 +32,18 @@ export const getUserById = async (userId) => {
     }
 };
 
+export const getUsers = async () => {
+    const { data } = await axios.get(API_URL);
+    return data;
+};
+
+export const updateUser = async (id, user) => {
+    const { data } = await axios.patch(
+        `${API_URL}/${id}`,
+        user
+    );
+    return data;
+};
 
 export const registerUser = async (newUser) => {
     const { data: existing } = await axios.get(`${API_URL}?email=${newUser.email}`);
