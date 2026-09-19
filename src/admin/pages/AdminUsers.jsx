@@ -1,16 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    setUsers,
-    setLoading,
-    setError,
-    blockUser,
-    unblockUser,
-} from '../../redux/slices/userSlice';    
-import {
-    getUsers,
-    updateUser,
-} from '../../services/userServices';
+import { blockUser, unblockUser,} from '../../redux/slices/userSlice';    
+import { updateUser,} from '../../services/userServices';
 
 function AdminUsers() {
     const dispatch = useDispatch();
@@ -21,23 +12,7 @@ function AdminUsers() {
         error,
     } = useSelector((state) => state.users);
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                dispatch(setLoading(true));
-
-                const data = await getUsers();
-
-                dispatch(setUsers(data));
-            } catch (error) {
-                dispatch(setError(error.message));
-            } finally {
-                dispatch(setLoading(false));
-            }
-        };
-
-        fetchUsers();
-    }, [dispatch]);
+    
 
     const handleBlock = async (userId) => {
         try {

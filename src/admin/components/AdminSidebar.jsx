@@ -32,9 +32,10 @@ function AdminSidebar() {
     ];
 
     return (
-        <aside className="w-64 min-h-screen bg-black text-white p-5">
-            <h1 className="text-2xl font-bold text-orange-500 mb-8">
-                TORQUE
+        <aside className="w-20 md:w-64 min-h-screen bg-black text-white p-3 md:p-5 shrink-0">
+            <h1 className="text-xl md:text-2xl font-bold text-orange-500 mb-8 text-center md:text-left">
+                <span className="md:hidden">T</span>
+                <span className="hidden md:inline">TORQUE</span>
             </h1>
 
             <nav className="space-y-2">
@@ -52,7 +53,9 @@ function AdminSidebar() {
                         }
                     >
                         {link.icon}
-                        <span>{link.name}</span>
+                        <span className="hidden md:inline">
+                            {link.name}
+                        </span>
                     </NavLink>
                 ))}
             </nav>

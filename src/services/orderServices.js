@@ -13,3 +13,7 @@ export const getOrdersByUserId = async (userId) => {
     (order) => String(order.userId) === String(userId)
   );
 };
+export const getAllOrders = async () => {
+    const { data } = await axios.get(API_URL);
+    return data;
+};

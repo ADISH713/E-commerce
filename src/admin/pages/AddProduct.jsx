@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 function AddProduct() {
     const [name, setName] = useState('');
     const [category, setCategory] = useState('');
+    const [customCategory, setCustomCategory] = useState('');
+    const [grade, setGrade] = useState('');
     const [price, setPrice] = useState('');
     const [stock, setStock] = useState('');
     const [images, setImages] = useState(['', '', '', '']);
@@ -22,7 +24,8 @@ function AddProduct() {
 
         const newProduct = {
             name,
-            category,
+            category: category === 'Other' ? customCategory : category,
+            grade,
             price: Number(price),
             stock: Number(stock),
             images: validImages,
@@ -67,13 +70,45 @@ function AddProduct() {
                         Category
                     </label>
 
-                    <input
-                        type="text"
+                    <select
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
                         className="w-full border rounded-lg px-4 py-2"
-                        placeholder="Enter category"
-                    />
+                    >
+                        <option value="">Select category</option>
+                        <option value="Off-Road Buggy">Off-Road Buggy</option>
+                        <option value="Drift Car">Drift Car</option>
+                        <option value="Monster Truck">Monster Truck</option>
+                        <option value="Rock Crawler">Rock Crawler</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    {category === 'Other' && (
+                        <input
+                            type="text"
+                            value={customCategory}
+                            onChange={(e) => setCustomCategory(e.target.value)}
+                            className="w-full border rounded-lg px-4 py-2 mt-2"
+                            placeholder="Enter custom category"
+                        />
+                    )}
+                </div>
+                    
+                    {/* Grade */}
+                <div className="mb-4">
+                    <label className="block mb-2 font-medium">
+                        Grade
+                    </label>
+
+                    <select
+                        value={grade}
+                        onChange={(e) => setGrade(e.target.value)}
+                        className="w-full border rounded-lg px-4 py-2"
+                    >
+                        <option value="">Select grade</option>
+                        <option value="toy">Toy</option>
+                        <option value="hobby">Hobby</option>
+                    </select>
                 </div>
 
                 {/* Price */}

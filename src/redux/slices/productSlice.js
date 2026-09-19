@@ -30,12 +30,6 @@ const productSlice = createSlice({
             }
         },
 
-        deleteProduct: (state, action) => {
-            state.items = state.items.filter(
-                (product) => String(product.id) !== String(action.payload)
-            );
-        },
-
         setLoading: (state, action) => {
             state.isLoading = action.payload;
         },

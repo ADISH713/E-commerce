@@ -1,8 +1,11 @@
-import React, { useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProducts } from '../../services/productServices';
-import {softDeleteProduct,permanentlyDeleteProduct,updateProduct as updateProductService,} from '../../services/productServices';
+import {
+    softDeleteProduct,
+    permanentlyDeleteProduct,
+    updateProduct as updateProductService,
+} from '../../services/productServices';
 import {setProducts,setLoading,setError,softDeleteProduct as softDeleteProductAction,deleteProduct, restoreProduct as restoreProductAction,updateProduct as updateProductAction,} from '../../redux/slices/productSlice';
 
 function AdminProducts() {
@@ -33,23 +36,6 @@ function AdminProducts() {
     );
 
     
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                dispatch(setLoading(true));
-
-                const data = await getProducts();
-
-                dispatch(setProducts(data));
-            } catch (error) {
-                dispatch(setError(error.message));
-            } finally {
-                dispatch(setLoading(false));
-            }
-        };
-
-        fetchProducts();
-    }, [dispatch]);
 
     if (isLoading) {
         return <p>Loading products...</p>;

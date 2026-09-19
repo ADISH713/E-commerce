@@ -19,6 +19,8 @@ import AdminProducts from '../admin/pages/AdminProducts';
 import AddProduct from '../admin/pages/AddProduct';
 import EditProduct from '../admin/pages/EditProduct';
 import AdminUsers from '../admin/pages/AdminUsers';
+import AdminOrders from '../admin/pages/AdminOrders';
+import AdminDashboard from '../admin/pages/AdminDashboard';
 
 function AppRoutes() {
   return (
@@ -31,10 +33,7 @@ function AppRoutes() {
             </AdminProtectedRoute>
         }
     >
-        <Route
-            index
-            element={<h2>Admin Dashboard</h2>}
-        />
+        <Route index element={<AdminDashboard />} />
 
         <Route
             path="products"
@@ -50,17 +49,15 @@ function AppRoutes() {
               
         <Route path="users" element={<AdminUsers />} />
 
-        <Route
-            path="orders"
-            element={<h2>Admin Orders</h2>}
-        />
-    </Route>
+      
+      <Route path="orders" element={<AdminOrders />} />
+      </Route>
 
-      <Route
+        <Route
         path="/"
         element={<Home />}
       />
-
+      
       <Route
         path="/products"
         element={<Productlist />}
