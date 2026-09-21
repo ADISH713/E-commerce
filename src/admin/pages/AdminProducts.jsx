@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -7,33 +7,33 @@ import {
     updateProduct as updateProductService,
 } from '../../services/productServices';
 import {setProducts,setLoading,setError,softDeleteProduct as softDeleteProductAction,deleteProduct, restoreProduct as restoreProductAction,updateProduct as updateProductAction,} from '../../redux/slices/productSlice';
+import Swal from 'sweetalert2';
+import { usePagination } from '../../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 function AdminProducts() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 5;
+
 
     const {items: products,isLoading,error,} = useSelector((state) => state.products);
 
     const activeProducts = products.filter(
         (product) => !product.deleted
-    );
+        );
+        const {
+        currentPage,
+        totalPages,
+        paginatedItems: paginatedProducts,
+        goToPage,
+        nextPage,
+        previousPage,
+    } = usePagination(activeProducts, 5);
 
     const deletedProducts = products.filter(
         (product) => product.deleted
     );
 
-    const totalPages = Math.ceil(
-        activeProducts.length / productsPerPage
-    );
-
-    const startIndex = (currentPage - 1) * productsPerPage;
-
-    const paginatedProducts = activeProducts.slice(
-        startIndex,
-        startIndex + productsPerPage
-    );
 
     
 
@@ -44,33 +44,79 @@ function AdminProducts() {
     if (error) {
         return <p className="text-red-500">{error}</p>;
     }
-    const handleSoftDelete = async (productId) => {
-        try {
-            const updatedProduct = await softDeleteProduct(productId);
+   
+    const handleDelete = async (product) => {
+        const result = await Swal.fire({
+            title: 'Delete Product',
+            text: 'How do you want to delete this product?',
+            icon: 'warning',
+            showCancelButton: true,
+            showDenyButton: true,
 
-            dispatch(softDeleteProductAction(updatedProduct.id));
-        } catch (error) {
-            console.error(error);
+            confirmButtonText: 'Soft Delete',
+            denyButtonText: 'Permanent Delete',
+            cancelButtonText: 'Cancel',
+
+            confirmButtonColor: '#f97316',
+            denyButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+        });
+
+        if (result.isConfirmed) {
+            // Soft delete
+            try {
+                const updatedProduct = await softDeleteProduct(product.id);
+
+                dispatch(
+                    softDeleteProductAction(updatedProduct.id)
+                );
+
+                Swal.fire({
+                    title: 'Deleted',
+                    text: 'Product moved to trash.',
+                    icon: 'success',
+                    confirmButtonColor: '#f97316',
+                });
+            } catch (error) {
+                console.error('Failed to soft delete product:', error);
+            }
+        }
+
+        if (result.isDenied) {
+            // Permanent delete
+            const confirmPermanent = await Swal.fire({
+                title: 'Permanently delete?',
+                text: 'This product cannot be recovered after permanent deletion.',
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete permanently',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#dc2626',
+            });
+
+            if (!confirmPermanent.isConfirmed) return;
+
+            try {
+                await permanentlyDeleteProduct(product.id);
+
+                dispatch(deleteProduct(product.id));
+
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Product permanently deleted.',
+                    icon: 'success',
+                    confirmButtonColor: '#f97316',
+                });
+            } catch (error) {
+                console.error(
+                    'Failed to permanently delete product:',
+                    error
+                );
+            }
         }
     };
+    
 
-    const handlePermanentDelete = async (productId) => {
-        const confirmed = window.confirm(
-            'Are you sure you want to permanently delete this product?'
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            await permanentlyDeleteProduct(productId);
-
-            dispatch(deleteProduct(productId));
-        } catch (error) {
-            console.error(error);
-        }
-    };
    const handleRestore = async (productId) => {
     try {
         const restoredProduct = await updateProductService(
@@ -83,7 +129,39 @@ function AdminProducts() {
         console.error(error);
     }
 };
-    return (
+const handlePermanentDelete = async (productId) => {
+    const result = await Swal.fire({
+        title: 'Permanently delete?',
+        text: 'This product cannot be recovered after permanent deletion.',
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete permanently',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#dc2626',
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+        await permanentlyDeleteProduct(productId);
+
+        dispatch(deleteProduct(productId));
+
+        Swal.fire({
+            title: 'Deleted!',
+            text: 'Product permanently deleted.',
+            icon: 'success',
+            confirmButtonColor: '#f97316',
+        });
+    } catch (error) {
+        console.error(
+            'Failed to permanently delete product:',
+            error
+        );
+    }
+};
+   
+return (
         <div>
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">
@@ -148,17 +226,12 @@ function AdminProducts() {
                                     </button>
 
                                     <button
-                                        onClick={() => handleSoftDelete(product.id)}
-                                        className="text-red-600"
+                                        onClick={() => handleDelete(product)}
+                                        className="text-red-500 hover:text-red-700 transition"
                                     >
-                                       Soft Delete
+                                        Delete
                                     </button>
-                                    <button
-                                        onClick={() => handlePermanentDelete(product.id)}
-                                        className="text-red-600"
-                                    >
-                                        Permanent Delete
-                                    </button>
+
                                 </td>
                             </tr>
                         ))}
@@ -166,45 +239,14 @@ function AdminProducts() {
                 </table>
                 
             </div>
-            {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-6">
-
-            <button
-                onClick={() =>
-                    setCurrentPage((page) => page - 1)
-                }
-                disabled={currentPage === 1}
-                className="px-3 py-2 border rounded disabled:opacity-50"
-            >
-                Previous
-            </button>
-
-            {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                    key={index}
-                    onClick={() => setCurrentPage(index + 1)}
-                    className={`px-3 py-2 border rounded ${
-                        currentPage === index + 1
-                            ? "bg-orange-600 text-white"
-                            : ""
-                    }`}
-                >
-                    {index + 1}
-                </button>
-            ))}
-
-            <button
-                onClick={() =>
-                    setCurrentPage((page) => page + 1)
-                }
-                disabled={currentPage === totalPages}
-                className="px-3 py-2 border rounded disabled:opacity-50"
-            >
-                Next
-            </button>
-
-        </div>
-    )}
+            
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                goToPage={goToPage}
+                nextPage={nextPage}
+                previousPage={previousPage}
+            />
 
             {/* Trash */}
 <div className="mt-10">

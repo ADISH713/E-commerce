@@ -11,7 +11,7 @@ function Register() {
     const [email,setEmail] = useState('')
     const [password,setPassword] = useState('')
     const[cpassword,setCpassword] = useState('')
-    const [validationError, setValidationError] = useState('');
+    const [errors, setErrors] = useState({name: '',email: '',password: '',cpassword: '',});
     const [showPassword,setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -31,43 +31,63 @@ function Register() {
             navigate('/login',{ replace: true });
         },
     });
-
+    
     const handleSubmit = (e) => {
-  e.preventDefault();
+      e.preventDefault();
 
-  const trimmedName = name.trim();
-  const trimmedEmail = email.trim();
+      const trimmedName = name.trim();
+      const trimmedEmail = email.trim();
 
-  if (!trimmedName) {
-    setValidationError('Name cannot be empty');
-    return;
-  }
+      const newErrors = {
+          name: '',
+          email: '',
+          password: '',
+          cpassword: '',
+      };
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(trimmedEmail)) {
-    setValidationError('Please enter a valid email address');
-    return;
-  }
+      if (!trimmedName) {
+          newErrors.name = 'Name cannot be empty';
+      }
 
-  if (password.length < 6) {
-    setValidationError('Password must be at least 6 characters');
-    return;
-  }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (/^\d+$/.test(password)) {
-      setValidationError('Password cannot contain only numbers');
-      return;
-  }
+      if (!trimmedEmail) {
+          newErrors.email = 'Email is required';
+      } else if (!emailRegex.test(trimmedEmail)) {
+          newErrors.email = 'Please enter a valid email address';
+      }
 
+      if (!password) {
+          newErrors.password = 'Password is required';
+      } else if (password.length < 6) {
+          newErrors.password = 'Password must be at least 6 characters';
+      } else if (/^\d+$/.test(password)) {
+          newErrors.password = 'Password cannot contain only numbers';
+      }
 
-  if (password !== cpassword) {
-    setValidationError('Passwords do not match');
-    return;
-  }
+      if (!cpassword) {
+          newErrors.cpassword = 'Please confirm your password';
+      } else if (password !== cpassword) {
+          newErrors.cpassword = 'Passwords do not match';
+      }
 
-  setValidationError('');
-  mutate({ name: trimmedName, email: trimmedEmail, password });
-};
+      setErrors(newErrors);
+
+      const hasErrors = Object.values(newErrors).some(
+          (error) => error !== ''
+      );
+
+      if (hasErrors) {
+          return;
+      }
+
+      mutate({
+          name: trimmedName,
+          email: trimmedEmail,
+          password,
+      });
+  };
+
   return (
   <div
     className="min-h-screen flex items-center justify-start p-8 md:p-16 bg-cover bg-center"
@@ -94,10 +114,26 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             type="text"
             placeholder="Enter your name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+                setName(e.target.value);
+                setErrors((prev) => ({
+                    ...prev,
+                    name: '',
+                }));
+            }}
             required
-            className="w-full placeholder-gray-300 bg-white/10 border border-white/20 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-orange-400 text-white"
+           className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2 text-sm focus:outline-none text-white ${
+            errors.name
+                ? 'border-red-500 focus:border-red-500'
+                : 'border-white/20 focus:border-orange-400'}`}
           />
+
+          {errors.name && (
+            <p className="text-red-400 text-xs mt-1">
+                {errors.name}
+            </p>
+        )}
+
         </div>
 
         <div>
@@ -109,10 +145,25 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             type="email"
             placeholder="Enter your email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+                setEmail(e.target.value);
+                setErrors((prev) => ({
+                    ...prev,
+                    email: '',
+                }));
+            }}
             required
-            className="w-full placeholder-gray-300 bg-white/10 border border-white/20 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-orange-400 text-white"
+            className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2 text-sm focus:outline-none text-white ${
+                errors.email
+                    ? 'border-red-500 focus:border-red-500'
+                    : 'border-white/20 focus:border-orange-400'
+            }`}
           />
+          {errors.email && (
+              <p className="text-red-400 text-xs mt-1">
+                  {errors.email}
+              </p>
+          )}
         </div>
 
         <div>
@@ -124,9 +175,19 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             type={showPassword ? "text" : "password"}
             placeholder="Enter your password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+                setPassword(e.target.value);
+                setErrors((prev) => ({
+                    ...prev,
+                    password: '',
+                }));
+            }}
             required
-            className="w-full placeholder-gray-300 bg-white/10 border border-white/20 rounded-md px-3 py-2 pr-10 text-sm focus:outline-none focus:border-orange-400 text-white"
+            className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2 pr-10 text-sm focus:outline-none text-white ${
+                errors.password
+                    ? 'border-red-500 focus:border-red-500'
+                    : 'border-white/20 focus:border-orange-400'
+            }`}
           />
           <button
             type="button"
@@ -137,6 +198,11 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           </button>
 
         </div>
+        {errors.password && (
+            <p className="text-red-400 text-xs mt-1">
+                {errors.password}
+            </p>
+        )}
         </div>
 
         <div>
@@ -148,9 +214,19 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             type={showConfirmPassword ? "text" : "password"}
             placeholder="Confirm your password"
             value={cpassword}
-            onChange={(e) => setCpassword(e.target.value)}
+            onChange={(e) => {
+                setCpassword(e.target.value);
+                setErrors((prev) => ({
+                    ...prev,
+                    cpassword: '',
+                }));
+            }}
             required
-            className="w-full placeholder-gray-300 bg-white/10 border border-white/20 rounded-md px-3 py-2 pr-10 text-sm focus:outline-none focus:border-orange-400 text-white"
+            className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2 pr-10 text-sm focus:outline-none text-white ${
+                errors.cpassword
+                    ? 'border-red-500 focus:border-red-500'
+                    : 'border-white/20 focus:border-orange-400'
+            }`}
           />
           <button
             type="button"
@@ -160,17 +236,16 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             {showConfirmPassword ? <IconEye/> : <IconEyeOff/>}
           </button>
           </div>
+          {errors.cpassword && (
+            <p className="text-red-400 text-xs mt-1">
+                {errors.cpassword}
+            </p>
+        )}
         </div>
 
         {isError && (
           <p className="text-red-400 text-xs mt-3">
             {error.message}
-          </p>
-        )}
-
-        {validationError && (
-          <p className="text-red-400 text-xs mt-3">
-            {validationError}
           </p>
         )}
 

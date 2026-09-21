@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
+import Pagination from '../components/Pagination';
+import { usePagination } from '../../hooks/usePagination';
 import { useSelector } from 'react-redux';
 
 function AdminOrders() {
     const [selectedOrder, setSelectedOrder] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const ordersPerPage = 5;
-
-    const {
-        items: orders,
-        isLoading,
-        error,
-    } = useSelector((state) => state.orders);
-
-    const totalPages = Math.ceil(orders.length / ordersPerPage);
-
-    const startIndex = (currentPage - 1) * ordersPerPage;
-
-    const paginatedOrders = orders.slice(startIndex,startIndex + ordersPerPage);
+      const {items: orders,isLoading,error,} = useSelector((state) => state.orders);
+        const {
+        currentPage,
+        totalPages,
+        paginatedItems: paginatedOrders,
+        goToPage,
+        nextPage,
+        previousPage,
+    } = usePagination(orders, 5);
 
     if (isLoading) {
         return <p>Loading orders...</p>;
@@ -89,29 +86,13 @@ function AdminOrders() {
                 </div>
             )}
 
-            <div className="flex items-center justify-center gap-4 mt-6">
-                <button
-                    onClick={() => setCurrentPage((page) => page - 1)}
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-                >
-                    Previous
-                </button>
-
-                <span className="text-sm">
-                    Page {currentPage} of {totalPages}
-                </span>
-
-                <button
-                    onClick={() => setCurrentPage((page) => page + 1)}
-                    disabled={currentPage === totalPages}
-                    className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-                >
-                    Next
-                </button>
-            </div>
-
-
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                goToPage={goToPage}
+                nextPage={nextPage}
+                previousPage={previousPage}
+            />
 
             {selectedOrder && (
         <div className="mt-6 bg-white rounded-lg shadow p-6">

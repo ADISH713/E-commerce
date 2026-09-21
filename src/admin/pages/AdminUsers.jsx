@@ -2,6 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { blockUser, unblockUser,} from '../../redux/slices/userSlice';    
 import { updateUser,} from '../../services/userServices';
+import { usePagination } from '../../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 function AdminUsers() {
     const dispatch = useDispatch();
@@ -12,8 +14,19 @@ function AdminUsers() {
         error,
     } = useSelector((state) => state.users);
 
-    
 
+    const {
+        currentPage,
+        totalPages,
+        paginatedItems: paginatedUsers,
+        goToPage,
+        nextPage,
+        previousPage,
+    } = usePagination(users, 5);
+
+    
+    
+  
     const handleBlock = async (userId) => {
         try {
             await updateUser(userId, {
@@ -38,7 +51,8 @@ function AdminUsers() {
         }
     };
 
-    if (isLoading) {
+
+  if (isLoading) {
         return <p>Loading users...</p>;
     }
 
@@ -70,7 +84,7 @@ function AdminUsers() {
                         </thead>
 
                         <tbody>
-                            {users.map((user) => (
+                            {paginatedUsers.map((user) => (
                                 <tr
                                     key={user.id}
                                     className="border-t"
@@ -122,6 +136,13 @@ function AdminUsers() {
                             ))}
                         </tbody>
                     </table>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    goToPage={goToPage}
+                    nextPage={nextPage}
+                    previousPage={previousPage}
+                />
                 </div>
             )}
         </div>

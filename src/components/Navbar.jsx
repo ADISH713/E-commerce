@@ -4,7 +4,6 @@ import {
   IconShoppingCart,
   IconSearch,
   IconShoppingBag,
-  IconAdjustmentsHorizontal,
   IconUser,
   IconX,
   IconMenu2,
@@ -30,7 +29,6 @@ function Navbar() {
   const user = useSelector((state) => state.auth.user);
 
   const [search, setSearch] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -237,15 +235,6 @@ function Navbar() {
               />
             </Link>
 
-            {/* FILTER */}
-            <button
-              type="button"
-              onClick={() => setShowFilters(!showFilters)}
-              className="text-gray-700 hover:text-orange-600 transition"
-            >
-              <IconAdjustmentsHorizontal size={18} />
-            </button>
-
             {/* PROFILE */}
             <div className="relative">
               <button
@@ -423,132 +412,7 @@ function Navbar() {
                 onClick={closeMobileMenu}
               />
 
-              {/* MOBILE FILTER */}
-              <button
-                type="button"
-                onClick={() => {
-                  setShowFilters(!showFilters);
-                  setShowMobileMenu(false);
-                }}
-                className="w-full flex items-center gap-3 py-3 text-left text-sm text-gray-700 hover:text-orange-600 transition"
-              >
-                <IconAdjustmentsHorizontal size={18} />
-                Filters
-              </button>
             </div>
-          </div>
-        )}
-
-        {/*  FILTER DROPDOWN */}
-        {showFilters && (
-          <div className="absolute right-4 md:right-8 top-[60px] md:top-20 w-[calc(100%-2rem)] sm:w-72 bg-white border border-gray-200 rounded-md shadow-lg p-5 z-50">
-
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="font-medium text-gray-900">
-                Filters
-              </h3>
-
-              <button
-                type="button"
-                onClick={() => setShowFilters(false)}
-                className="text-gray-400 hover:text-gray-700"
-              >
-                <IconX size={18} />
-              </button>
-            </div>
-
-            {/* GRADE */}
-            <div className="mb-5">
-              <p className="text-sm font-medium text-gray-700 mb-2">
-                Grade
-              </p>
-
-              <div className="space-y-2 text-sm text-gray-600">
-                <FilterLink
-                  to="/products"
-                  label="All cars"
-                  closeFilter={() => setShowFilters(false)}
-                />
-
-                <FilterLink
-                  to="/products?grade=toy"
-                  label="Toy grade"
-                  closeFilter={() => setShowFilters(false)}
-                />
-
-                <FilterLink
-                  to="/products?grade=hobby"
-                  label="Hobby grade"
-                  closeFilter={() => setShowFilters(false)}
-                />
-              </div>
-            </div>
-
-            {/* CATEGORY */}
-            <div className="border-t pt-4 mb-5">
-              <p className="text-sm font-medium text-gray-700 mb-2">
-                Category
-              </p>
-
-              <div className="space-y-2 text-sm text-gray-600">
-                <FilterLink
-                  to="/products?category=Off-Road Buggy"
-                  label="Off-road buggy"
-                  closeFilter={() => setShowFilters(false)}
-                />
-
-                <FilterLink
-                  to="/products?category=Drift car"
-                  label="Drift car"
-                  closeFilter={() => setShowFilters(false)}
-                />
-
-                <FilterLink
-                  to="/products?category=Monster Truck"
-                  label="Monster truck"
-                  closeFilter={() => setShowFilters(false)}
-                />
-
-                <FilterLink
-                  to="/products?category=Rock Crawler"
-                  label="Rock crawler"
-                  closeFilter={() => setShowFilters(false)}
-                />
-              </div>
-            </div>
-
-            {/* SORT */}
-            <div className="border-t pt-4">
-              <p className="text-sm font-medium text-gray-700 mb-2">
-                Sort by price
-              </p>
-
-              <div className="space-y-2 text-sm text-gray-600">
-                <FilterLink
-                  to="/products?sort=price-low"
-                  label="Low to High"
-                  closeFilter={() => setShowFilters(false)}
-                />
-
-                <FilterLink
-                  to="/products?sort=price-high"
-                  label="High to Low"
-                  closeFilter={() => setShowFilters(false)}
-                />
-              </div>
-            </div>
-
-            {/* CLEAR FILTERS */}
-            <button
-              type="button"
-              onClick={() => {
-                setShowFilters(false);
-                navigate('/products');
-              }}
-              className="w-full mt-5 border border-gray-300 text-sm py-2 rounded-md hover:border-orange-600 hover:text-orange-600 transition"
-            >
-              Clear Filters
-            </button>
           </div>
         )}
       </nav>
@@ -652,30 +516,5 @@ function MobileNavLink({ to, label, onClick }) {
 }
 
 
-/* FILTER LINK */
-
-
-function FilterLink({ to, label, closeFilter }) {
-  const [searchParams] = useSearchParams();
-  let finalTo = to;
-  if(to !== '/products'){
-    const newParams = new URLSearchParams(searchParams);
-    const selectedParams = new URLSearchParams(to.split('?')[1]);
-
-    selectedParams.forEach((value,key)=>{
-      newParams.set(key,value);
-    });
-    finalTo = `/products?${newParams.toString()}`;
-  }
-  return (
-    <Link
-      to={finalTo}
-      onClick={closeFilter}
-      className="block hover:text-orange-600 transition"
-    >
-      {label}
-    </Link>
-  );
-}
 
 export default Navbar;

@@ -101,32 +101,6 @@
       "grade": "hobby"
     },
     {
-      "id": "5",
-      "name": "Hyper Go",
-      "category": "Rally Car",
-      "brand": "MJX",
-      "price": 29990,
-      "stock": 22,
-      "images": [
-        "/images/MJX1.jpg",
-        "/images/MJX2.jpg",
-        "/images/MJX3.jpg",
-        "/images/MJX4.jpg"
-      ],
-      "description": "Built for both rally driving and controlled drifting, the Hyper Go 10303 combines aggressive styling with durable construction and responsive handling. Its 4WD drivetrain ensures excellent traction across pavement, gravel, and drift surfaces, while the brushless power system provides rapid acceleration and strong top-end speed.",
-      "specs": {
-        "scale": "1:12",
-        "speed": " 70 km/h",
-        "battery": "7.4V 5000mAh 35C LiPo",
-        "runtime": "15 mins",
-        "driveType": "AWD"
-      },
-      "rating": 4,
-      "reviewsCount": 14,
-      "grade": "hobby",
-      "deleted": false
-    },
-    {
       "id": "6",
       "name": "Truggy",
       "category": "Off-Road Buggy",
@@ -389,6 +363,15 @@
       ],
       "id": "eJWGmo1nhDo",
       "deleted": true
+    },
+    {
+      "name": "sd",
+      "category": "Drift Car",
+      "grade": "toy",
+      "price": 54,
+      "stock": 1,
+      "images": [],
+      "id": "oTvX5fy5Yg4"
     }
   ],
   "users": [
@@ -1086,16 +1069,7 @@
     },
     {
       "userId": "1",
-      "items": [
-        {
-          "id": "1",
-          "name": "ZP1005 RC Offroad Car",
-          "price": 14490,
-          "image": "/images/hb1.jpg",
-          "stock": 16,
-          "quantity": 1
-        }
-      ],
+      "items": [],
       "id": "_CdWnLy4u34"
     }
   ],

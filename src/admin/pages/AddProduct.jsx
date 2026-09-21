@@ -12,35 +12,93 @@ function AddProduct() {
     const [price, setPrice] = useState('');
     const [stock, setStock] = useState('');
     const [images, setImages] = useState(['', '', '', '']);
+    const [errors, setErrors] = useState({
+        name: '',
+        category: '',
+        customCategory: '',
+        grade: '',
+        price: '',
+        stock: '',
+        images: '',
+    });
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const newErrors = {
+            name: '',
+            category: '',
+            customCategory: '',
+            grade: '',
+            price: '',
+            stock: '',
+            images: '',
+        };
+
+        if (!name.trim()) {
+            newErrors.name = 'Product name is required';
+        }
+
+        if (!category) {
+            newErrors.category = 'Please select a category';
+        }
+
+        if (category === 'Other' && !customCategory.trim()) {
+            newErrors.customCategory = 'Please enter a custom category';
+        }
+
+        if (!grade) {
+            newErrors.grade = 'Please select a grade';
+        }
+
+        if (!price || Number(price) <= 0) {
+            newErrors.price = 'Price must be greater than 0';
+        }
+
+        if (!stock || Number(stock) < 0) {
+            newErrors.stock = 'Stock cannot be negative';
+        }
+
         const validImages = images.filter(
             (image) => image.trim() !== ''
         );
 
+        if (validImages.length === 0) {
+            newErrors.images = 'At least one product image is required';
+        }
+
+        setErrors(newErrors);
+
+        const hasErrors = Object.values(newErrors).some(
+            (error) => error !== ''
+        );
+
+        if (hasErrors) return;
+
         const newProduct = {
-            name,
-            category: category === 'Other' ? customCategory : category,
+            name: name.trim(),
+            category:
+                category === 'Other'
+                    ? customCategory.trim()
+                    : category,
             grade,
             price: Number(price),
             stock: Number(stock),
             images: validImages,
-        };
-
-        try {
-            const createdProduct = await createProduct(newProduct);
-
-            dispatch(addProduct(createdProduct));
-            navigate('/admin/products');
-            console.log(createdProduct);
-        } catch (error) {
-            console.error(error);
-        }
     };
+
+    try {
+        const createdProduct = await createProduct(newProduct);
+
+        dispatch(addProduct(createdProduct));
+        navigate('/admin/products');
+    } catch (error) {
+        console.error(error);
+    }
+};
+   
     return (
         <div>
             <h2 className="text-2xl font-bold mb-6">
@@ -62,6 +120,11 @@ function AddProduct() {
                         className="w-full border rounded-lg px-4 py-2"
                         placeholder="Enter product name"
                     />
+                    {errors.name && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {errors.name}
+                        </p>
+                    )}
                 </div>
 
                 {/* Category */}
@@ -83,7 +146,14 @@ function AddProduct() {
                         <option value="Other">Other</option>
                     </select>
 
-                    {category === 'Other' && (
+                    {errors.category && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {errors.category}
+                        </p>
+                    )}
+
+                   {category === 'Other' && (
+                    <>
                         <input
                             type="text"
                             value={customCategory}
@@ -91,7 +161,14 @@ function AddProduct() {
                             className="w-full border rounded-lg px-4 py-2 mt-2"
                             placeholder="Enter custom category"
                         />
-                    )}
+
+                        {errors.customCategory && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {errors.customCategory}
+                            </p>
+                        )}
+                    </>
+                )}
                 </div>
                     
                     {/* Grade */}
@@ -109,6 +186,11 @@ function AddProduct() {
                         <option value="toy">Toy</option>
                         <option value="hobby">Hobby</option>
                     </select>
+                    {errors.grade && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {errors.grade}
+                        </p>
+                    )}
                 </div>
 
                 {/* Price */}
@@ -124,6 +206,11 @@ function AddProduct() {
                         className="w-full border rounded-lg px-4 py-2"
                         placeholder="Enter price"
                     />
+                    {errors.price && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {errors.price}
+                        </p>
+                    )}
                 </div>
 
                 {/* Stock */}
@@ -139,6 +226,11 @@ function AddProduct() {
                         className="w-full border rounded-lg px-4 py-2"
                         placeholder="Enter stock"
                     />
+                    {errors.stock && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {errors.stock}
+                        </p>
+                    )}
                 </div>
 
                 {/* Product Image */}
@@ -161,6 +253,11 @@ function AddProduct() {
                             placeholder={`/images/image${index + 1}.jpg`}
                         />
                     ))}
+                    {errors.images && (
+                        <p className="text-red-500 text-sm mt-1">
+                            {errors.images}
+                        </p>
+                    )}
                 </div>
 
                 <button

@@ -29,7 +29,7 @@ function Cart() {
             const updatedCart = await updateCart(cartId, updatedItems);
             dispatch(setCart(updatedCart));
         } catch (error) {
-            console.error("failed to increase quantity : error");
+            console.error("failed to increase quantity : ",error);
         }
     };
 

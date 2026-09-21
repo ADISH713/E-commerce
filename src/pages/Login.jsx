@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 function Login() {
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
+    const [errors, setErrors] = useState({email: '',password: '',});
     const [showPassword, setShowPassword] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -53,10 +54,38 @@ function Login() {
       }
     });
 
-    const handleSubmit = (e)=>{
-        e.preventDefault();
-        mutate();
-    };
+    const handleSubmit = (e) => {
+      e.preventDefault();
+
+      const trimmedEmail = email.trim();
+
+      const newErrors = {
+          email: '',
+          password: '',
+      };
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!trimmedEmail) {
+          newErrors.email = 'Email is required';
+      } else if (!emailRegex.test(trimmedEmail)) {
+          newErrors.email = 'Please enter a valid email address';
+      }
+
+      if (!password) {
+          newErrors.password = 'Password is required';
+      }
+
+      setErrors(newErrors);
+
+      const hasErrors = Object.values(newErrors).some(
+          (error) => error !== ''
+      );
+
+      if (hasErrors) return;
+
+      mutate();
+};
   return (
     <div className='min-h-screen flex items-center justify-start p-8 md:p-16 bg-cover bg-center'
     style={{backgroundImage:"url('/images/LoginBG.png')"}}>
@@ -70,10 +99,25 @@ function Login() {
         type="email" 
         placeholder='Enter your email'
         value={email}
-        onChange={(e)=>setEmail(e.target.value)}
+        onChange={(e) => {
+            setEmail(e.target.value);
+            setErrors((prev) => ({
+                ...prev,
+                email: '',
+            }));
+        }}
         required
-        className='w-full placeholder-gray-300 bg-white/10 border border-white/20 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-orange-400 text-white'
+        className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2 text-sm focus:outline-none text-white ${
+            errors.email
+                ? 'border-red-500 focus:border-red-500'
+                : 'border-white/20 focus:border-orange-400'
+        }`}
         />
+        {errors.email && (
+            <p className="text-red-400 text-xs mt-1">
+                {errors.email}
+            </p>
+        )}
         </div>
         <div>
         <label className=" block text-xs font-medium text-white mb-1">Password</label>
@@ -82,10 +126,25 @@ function Login() {
         type={showPassword ? "text" : "password"}
         placeholder='Enter your Password'
         value={password}
-        onChange={(e)=>setPassword(e.target.value)}
+        onChange={(e) => {
+            setPassword(e.target.value);
+            setErrors((prev) => ({
+                ...prev,
+                password: '',
+            }));
+        }}
         required
-        className='w-full placeholder-gray-300 bg-white/10 border border-white/20 rounded-md px-3 py-2 pr-10 text-sm focus:outline-none focus:border-orange-400 text-white'
+        className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2 text-sm focus:outline-none text-white ${
+            errors.password
+                ? 'border-red-500 focus:border-red-500'
+                : 'border-white/20 focus:border-orange-400'
+        }`}
         />
+        {errors.password && (
+            <p className="text-red-400 text-xs mt-1">
+                {errors.password}
+            </p>
+        )}
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}

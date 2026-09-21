@@ -12,6 +12,12 @@ function EditProduct() {
     const [category, setCategory] = useState('');
     const [price, setPrice] = useState('');
     const [stock, setStock] = useState('');
+    const [errors, setErrors] = useState({
+        name: '',
+        category: '',
+        price: '',
+        stock: '',
+    });
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -41,9 +47,40 @@ function EditProduct() {
         const handleSubmit = async (e) => {
             e.preventDefault();
 
+            const newErrors = {
+                name: '',
+                category: '',
+                price: '',
+                stock: '',
+            };
+
+            if (!name.trim()) {
+                newErrors.name = 'Product name is required';
+            }
+
+            if (!category.trim()) {
+                newErrors.category = 'Category is required';
+            }
+
+            if (!price || Number(price) <= 0) {
+                newErrors.price = 'Price must be greater than 0';
+            }
+
+            if (!stock || Number(stock) < 0) {
+                newErrors.stock = 'Stock cannot be negative';
+            }
+
+            setErrors(newErrors);
+
+            const hasErrors = Object.values(newErrors).some(
+                (error) => error !== ''
+            );
+
+            if (hasErrors) return;
+
             const updatedProduct = {
-                name,
-                category,
+                name: name.trim(),
+                category: category.trim(),
                 price: Number(price),
                 stock: Number(stock),
                 images: product.images,
@@ -51,17 +88,16 @@ function EditProduct() {
 
             try {
                 const updatedProductData = await updateProductService(
-                id,
-                updatedProduct
-            );
+                    id,
+                    updatedProduct
+                );
 
-            dispatch(updateProduct(updatedProductData));
-            navigate('/admin/products');
+                dispatch(updateProduct(updatedProductData));
+                navigate('/admin/products');
             } catch (error) {
                 console.error(error);
             }
         };
-
     return (
         <div className="bg-white p-6 rounded-lg shadow max-w-2xl">
 
@@ -77,6 +113,11 @@ function EditProduct() {
                     onChange={(e) => setName(e.target.value)}
                     className="w-full border rounded-lg px-4 py-2"
                 />
+                {errors.name && (
+                    <p className="text-red-500 text-sm mt-1">
+                        {errors.name}
+                    </p>
+                )}
             </div>
 
             {/* Category */}
@@ -91,6 +132,11 @@ function EditProduct() {
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full border rounded-lg px-4 py-2"
                 />
+                {errors.category && (
+                    <p className="text-red-500 text-sm mt-1">
+                        {errors.category}
+                    </p>
+                )}
             </div>
 
             {/* Price */}
@@ -105,6 +151,12 @@ function EditProduct() {
                     onChange={(e) => setPrice(e.target.value)}
                     className="w-full border rounded-lg px-4 py-2"
                 />
+
+                {errors.price && (
+                    <p className="text-red-500 text-sm mt-1">
+                        {errors.price}
+                    </p>
+                )}
             </div>
 
             {/* Stock */}
@@ -119,6 +171,13 @@ function EditProduct() {
                     onChange={(e) => setStock(e.target.value)}
                     className="w-full border rounded-lg px-4 py-2"
                 />
+
+                {errors.stock && (
+                    <p className="text-red-500 text-sm mt-1">
+                        {errors.stock}
+                    </p>
+                )}
+                
             </div>
             <button
                 type="button"
