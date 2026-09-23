@@ -117,7 +117,7 @@ function App() {
         return (
             <>
                 {!hideNavbar && <Navbar />}
-                <div className={showNavbar ? "pt-[100px]" : ""}>
+                <div>
                     <AppRoutes />
                 </div>
                 {!hideNavbar && <Footer />}

@@ -14,15 +14,15 @@ function Footer() {
     <footer className="border-t border-orange-300">
 
       {/* Main footer */}
-      <div className="px-5 sm:px-8 lg:px-16 py-10 sm:py-14">
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-16 py-8 sm:py-10 md:py-12 lg:py-14">
+        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
 
           {/* Brand */}
-          <div>
+          <div className="min-w-0">
             <img
               src="/images/Logo.png"
               alt="TORQUE"
-              className="h-10 sm:h-12 w-auto object-contain mb-5"
+              className="h-9 sm:h-10 md:h-12 w-auto object-contain mb-4 sm:mb-5"
             />
 
             <p className="text-sm font-medium text-gray-900 leading-relaxed">
@@ -34,11 +34,11 @@ function Footer() {
 
           {/* Navigation */}
           <div>
-            <p className="text-sm font-medium text-gray-900 mb-5">
+            <p className="text-sm font-medium text-gray-900 mb-4 sm:mb-5">
               Navigation
             </p>
 
-            <div className="flex flex-col gap-3 text-sm text-gray-500">
+            <div className="flex flex-col gap-2.5 sm:gap-3 text-sm text-gray-500">
               <Link to="/" className="hover:text-orange-600 transition">
                 Home
               </Link>
@@ -63,19 +63,19 @@ function Footer() {
 
           {/* Contact */}
           <div>
-            <p className="text-sm font-medium text-gray-900 mb-5">
+            <p className="text-sm font-medium text-gray-900 mb-4 sm:mb-5">
               Contact
             </p>
 
-            <div className="flex flex-col gap-3 text-sm text-gray-500">
+            <div className="flex flex-col gap-2.5 sm:gap-3 text-sm text-gray-500 break-words">
               <p>+91 7559 087713</p>
-              <p>torque@gmail.com</p>
+              <p className="break-all">torque@gmail.com</p>
             </div>
           </div>
 
           {/* Address */}
           <div>
-            <p className="text-sm font-medium text-gray-900 mb-5">
+            <p className="text-sm font-medium text-gray-900 mb-4 sm:mb-5">
               Visit us
             </p>
 
@@ -83,9 +83,9 @@ function Footer() {
               TORQUE RC
               <br />
               Kinfra,6th floor
-              <br/>
+              <br />
               Kakkancheri
-              <br/>
+              <br />
               Kerala, India
               <br />
               673330
@@ -96,87 +96,90 @@ function Footer() {
       </div>
 
       {/* Bottom bar */}
-   <div className="bg-orange-600 px-5 sm:px-8 lg:px-16 py-5"> 
-  <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+      <div className="bg-orange-600 px-4 sm:px-6 md:px-8 lg:px-16 py-5 sm:py-6">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
 
-    {/* Benefits */}
-    <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
+          {/* Benefits */}
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row flex-wrap items-center justify-center gap-5 sm:gap-8 lg:gap-10">
 
-      <div className="flex items-center gap-3">
-        <IconShieldCheck
-          size={22}
-          className="text-white"
-          stroke={1.5}
-        />
-        <div>
-          <p className="text-white text-xs font-medium">
-            Secure payments
-          </p>
-          <p className="text-white/70 text-[11px]">
-            Protected checkout
-          </p>
+            <div className="flex items-center gap-3">
+              <IconShieldCheck
+                size={22}
+                className="text-white shrink-0"
+                stroke={1.5}
+              />
+
+              <div>
+                <p className="text-white text-xs font-medium">
+                  Secure payments
+                </p>
+                <p className="text-white/70 text-[11px]">
+                  Protected checkout
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <IconRefresh
+                size={22}
+                className="text-white shrink-0"
+                stroke={1.5}
+              />
+
+              <div>
+                <p className="text-white text-xs font-medium">
+                  Easy returns
+                </p>
+                <p className="text-white/70 text-[11px]">
+                  30-day hassle free
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <IconHeadset
+                size={22}
+                className="text-white shrink-0"
+                stroke={1.5}
+              />
+
+              <div>
+                <p className="text-white text-xs font-medium">
+                  Expert support
+                </p>
+                <p className="text-white/70 text-[11px]">
+                  We're here to help
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Copyright + social */}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-5">
+
+            <p className="text-xs text-white/80 whitespace-nowrap">
+              © 2026 TORQUE
+            </p>
+
+            <div className="flex items-center gap-4 text-white">
+              <button className="hover:opacity-70 transition">
+                <IconBrandLinkedin size={18} />
+              </button>
+
+              <button className="hover:opacity-70 transition">
+                <IconBrandInstagram size={18} />
+              </button>
+
+              <button className="hover:opacity-70 transition">
+                <IconBrandFacebook size={18} />
+              </button>
+            </div>
+
+          </div>
+
         </div>
       </div>
-
-      <div className="flex items-center gap-3">
-        <IconRefresh
-          size={22}
-          className="text-white"
-          stroke={1.5}
-        />
-        <div>
-          <p className="text-white text-xs font-medium">
-            Easy returns
-          </p>
-          <p className="text-white/70 text-[11px]">
-            30-day hassle free
-          </p>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <IconHeadset
-          size={22}
-          className="text-white"
-          stroke={1.5}
-        />
-        <div>
-          <p className="text-white text-xs font-medium">
-            Expert support
-          </p>
-          <p className="text-white/70 text-[11px]">
-            We're here to help
-          </p>
-        </div>
-      </div>
-
-    </div>
-
-    {/* Copyright + social */}
-    <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-5">
-
-      <p className="text-xs text-white/80">
-        © 2026 TORQUE
-      </p>
-
-      <div className="flex items-center gap-4 text-white">
-        <button className="hover:opacity-70 transition">
-          <IconBrandLinkedin size={18} />
-        </button>
-
-        <button className="hover:opacity-70 transition">
-          <IconBrandInstagram size={18} />
-        </button>
-
-        <button className="hover:opacity-70 transition">
-          <IconBrandFacebook size={18} />
-        </button>
-      </div>
-
-    </div>
-
-  </div>
-</div>
 
     </footer>
   );

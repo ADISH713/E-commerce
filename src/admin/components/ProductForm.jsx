@@ -25,16 +25,16 @@ function ProductForm({
     } = formData;
 
     return (
-        <div>
-            <h2 className="text-2xl font-bold mb-6">
+        <div className="w-full">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
                 {submitText}
             </h2>
 
-            <div className="bg-white p-6 rounded-lg shadow max-w-2xl">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow w-full max-w-2xl">
 
                 {/* Product Name */}
                 <div className="mb-4">
-                    <label className="block mb-2 font-medium">
+                    <label className="block mb-2 font-medium text-sm sm:text-base">
                         Product Name
                     </label>
 
@@ -44,12 +44,12 @@ function ProductForm({
                         onChange={(e) =>
                             handleChange('name', e.target.value)
                         }
-                        className="w-full border rounded-lg px-4 py-2"
+                        className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                         placeholder="Enter product name"
                     />
 
                     {errors.name && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 text-sm mt-1 break-words">
                             {errors.name}
                         </p>
                     )}
@@ -57,7 +57,7 @@ function ProductForm({
 
                 {/* Brand */}
                 <div className="mb-4">
-                    <label className="block mb-2 font-medium">
+                    <label className="block mb-2 font-medium text-sm sm:text-base">
                         Brand
                     </label>
 
@@ -67,12 +67,12 @@ function ProductForm({
                         onChange={(e) =>
                             handleChange('brand', e.target.value)
                         }
-                        className="w-full border rounded-lg px-4 py-2"
+                        className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                         placeholder="Enter brand"
                     />
 
                     {errors.brand && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 text-sm mt-1 break-words">
                             {errors.brand}
                         </p>
                     )}
@@ -80,7 +80,7 @@ function ProductForm({
 
                 {/* Category */}
                 <div className="mb-4">
-                    <label className="block mb-2 font-medium">
+                    <label className="block mb-2 font-medium text-sm sm:text-base">
                         Category
                     </label>
 
@@ -89,7 +89,7 @@ function ProductForm({
                         onChange={(e) =>
                             handleChange('category', e.target.value)
                         }
-                        className="w-full border rounded-lg px-4 py-2"
+                        className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                     >
                         <option value="">Select category</option>
                         <option value="Off-Road Buggy">
@@ -110,7 +110,7 @@ function ProductForm({
                     </select>
 
                     {errors.category && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 text-sm mt-1 break-words">
                             {errors.category}
                         </p>
                     )}
@@ -126,12 +126,12 @@ function ProductForm({
                                         e.target.value
                                     )
                                 }
-                                className="w-full border rounded-lg px-4 py-2 mt-2"
+                                className="w-full border rounded-lg px-3 sm:px-4 py-2 mt-2 text-sm sm:text-base"
                                 placeholder="Enter custom category"
                             />
 
                             {errors.customCategory && (
-                                <p className="text-red-500 text-sm mt-1">
+                                <p className="text-red-500 text-sm mt-1 break-words">
                                     {errors.customCategory}
                                 </p>
                             )}
@@ -141,7 +141,7 @@ function ProductForm({
 
                 {/* Grade */}
                 <div className="mb-4">
-                    <label className="block mb-2 font-medium">
+                    <label className="block mb-2 font-medium text-sm sm:text-base">
                         Grade
                     </label>
 
@@ -150,7 +150,7 @@ function ProductForm({
                         onChange={(e) =>
                             handleChange('grade', e.target.value)
                         }
-                        className="w-full border rounded-lg px-4 py-2"
+                        className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                     >
                         <option value="">Select grade</option>
                         <option value="toy">Toy</option>
@@ -158,7 +158,7 @@ function ProductForm({
                     </select>
 
                     {errors.grade && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 text-sm mt-1 break-words">
                             {errors.grade}
                         </p>
                     )}
@@ -166,7 +166,7 @@ function ProductForm({
 
                 {/* Price */}
                 <div className="mb-4">
-                    <label className="block mb-2 font-medium">
+                    <label className="block mb-2 font-medium text-sm sm:text-base">
                         Price
                     </label>
 
@@ -176,12 +176,12 @@ function ProductForm({
                         onChange={(e) =>
                             handleChange('price', e.target.value)
                         }
-                        className="w-full border rounded-lg px-4 py-2"
+                        className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                         placeholder="Enter price"
                     />
 
                     {errors.price && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 text-sm mt-1 break-words">
                             {errors.price}
                         </p>
                     )}
@@ -189,7 +189,7 @@ function ProductForm({
 
                 {/* Stock */}
                 <div className="mb-4">
-                    <label className="block mb-2 font-medium">
+                    <label className="block mb-2 font-medium text-sm sm:text-base">
                         Stock
                     </label>
 
@@ -199,12 +199,12 @@ function ProductForm({
                         onChange={(e) =>
                             handleChange('stock', e.target.value)
                         }
-                        className="w-full border rounded-lg px-4 py-2"
+                        className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                         placeholder="Enter stock"
                     />
 
                     {errors.stock && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 text-sm mt-1 break-words">
                             {errors.stock}
                         </p>
                     )}
@@ -212,7 +212,7 @@ function ProductForm({
 
                 {/* Images */}
                 <div className="mb-4">
-                    <label className="block mb-2 font-medium">
+                    <label className="block mb-2 font-medium text-sm sm:text-base">
                         Product Images
                     </label>
 
@@ -232,27 +232,27 @@ function ProductForm({
                                     updatedImages
                                 );
                             }}
-                            className="w-full border rounded-lg px-4 py-2 mb-2"
+                            className="w-full border rounded-lg px-3 sm:px-4 py-2 mb-2 text-sm sm:text-base"
                             placeholder={`/images/image${index + 1}.jpg`}
                         />
                     ))}
 
                     {errors.images && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 text-sm mt-1 break-words">
                             {errors.images}
                         </p>
                     )}
                 </div>
 
                 {/* Specifications */}
-                <div className="border-t pt-6 mt-6">
-                    <h3 className="text-lg font-semibold mb-4">
+                <div className="border-t pt-5 sm:pt-6 mt-5 sm:mt-6">
+                    <h3 className="text-base sm:text-lg font-semibold mb-4">
                         Specifications
                     </h3>
 
                     {/* Scale */}
                     <div className="mb-4">
-                        <label className="block mb-2 font-medium">
+                        <label className="block mb-2 font-medium text-sm sm:text-base">
                             Scale
                         </label>
 
@@ -265,11 +265,12 @@ function ProductForm({
                                     e.target.value
                                 )
                             }
-                            className="w-full border rounded-lg px-4 py-2"
+                            className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                             placeholder="Example: 1:10"
                         />
+
                         {errors.scale && (
-                            <p className="text-red-500 text-sm mt-1">
+                            <p className="text-red-500 text-sm mt-1 break-words">
                                 {errors.scale}
                             </p>
                         )}
@@ -277,7 +278,7 @@ function ProductForm({
 
                     {/* Speed */}
                     <div className="mb-4">
-                        <label className="block mb-2 font-medium">
+                        <label className="block mb-2 font-medium text-sm sm:text-base">
                             Top Speed
                         </label>
 
@@ -290,12 +291,12 @@ function ProductForm({
                                     e.target.value
                                 )
                             }
-                            className="w-full border rounded-lg px-4 py-2"
+                            className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                             placeholder="Example: 45 km/h"
                         />
 
                         {errors.speed && (
-                            <p className="text-red-500 text-sm mt-1">
+                            <p className="text-red-500 text-sm mt-1 break-words">
                                 {errors.speed}
                             </p>
                         )}
@@ -303,7 +304,7 @@ function ProductForm({
 
                     {/* Battery */}
                     <div className="mb-4">
-                        <label className="block mb-2 font-medium">
+                        <label className="block mb-2 font-medium text-sm sm:text-base">
                             Battery
                         </label>
 
@@ -316,20 +317,20 @@ function ProductForm({
                                     e.target.value
                                 )
                             }
-                            className="w-full border rounded-lg px-4 py-2"
+                            className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                             placeholder="Example: 7.4V 1500mAh Li-ion"
                         />
-                         
+
                         {errors.battery && (
-                            <p className="text-red-500 text-sm mt-1">
-                                {errors.batery}
+                            <p className="text-red-500 text-sm mt-1 break-words">
+                                {errors.battery}
                             </p>
                         )}
                     </div>
 
                     {/* Runtime */}
                     <div className="mb-4">
-                        <label className="block mb-2 font-medium">
+                        <label className="block mb-2 font-medium text-sm sm:text-base">
                             Runtime
                         </label>
 
@@ -342,12 +343,12 @@ function ProductForm({
                                     e.target.value
                                 )
                             }
-                            className="w-full border rounded-lg px-4 py-2"
+                            className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                             placeholder="Example: 20 minutes"
                         />
-                         
+
                         {errors.runtime && (
-                            <p className="text-red-500 text-sm mt-1">
+                            <p className="text-red-500 text-sm mt-1 break-words">
                                 {errors.runtime}
                             </p>
                         )}
@@ -355,7 +356,7 @@ function ProductForm({
 
                     {/* Drive Type */}
                     <div className="mb-4">
-                        <label className="block mb-2 font-medium">
+                        <label className="block mb-2 font-medium text-sm sm:text-base">
                             Drive Type
                         </label>
 
@@ -368,12 +369,12 @@ function ProductForm({
                                     e.target.value
                                 )
                             }
-                            className="w-full border rounded-lg px-4 py-2"
+                            className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                             placeholder="Example: 4WD"
                         />
-                         
+
                         {errors.driveType && (
-                            <p className="text-red-500 text-sm mt-1">
+                            <p className="text-red-500 text-sm mt-1 break-words">
                                 {errors.driveType}
                             </p>
                         )}
@@ -381,8 +382,8 @@ function ProductForm({
                 </div>
 
                 {/* Description */}
-                <div className="mb-6 mt-6">
-                    <label className="block mb-2 font-medium">
+                <div className="mb-5 sm:mb-6 mt-5 sm:mt-6">
+                    <label className="block mb-2 font-medium text-sm sm:text-base">
                         Description
                     </label>
 
@@ -395,12 +396,12 @@ function ProductForm({
                             )
                         }
                         rows={5}
-                        className="w-full border rounded-lg px-4 py-2"
+                        className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base resize-y"
                         placeholder="Enter product description"
                     />
 
                     {errors.description && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 text-sm mt-1 break-words">
                             {errors.description}
                         </p>
                     )}
@@ -409,7 +410,7 @@ function ProductForm({
                 <button
                     type="button"
                     onClick={onSubmit}
-                    className="bg-orange-600 text-white px-5 py-2 rounded-lg"
+                    className="w-full sm:w-auto bg-orange-600 text-white px-5 py-2.5 sm:py-2 rounded-lg text-sm sm:text-base hover:bg-orange-700 transition"
                 >
                     {submitText}
                 </button>

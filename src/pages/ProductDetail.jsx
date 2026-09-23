@@ -1,11 +1,10 @@
-
 import React, { useState, useRef, } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 import { getProductById } from '../services/productServices';
 import { formatPrice } from '../utils/formatPrice';
 import { IconCar, IconMinus, IconPlus } from '@tabler/icons-react';
-import {useDispatch, useSelector} from 'react-redux'
-import { createCart,updateCart,getCartByUserId } from '../services/cartServices';
+import { useDispatch, useSelector } from 'react-redux'
+import { createCart, updateCart, getCartByUserId } from '../services/cartServices';
 import { setCart } from '../redux/slices/cartSlice';
 import { getWishlistByUserId, createWishlist, updateWishlist } from '../services/wishlistServices';
 import { setWishlist } from '../redux/slices/wishlistSlice';
@@ -16,326 +15,436 @@ import ProductCard from '../components/ProductCard';
 import { useMutation, useQuery, } from "@tanstack/react-query";
 
 function ProductDetail() {
-    const {id} = useParams();
-    const [selectedImage,setSelectedIamge] = useState(0);
-    const [quantity,setQuantity] = useState(1);
+    const { id } = useParams();
+    const [selectedImage, setSelectedIamge] = useState(0);
+    const [quantity, setQuantity] = useState(1);
     const addingToCartRef = useRef(false);
-    const navigate  = useNavigate();
+    const navigate = useNavigate();
     const dispatch = useDispatch()
 
-    const user = useSelector((state)=>state.auth.user);
-    const wishlist = useSelector((state) => state.wishlist);   
+    const user = useSelector((state) => state.auth.user);
+    const wishlist = useSelector((state) => state.wishlist);
 
     const { data: products = [] } = useProducts();
 
-    const {data:product,isLoading,isError,error}=useQuery({
-        queryKey : ['product',id],
-        queryFn : () => getProductById(id),
+    const { data: product, isLoading, isError, error } = useQuery({
+        queryKey: ['product', id],
+        queryFn: () => getProductById(id),
     });
 
-     const isWishlisted = wishlist?.items?.some(
-    (item) => String(item.id) === String(product?.id)
+    const isWishlisted = wishlist?.items?.some(
+        (item) => String(item.id) === String(product?.id)
     ) || false;
 
+    const cart = useSelector((state) => state.cart);
 
-     const cart = useSelector((state) => state.cart);
+    const addToCartMutation = useMutation({
+        mutationFn: async () => {
 
-      
-const addToCartMutation = useMutation({
-  mutationFn: async () => {
+            const existingCart = await getCartByUserId(user.id);
 
-    const existingCart = await getCartByUserId(user.id);
+            const currentItems = existingCart?.items || [];
 
-    const currentItems = existingCart?.items || [];
+            const existingItem = currentItems.find(
+                (item) => String(item.id) === String(product.id)
+            );
 
-    const existingItem = currentItems.find(
-      (item) => String(item.id) === String(product.id)
-    );
+            let newItems;
 
-    let newItems;
+            if (existingItem) {
+                const newQuantity = existingItem.quantity + quantity;
 
-    if (existingItem) {
-      const newQuantity = existingItem.quantity + quantity;
+                if (newQuantity > product.stock) {
+                    throw new Error(`Only ${product.stock} items are available.`);
+                }
 
-      if (newQuantity > product.stock) {
-        throw new Error(`Only ${product.stock} items are available.`);
-      }
-
-      newItems = currentItems.map((item) =>
-        String(item.id) === String(product.id)
-          ? { ...item, quantity: newQuantity }
-          : item
-      );
-    } else {
-      newItems = [
-        ...currentItems,
-        {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.images?.[0] || '',
-          stock: product.stock,
-          quantity: quantity,
-        },
-      ];
-    }
-
-    
-    if (existingCart) {
-      return updateCart(existingCart.id, newItems);
-    }
-
-    
-    return createCart(user.id, newItems);
-  },
-
-  onSuccess: (updatedCart) => {
-    dispatch(setCart(updatedCart));
-    addingToCartRef.current = false;
-    toast.success('Added to cart')
-  },
-
-  onError: (error) => {
-    console.error('Add to cart error:', error);
-    addingToCartRef.current = false;
-    toast.error(error.message);
-  },
-});
-
-const wishlistMutation = useMutation({
-  mutationFn: async () => {
-    const existingWishlist = await getWishlistByUserId(user.id);
-
-    const currentItems = existingWishlist?.items || [];
-
-    const isAlreadyWishlisted = currentItems.some(
-      (item) => String(item.id) === String(product.id)
-    );
-
-    let updatedItems;
-
-    if (isAlreadyWishlisted) {
-      updatedItems = currentItems.filter(
-        (item) => String(item.id) !== String(product.id)
-      );
-    } else {
-      updatedItems = [
-        ...currentItems,
-        {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.images?.[0] || '',
-        },
-      ];
-    }
-
-    if (existingWishlist) {
-      return updateWishlist(existingWishlist.id, updatedItems);
-    }
-
-    return createWishlist(user.id, updatedItems);
-  },
-
-  onSuccess: (updatedWishlist) => {
-    dispatch(setWishlist(updatedWishlist));
-    
-  },
-
-  onError: (error) => {
-    console.error('Wishlist error:', error);
-  },
-});
-
-
-    if(isLoading) return <p className='px-8 py-6'>Loading product...</p>;
-    if(isError) return <p className='px-8 py-6 text-red-600'>Error:{error.message}</p>
-
-     const similarProducts = products.filter(
-    (item) =>
-        item.category === product.category &&
-        String(item.id) !== String(product.id)
-    ).slice(0, 4);
-
- 
-    const isOutOfStock = product.stock === 0;
-    const increaseQty = ()=>{
-        if(quantity<product.stock) setQuantity(quantity + 1);
-    }
-    
-    const decreaseQty = ()=>{
-        if(quantity>1) setQuantity(quantity - 1)
-    };
-
-const handleAddToCart = () => {
-
-  if (!user) {
-    navigate('/login');
-    return;
-  }
-
-  if (addingToCartRef.current) {
-    return;
-  }
-
-  addingToCartRef.current = true;
-  addToCartMutation.mutate();
-};
-   
-
-
-  return (
-        <div className='px-5 sm:px-8 lg:px-12 py-6 sm:py-8'>
-        
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10'>
-            <div>
-            <div className='bg-gray-50 rounded-xl h-[320px] sm:h-[380px] lg:h-96 flex items-center justify-center overflow-hidden mb-4'>
-                {product.images && product.images[selectedImage] ? (
-                    <img src = {product.images[selectedImage]}
-                    alt = {product.name}
-                    
-                />
-                ):(<IconCar size={80} className='text-gray-300' stroke={1.5}/>)}
-            </div>
-
-            {product.images && product.images.length>1 && (
-                <div className='flex gap-2'>
-                    {product.images.map((img,index)=>(
-                        <button key={index} onClick={()=>setSelectedIamge(index)}
-                        className={`w-16 h-16 rounded-md overflow-hidden border-2 ${
-                            selectedImage === index ? 'border-orange-500': 'border-gray-200'
-                        }`}>
-                            <img src={img} alt={`${product.name} ${index + 1}`} className='w-full h-full object-contain' />
-                        </button>
-                    ))}
-                </div>
-                
-            )}
-           <div className="mt-16 text-left pl-14">
-              <h2 className="text-3xl pl-7 underline">
-                  Rating & Review
-              </h2>
-
-              <p className="text-9xl font-medium text-gray-900">
-                  {product.rating}<span>/5</span>
-              </p>
-
-              <div className="text-orange-500 text-6xl tracking-wide mt-1 pl-9">
-                  {'★'.repeat(Math.round(product.rating))}
-              </div>
-
-              <p className="text-xl text-gray-800 mt-1 pl-20">
-                  ({product.reviewsCount} reviews)
-              </p>
-          </div>
-          
-        </div>
-      
-      <div>
-        <span className={`inline-block text-[10px] font-medium px-2 py-1 rounded-full mb-3 ${
-        product.grade === 'hobby'? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
-            {product.grade === 'hobby' ? 'Hobby grade' : 'Toy grade'}
-        </span>
-
-        <h1 className='text-xl sm:text-2xl font-medium text-gray-900 mb-1'>{product.name}</h1>
-        <p className='text-gray-500 text-sm mb-4'>{product.brand} {product.category}</p>
-        <p className="text-xl sm:text-2xl font-medium text-gray-900 mb-4">{formatPrice(product.price)}</p>
-        <button
-          type="button"
-          onClick={() => {
-            if (!user) {
-              navigate('/login');
-              return;
+                newItems = currentItems.map((item) =>
+                    String(item.id) === String(product.id)
+                        ? { ...item, quantity: newQuantity }
+                        : item
+                );
+            } else {
+                newItems = [
+                    ...currentItems,
+                    {
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        image: product.images?.[0] || '',
+                        stock: product.stock,
+                        quantity: quantity,
+                    },
+                ];
             }
 
-            wishlistMutation.mutate();
-          }}
-          disabled={wishlistMutation.isPending}
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-orange-600 transition mb-6"
-        >
-          <IconHeart
-            size={18}
-            className={isWishlisted ? "fill-orange-600 text-orange-600" : ""}
-          />
-          {isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-        </button>
+            if (existingCart) {
+                return updateCart(existingCart.id, newItems);
+            }
 
-        {isOutOfStock ? (
-          <p className="text-red-600 text-sm font-medium mb-6">Out of stock</p>
-        ) : (
-          <p className="text-green-600 text-sm font-medium mb-6">In stock ({product.stock} available)</p>
-        )}
+            return createCart(user.id, newItems);
+        },
 
-        {/* Quantity selector */}
-        {!isOutOfStock && (
-          <div className="flex items-center gap-3 sm:gap-4 mb-6">
-            <span className="text-sm text-gray-700">Quantity</span>
-            <div className="flex items-center border border-gray-200 rounded-md">
-              <button type='button' onClick={decreaseQty} className="p-2">
-                <IconMinus size={14} />
-              </button>
-              <span className="px-4 text-sm">{quantity}</span>
-              <button type='button' onClick={increaseQty} className="p-2">
-                <IconPlus size={14} />
-              </button>
-            </div>
-          </div>
-        )}
+        onSuccess: (updatedCart) => {
+            dispatch(setCart(updatedCart));
+            addingToCartRef.current = false;
+            toast.success('Added to cart')
+        },
 
-        <button
-        type='button'
-        onClick={handleAddToCart}
-          disabled={isOutOfStock || addToCartMutation.isPending}  
-          className={`w-full py-3 rounded-md text-sm font-medium mb-8 ${
-            isOutOfStock
-              ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-              : 'bg-orange-600 text-white hover:bg-orange-700 transition'
-          }`}
-        >
-          {isOutOfStock ? 'Out of stock' : addToCartMutation.isPending ? 'Adding...':'Add to cart'}
-        </button>
+        onError: (error) => {
+            console.error('Add to cart error:', error);
+            addingToCartRef.current = false;
+            toast.error(error.message);
+        },
+    });
 
-        {/* Specs */}
-        <div className="border-t border-gray-200 pt-6 mb-6">
-          <h3 className="text-sm font-medium text-gray-900 mb-3">Specifications</h3>
-          <div className="grid grid-cols-2 gap-y-2 text-sm">
-            <span className="text-gray-500">Scale</span>
-            <span className="text-gray-900">{product.specs.scale}</span>
-            <span className="text-gray-500">Top speed</span>
-            <span className="text-gray-900">{product.specs.speed}</span>
-            <span className="text-gray-500">Battery</span>
-            <span className="text-gray-900">{product.specs.battery}</span>
-            <span className="text-gray-500">Runtime</span>
-            <span className="text-gray-900">{product.specs.runtime}</span>
-            <span className="text-gray-500">Drive type</span>
-            <span className="text-gray-900">{product.specs.driveType}</span>
-          </div>
-        </div>
+    const wishlistMutation = useMutation({
+        mutationFn: async () => {
+            const existingWishlist = await getWishlistByUserId(user.id);
 
-        {/* Description */}
-        <div className="border-t border-gray-200 pt-6">
-          <h3 className="text-sm font-medium text-gray-900 mb-3">Description</h3>
-          <p className="text-gray-600 text-sm leading-relaxed">{product.description}</p>
-        </div>
-      </div>
-      {similarProducts.length > 0 && (
-        <div className="mt-12 border-t border-gray-200 pt-8">
-            <h2 className="text-xl font-medium text-gray-900 mb-6">
-                Similar Products
-            </h2>
-                  <div className="flex gap-5">
-                    {similarProducts.map((item) => (
-                        <div key={item.id} className="w-[152px] shrink-0">
-                            <ProductCard product={item} />
+            const currentItems = existingWishlist?.items || [];
+
+            const isAlreadyWishlisted = currentItems.some(
+                (item) => String(item.id) === String(product.id)
+            );
+
+            let updatedItems;
+
+            if (isAlreadyWishlisted) {
+                updatedItems = currentItems.filter(
+                    (item) => String(item.id) !== String(product.id)
+                );
+            } else {
+                updatedItems = [
+                    ...currentItems,
+                    {
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        image: product.images?.[0] || '',
+                    },
+                ];
+            }
+
+            if (existingWishlist) {
+                return updateWishlist(existingWishlist.id, updatedItems);
+            }
+
+            return createWishlist(user.id, updatedItems);
+        },
+
+        onSuccess: (updatedWishlist) => {
+            dispatch(setWishlist(updatedWishlist));
+        },
+
+        onError: (error) => {
+            console.error('Wishlist error:', error);
+        },
+    });
+
+    if (isLoading) return <p className='px-4 sm:px-8 lg:px-12 py-6'>Loading product...</p>;
+
+    if (isError) {
+        return (
+            <p className='px-4 sm:px-8 lg:px-12 py-6 text-red-600'>
+                Error:{error.message}
+            </p>
+        );
+    }
+
+    const similarProducts = products.filter(
+        (item) =>
+            item.category === product.category &&
+            String(item.id) !== String(product.id)
+    ).slice(0, 4);
+
+    const isOutOfStock = product.stock === 0;
+
+    const increaseQty = () => {
+        if (quantity < product.stock) setQuantity(quantity + 1);
+    }
+
+    const decreaseQty = () => {
+        if (quantity > 1) setQuantity(quantity - 1)
+    };
+
+    const handleAddToCart = () => {
+
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
+        if (addingToCartRef.current) {
+            return;
+        }
+
+        addingToCartRef.current = true;
+        addToCartMutation.mutate();
+    };
+
+    return (
+        <div className='px-4 sm:px-6 md:px-8 lg:px-12 py-5 sm:py-8'>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10'>
+
+                {/* PRODUCT IMAGES */}
+                <div className='min-w-0'>
+
+                    <div className='bg-gray-50 rounded-xl h-[280px] sm:h-[380px] lg:h-96 flex items-center justify-center overflow-hidden mb-4'>
+
+                        {product.images && product.images[selectedImage] ? (
+                            <img
+                                src={product.images[selectedImage]}
+                                alt={product.name}
+                                className='w-full h-full object-contain'
+                            />
+                        ) : (
+                            <IconCar
+                                size={80}
+                                className='text-gray-300'
+                                stroke={1.5}
+                            />
+                        )}
+
+                    </div>
+
+                    {/* IMAGE THUMBNAILS */}
+                    {product.images && product.images.length > 1 && (
+                        <div className='flex gap-2 overflow-x-auto scrollbar-none pb-1'>
+                            {product.images.map((img, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setSelectedIamge(index)}
+                                    className={`w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-md overflow-hidden border-2 ${
+                                        selectedImage === index
+                                            ? 'border-orange-500'
+                                            : 'border-gray-200'
+                                    }`}
+                                >
+                                    <img
+                                        src={img}
+                                        alt={`${product.name} ${index + 1}`}
+                                        className='w-full h-full object-contain'
+                                    />
+                                </button>
+                            ))}
                         </div>
-                    ))}
-                </div>
-        </div>
-    )}
-    </div>
+                    )}
 
-    </div>
-  )
+                    {/* RATING & REVIEW */}
+                    <div className="mt-10 sm:mt-16 text-left pl-0 sm:pl-8 md:pl-10 lg:pl-14">
+
+                        <h2 className="text-xl sm:text-2xl md:text-3xl pl-0 sm:pl-4 underline">
+                            Rating & Review
+                        </h2>
+
+                        <p className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-medium text-gray-900">
+                            {product.rating}<span>/5</span>
+                        </p>
+
+                        <div className="text-orange-500 text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-wide mt-1 pl-0 sm:pl-4">
+                            {'★'.repeat(Math.round(product.rating))}
+                        </div>
+
+                        <p className="text-base sm:text-lg md:text-xl text-gray-800 mt-1 pl-0 sm:pl-6 md:pl-10 lg:pl-20">
+                            ({product.reviewsCount} reviews)
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {/* PRODUCT INFORMATION */}
+                <div className='min-w-0'>
+
+                    <span
+                        className={`inline-block text-[10px] font-medium px-2 py-1 rounded-full mb-3 ${
+                            product.grade === 'hobby'
+                                ? 'bg-orange-100 text-orange-700'
+                                : 'bg-blue-100 text-blue-700'
+                        }`}
+                    >
+                        {product.grade === 'hobby' ? 'Hobby grade' : 'Toy grade'}
+                    </span>
+
+                    <h1 className='text-xl sm:text-2xl font-medium text-gray-900 mb-1 break-words'>
+                        {product.name}
+                    </h1>
+
+                    <p className='text-gray-500 text-sm mb-4 break-words'>
+                        {product.brand} {product.category}
+                    </p>
+
+                    <p className="text-xl sm:text-2xl font-medium text-gray-900 mb-4">
+                        {formatPrice(product.price)}
+                    </p>
+
+                    {/* WISHLIST */}
+                    <button
+                        type="button"
+                        onClick={() => {
+                            if (!user) {
+                                navigate('/login');
+                                return;
+                            }
+
+                            wishlistMutation.mutate();
+                        }}
+                        disabled={wishlistMutation.isPending}
+                        className="flex items-center gap-2 text-sm text-gray-600 hover:text-orange-600 transition mb-6"
+                    >
+                        <IconHeart
+                            size={18}
+                            className={isWishlisted ? "fill-orange-600 text-orange-600" : ""}
+                        />
+
+                        {isWishlisted
+                            ? 'Remove from wishlist'
+                            : 'Add to wishlist'}
+                    </button>
+
+                    {/* STOCK */}
+                    {isOutOfStock ? (
+                        <p className="text-red-600 text-sm font-medium mb-6">
+                            Out of stock
+                        </p>
+                    ) : (
+                        <p className="text-green-600 text-sm font-medium mb-6">
+                            In stock ({product.stock} available)
+                        </p>
+                    )}
+
+                    {/* QUANTITY */}
+                    {!isOutOfStock && (
+                        <div className="flex items-center gap-3 sm:gap-4 mb-6">
+                            <span className="text-sm text-gray-700">
+                                Quantity
+                            </span>
+
+                            <div className="flex items-center border border-gray-200 rounded-md">
+
+                                <button
+                                    type='button'
+                                    onClick={decreaseQty}
+                                    className="p-2 sm:p-2.5"
+                                >
+                                    <IconMinus size={14} />
+                                </button>
+
+                                <span className="px-4 text-sm">
+                                    {quantity}
+                                </span>
+
+                                <button
+                                    type='button'
+                                    onClick={increaseQty}
+                                    className="p-2 sm:p-2.5"
+                                >
+                                    <IconPlus size={14} />
+                                </button>
+
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ADD TO CART */}
+                    <button
+                        type='button'
+                        onClick={handleAddToCart}
+                        disabled={isOutOfStock || addToCartMutation.isPending}
+                        className={`w-full py-3 rounded-md text-sm font-medium mb-8 ${
+                            isOutOfStock
+                                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                : 'bg-orange-600 text-white hover:bg-orange-700 transition'
+                        }`}
+                    >
+                        {isOutOfStock
+                            ? 'Out of stock'
+                            : addToCartMutation.isPending
+                            ? 'Adding...'
+                            : 'Add to cart'}
+                    </button>
+
+                    {/* SPECS */}
+                    <div className="border-t border-gray-200 pt-6 mb-6">
+
+                        <h3 className="text-sm font-medium text-gray-900 mb-3">
+                            Specifications
+                        </h3>
+
+                        <div className="grid grid-cols-2 gap-y-2 text-sm">
+
+                            <span className="text-gray-500">Scale</span>
+                            <span className="text-gray-900 break-words">
+                                {product.specs.scale}
+                            </span>
+
+                            <span className="text-gray-500">Top speed</span>
+                            <span className="text-gray-900 break-words">
+                                {product.specs.speed}
+                            </span>
+
+                            <span className="text-gray-500">Battery</span>
+                            <span className="text-gray-900 break-words">
+                                {product.specs.battery}
+                            </span>
+
+                            <span className="text-gray-500">Runtime</span>
+                            <span className="text-gray-900 break-words">
+                                {product.specs.runtime}
+                            </span>
+
+                            <span className="text-gray-500">Drive type</span>
+                            <span className="text-gray-900 break-words">
+                                {product.specs.driveType}
+                            </span>
+
+                        </div>
+                    </div>
+
+                    {/* DESCRIPTION */}
+                    <div className="border-t border-gray-200 pt-6">
+
+                        <h3 className="text-sm font-medium text-gray-900 mb-3">
+                            Description
+                        </h3>
+
+                        <p className="text-gray-600 text-sm leading-relaxed break-words">
+                            {product.description}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {/* SIMILAR PRODUCTS */}
+                {similarProducts.length > 0 && (
+                    <div className="md:col-span-2 mt-4 sm:mt-8 border-t border-gray-200 pt-8">
+
+                        <h2 className="text-xl font-medium text-gray-900 mb-6">
+                            Similar Products
+                        </h2>
+
+                        <div className="flex gap-4 sm:gap-5 overflow-x-auto scrollbar-none pb-2">
+
+                            {similarProducts.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="w-[150px] sm:w-[180px] md:w-[200px] shrink-0"
+                                >
+                                    <ProductCard product={item} />
+                                </div>
+                            ))}
+
+                        </div>
+
+                    </div>
+                )}
+
+            </div>
+
+        </div>
+    )
 }
 
-export default ProductDetail
+export default ProductDetail;
