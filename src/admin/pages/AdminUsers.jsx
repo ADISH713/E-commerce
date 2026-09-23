@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { blockUser, unblockUser,} from '../../redux/slices/userSlice';    
 import { updateUser,} from '../../services/userServices';
@@ -7,6 +8,9 @@ import Pagination from '../components/Pagination';
 
 function AdminUsers() {
     const dispatch = useDispatch();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const search = searchParams.get('search') || '';
+    const statusFilter = searchParams.get('status') || 'all';
 
     const {
         items: users,
@@ -14,6 +18,12 @@ function AdminUsers() {
         error,
     } = useSelector((state) => state.users);
 
+    const filteredUser = users.filter((user)=>{
+        const matchesSearch = user.name.toLowerCase().includes(search.toLowerCase())||user.email.toLowerCase().includes(search.toLowerCase());
+        const matchesStatus = statusFilter === 'all' ? true :statusFilter === 'active' ? !user.blocked : user.blocked ;
+
+        return matchesSearch && matchesStatus;
+    })
 
     const {
         currentPage,
@@ -22,7 +32,7 @@ function AdminUsers() {
         goToPage,
         nextPage,
         previousPage,
-    } = usePagination(users, 5);
+    } = usePagination(filteredUser, 5);
 
     
     
@@ -62,11 +72,60 @@ function AdminUsers() {
 
     return (
         <div>
-            <h2 className="text-2xl font-semibold mb-6">
-                Users
-            </h2>
+            
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
 
-            {users.length === 0 ? (
+                <h2 className="text-2xl font-semibold">
+                    Users
+                </h2>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <input
+                        type="text"
+                        placeholder="Search users..."
+                        value={search}
+                        onChange={(e) => {
+                            const params = new URLSearchParams(searchParams);
+
+                            if (e.target.value) {
+                                params.set('search', e.target.value);
+                            } else {
+                                params.delete('search');
+                            }
+
+                            params.set('page', '1');
+
+                            setSearchParams(params);
+                        }}
+                        className="border rounded-lg px-4 py-2 w-full sm:w-64"
+                    />
+
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => {
+                            const params = new URLSearchParams(searchParams);
+
+                            if (e.target.value === 'all') {
+                                params.delete('status');
+                            } else {
+                                params.set('status', e.target.value);
+                            }
+
+                            params.set('page', '1');
+
+                            setSearchParams(params);
+                        }}
+                        className="border rounded-lg px-4 py-2"
+                    >
+                        <option value="all">All Users</option>
+                        <option value="active">Active Users</option>
+                        <option value="blocked">Blocked Users</option>
+                    </select>
+                </div>
+
+            </div>
+            
+            {filteredUser.length === 0 ? (
                 <p className="text-gray-500">
                     No users found.
                 </p>

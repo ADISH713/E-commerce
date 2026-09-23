@@ -17,3 +17,11 @@ export const getAllOrders = async () => {
     const { data } = await axios.get(API_URL);
     return data;
 };
+export const updateOrderStatus = async (id, status) => {
+    const { data } = await axios.patch(
+        `${API_URL}/${id}`,
+        { status }
+    );
+
+    return data;
+};

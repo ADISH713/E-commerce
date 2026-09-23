@@ -64,6 +64,7 @@ function AdminDashboard() {
                     </div>
                 ))}
             </div>
+            
             <RevenueChart orders={orders} />
 
             <div className="bg-white rounded-lg shadow p-6 mt-6">

@@ -73,7 +73,8 @@
       },
       "rating": 4.2,
       "reviewsCount": 21,
-      "grade": "hobby"
+      "grade": "hobby",
+      "deleted": false
     },
     {
       "id": "4",
@@ -362,16 +363,7 @@
         "/images/LC1.jpg"
       ],
       "id": "eJWGmo1nhDo",
-      "deleted": true
-    },
-    {
-      "name": "sd",
-      "category": "Drift Car",
-      "grade": "toy",
-      "price": 54,
-      "stock": 1,
-      "images": [],
-      "id": "oTvX5fy5Yg4"
+      "deleted": false
     }
   ],
   "users": [
@@ -388,7 +380,7 @@
       "email": "user@example.com",
       "password": "user123",
       "role": "user",
-      "blocked": false
+      "blocked": true
     },
     {
       "name": "rashik",
@@ -444,7 +436,7 @@
       "password": "a123123",
       "role": "user",
       "id": "baXcNS95iCQ",
-      "blocked": false
+      "blocked": true
     },
     {
       "name": "rethin",
@@ -482,7 +474,7 @@
       "subtotal": 2098,
       "shipping": 0,
       "total": 2098,
-      "status": "placed",
+      "status": "Delivered",
       "createdAt": "2026-04-06T09:51:24.703Z",
       "id": "9v8qwcdoWTc"
     },
@@ -512,7 +504,7 @@
       "subtotal": 21490,
       "shipping": 0,
       "total": 21490,
-      "status": "placed",
+      "status": "Processing",
       "createdAt": "2026-05-14T15:19:22.596Z",
       "id": "L1Y2YEmpKUE"
     },
@@ -542,7 +534,7 @@
       "subtotal": 14760,
       "shipping": 0,
       "total": 14760,
-      "status": "placed",
+      "status": "Delivered",
       "createdAt": "2026-05-18T03:55:18.710Z",
       "id": "Ti0uyWjN5JY"
     },
@@ -580,7 +572,7 @@
       "subtotal": 15659,
       "shipping": 0,
       "total": 15659,
-      "status": "placed",
+      "status": "Delivered",
       "createdAt": "2026-06-20T06:13:09.013Z",
       "id": "A1rzI6WKRDw"
     },
@@ -996,15 +988,65 @@
       "subtotal": 557,
       "shipping": 0,
       "total": 557,
-      "status": "placed",
+      "status": "Cancelled",
       "createdAt": "2026-09-15T08:58:05.251Z",
       "id": "qQgEffL9_V0"
+    },
+    {
+      "userId": "baXcNS95iCQ",
+      "items": [
+        {
+          "id": "6",
+          "name": "Truggy",
+          "price": 9990,
+          "image": "/images/hs1.jpg",
+          "stock": 5,
+          "quantity": 3
+        }
+      ],
+      "shippingAddress": {
+        "email": "adishadi7559@gmail.com",
+        "fullName": "ADISH C P",
+        "phone": "09995017713",
+        "addressLine1": "Mannur Valav",
+        "addressLine2": "",
+        "city": "Kozhikode",
+        "state": "Kerala",
+        "pincode": "673328"
+      },
+      "paymentMethod": "upi",
+      "subtotal": 29970,
+      "shipping": 0,
+      "total": 29970,
+      "status": "Cancelled",
+      "createdAt": "2026-09-22T10:56:35.811Z",
+      "id": "6GWpq8ACxFU"
+    }
+  ],
+  "reviews": [
+    {
+      "productId": "11",
+      "userId": "jmnd2An9eXA",
+      "userName": "Aswin",
+      "rating": 4,
+      "comment": "value for money.good quality product",
+      "createdAt": "2026-09-22T09:58:32.877Z",
+      "id": "wNgKPEDtgwU"
     }
   ],
   "carts": [
     {
       "userId": "jmnd2An9eXA",
-      "items": [],
+      "items": [
+        {
+          "id": "1",
+          "name": "ZP1005 RC Offroad Car",
+          "price": 14490,
+          "image": "/images/hb1.jpg",
+          "stock": 16,
+          "quantity": 1
+        }
+      ],
       "id": "gVWCbiaoMNE"
     },
     {
@@ -1071,6 +1113,11 @@
       "userId": "1",
       "items": [],
       "id": "_CdWnLy4u34"
+    },
+    {
+      "userId": "baXcNS95iCQ",
+      "items": [],
+      "id": "sJXENaOMEcU"
     }
   ],
   "wishlists": [

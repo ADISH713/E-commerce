@@ -1,12 +1,12 @@
-import React, { useState, useEffect} from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState} from 'react';
+import { useNavigate,useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     softDeleteProduct,
     permanentlyDeleteProduct,
     updateProduct as updateProductService,
 } from '../../services/productServices';
-import {setProducts,setLoading,setError,softDeleteProduct as softDeleteProductAction,deleteProduct, restoreProduct as restoreProductAction,updateProduct as updateProductAction,} from '../../redux/slices/productSlice';
+import {softDeleteProduct as softDeleteProductAction,deleteProduct, restoreProduct as restoreProductAction,updateProduct as updateProductAction,} from '../../redux/slices/productSlice';
 import Swal from 'sweetalert2';
 import { usePagination } from '../../hooks/usePagination';
 import Pagination from '../components/Pagination';
@@ -14,13 +14,22 @@ import Pagination from '../components/Pagination';
 function AdminProducts() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-
+    const [searchParams, setSearchParams] = useSearchParams();
+    const categorySort = searchParams.get("category") || "all";
     const {items: products,isLoading,error,} = useSelector((state) => state.products);
+
 
     const activeProducts = products.filter(
         (product) => !product.deleted
         );
+
+    const filteredProducts = activeProducts.filter((product) =>
+        categorySort === "all"
+            ? true
+            : product.category === categorySort
+    );
+     
+
         const {
         currentPage,
         totalPages,
@@ -28,11 +37,7 @@ function AdminProducts() {
         goToPage,
         nextPage,
         previousPage,
-    } = usePagination(activeProducts, 5);
-
-    const deletedProducts = products.filter(
-        (product) => product.deleted
-    );
+    } = usePagination(filteredProducts, 5);
 
 
     
@@ -63,7 +68,7 @@ function AdminProducts() {
         });
 
         if (result.isConfirmed) {
-            // Soft delete
+            
             try {
                 const updatedProduct = await softDeleteProduct(product.id);
 
@@ -83,7 +88,7 @@ function AdminProducts() {
         }
 
         if (result.isDenied) {
-            // Permanent delete
+            
             const confirmPermanent = await Swal.fire({
                 title: 'Permanently delete?',
                 text: 'This product cannot be recovered after permanent deletion.',
@@ -116,64 +121,49 @@ function AdminProducts() {
         }
     };
     
-
-   const handleRestore = async (productId) => {
-    try {
-        const restoredProduct = await updateProductService(
-            productId,
-            { deleted: false }
-        );
-
-        dispatch(restoreProductAction(restoredProduct.id));
-    } catch (error) {
-        console.error(error);
-    }
-};
-const handlePermanentDelete = async (productId) => {
-    const result = await Swal.fire({
-        title: 'Permanently delete?',
-        text: 'This product cannot be recovered after permanent deletion.',
-        icon: 'error',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete permanently',
-        cancelButtonText: 'Cancel',
-        confirmButtonColor: '#dc2626',
-    });
-
-    if (!result.isConfirmed) return;
-
-    try {
-        await permanentlyDeleteProduct(productId);
-
-        dispatch(deleteProduct(productId));
-
-        Swal.fire({
-            title: 'Deleted!',
-            text: 'Product permanently deleted.',
-            icon: 'success',
-            confirmButtonColor: '#f97316',
-        });
-    } catch (error) {
-        console.error(
-            'Failed to permanently delete product:',
-            error
-        );
-    }
-};
    
 return (
-        <div>
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">
-                    Products
-                </h2>
+        <div>        
 
-                <button className="bg-orange-600 text-white px-4 py-2 rounded-lg"
-                onClick={() => navigate('/admin/products/add')}>
-                    Add Product
-                </button>
-            </div>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <h2 className="text-2xl font-bold">
+        Products
+    </h2>
 
+    <div className="flex items-center gap-3">
+       
+        <select
+            value={categorySort}
+            onChange={(e) => {
+                const params = new URLSearchParams(searchParams);
+
+                if (e.target.value === "all") {
+                    params.delete("category");
+                } else {
+                    params.set("category", e.target.value);
+                }
+
+                params.set("page", "1");
+                setSearchParams(params);
+            }}
+            className="border border-orange-400 rounded-md px-3 py-2"
+        >
+            <option value="all">All Categories</option>
+            <option value="Off-Road Buggy">Off-Road Buggy</option>
+            <option value="Drift car">Drift Car</option>
+            <option value="Monster Truck">Monster Truck</option>
+            <option value="Rock Crawler">Rock Crawler</option>
+        </select>
+
+        <button
+            className="bg-orange-600 text-white px-4 py-2 rounded-lg"
+            onClick={() => navigate('/admin/products/add')}
+        >
+            Add Product
+        </button>
+    </div>
+</div>
+            
             <div className="bg-white rounded-lg shadow overflow-x-auto">
                 <table className="w-full">
                     <thead>
@@ -247,79 +237,6 @@ return (
                 nextPage={nextPage}
                 previousPage={previousPage}
             />
-
-            {/* Trash */}
-<div className="mt-10">
-    <h2 className="text-2xl font-bold mb-4">
-        🗑 Trash
-    </h2>
-
-    {deletedProducts.length === 0 ? (
-        <p className="text-gray-500">
-            No deleted products.
-        </p>
-    ) : (
-        <div className="bg-white rounded-lg shadow overflow-x-auto">
-            <table className="w-full">
-                <thead>
-                    <tr className="border-b">
-                        <th className="text-left p-4">Image</th>
-                        <th className="text-left p-4">Name</th>
-                        <th className="text-left p-4">Category</th>
-                        <th className="text-left p-4">Price</th>
-                        <th className="text-left p-4">Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {deletedProducts.map((product) => (
-                        <tr key={product.id} className="border-b">
-                            <td className="p-4">
-                                <img
-                                    src={product.images?.[0]}
-                                    alt={product.name}
-                                    className="w-16 h-16 object-contain rounded"
-                                />
-                            </td>
-
-                            <td className="p-4">
-                                {product.name}
-                            </td>
-
-                            <td className="p-4">
-                                {product.category}
-                            </td>
-
-                            <td className="p-4">
-                                ₹{product.price}
-                            </td>
-
-                            <td className="p-4">
-                                <button
-                                    onClick={() =>
-                                        handleRestore(product.id)
-                                    }
-                                    className="text-green-600 mr-4"
-                                >
-                                    Restore
-                                </button>
-
-                                <button
-                                    onClick={() =>
-                                        handlePermanentDelete(product.id)
-                                    }
-                                    className="text-red-600"
-                                >
-                                    Permanent Delete
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    )}
-</div>
         </div>
     );
 }

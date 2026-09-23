@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createOrder } from '../services/orderServices';
 import { clearCartState } from '../redux/slices/cartSlice';
 import { updateCart } from '../services/cartServices';
+import {getProductById,updateProduct} from '../services/productServices';
 import toast from 'react-hot-toast';
 
 function Checkout() {
@@ -49,8 +50,27 @@ function Checkout() {
 
         setStep(2);
     };
-    const handlePlaceOrder = async () => {
+  
+        const handlePlaceOrder = async () => {
     try {
+        // Get latest stock from backend
+        const latestProducts = await Promise.all(
+            items.map((item) =>
+                getProductById(item.id)
+            )
+        );
+
+        // Check stock before placing order
+        latestProducts.forEach((product, index) => {
+            const orderedQuantity = items[index].quantity;
+
+            if (orderedQuantity > product.stock) {
+                throw new Error(
+                    `Only ${product.stock} ${product.name} available.`
+                );
+            }
+        });
+
         const orderData = {
             userId: user.id,
             items: items,
@@ -59,21 +79,38 @@ function Checkout() {
             subtotal: subtotal,
             shipping: shipping,
             total: total,
-            status: "placed",
+            status: "pending",
             createdAt: new Date().toISOString(),
         };
 
+        // 1. Create order
         await createOrder(orderData);
 
-        if (cartId){
-            await updateCart(cartId,[]);
+        // 2. Reduce stock
+        await Promise.all(
+            latestProducts.map((product, index) => {
+                const orderedQuantity = items[index].quantity;
+
+                return updateProduct(product.id, {
+                    stock: product.stock - orderedQuantity,
+                });
+            })
+        );
+
+        // 3. Clear cart
+        if (cartId) {
+            await updateCart(cartId, []);
         }
+
         dispatch(clearCartState());
 
         toast.success("Order placed successfully!");
+
     } catch (error) {
         console.error("Failed to place order:", error);
-        toast.error("Failed to place order. Please try again.");
+        toast.error(
+            error.message || "Failed to place order. Please try again."
+        );
     }
 };
 

@@ -1,5 +1,5 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import React, { useState,useRef } from 'react'
+
+import React, { useState, useRef, } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 import { getProductById } from '../services/productServices';
 import { formatPrice } from '../utils/formatPrice';
@@ -13,6 +13,7 @@ import { IconHeart } from '@tabler/icons-react';
 import toast from 'react-hot-toast';
 import { useProducts } from '../hooks/useProducts';
 import ProductCard from '../components/ProductCard';
+import { useMutation, useQuery, } from "@tanstack/react-query";
 
 function ProductDetail() {
     const {id} = useParams();
@@ -39,8 +40,7 @@ function ProductDetail() {
 
      const cart = useSelector((state) => state.cart);
 
-   
-   
+      
 const addToCartMutation = useMutation({
   mutationFn: async () => {
 
@@ -146,6 +146,8 @@ const wishlistMutation = useMutation({
     console.error('Wishlist error:', error);
   },
 });
+
+
     if(isLoading) return <p className='px-8 py-6'>Loading product...</p>;
     if(isError) return <p className='px-8 py-6 text-red-600'>Error:{error.message}</p>
 
@@ -207,22 +209,26 @@ const handleAddToCart = () => {
                         </button>
                     ))}
                 </div>
+                
             )}
-            <div className="mt-16 text-left pl-14">
-            <h2 className='text-3xl pl-7 underline'>Rating & Review</h2>
-            <p className="text-9xl font-medium text-gray-900 ">
-              {product.rating}<span>/5</span>
-            </p>
-            
+           <div className="mt-16 text-left pl-14">
+              <h2 className="text-3xl pl-7 underline">
+                  Rating & Review
+              </h2>
 
-            <div className="text-orange-500 text-6xl tracking-wide mt-1 pl-9">
-              {'★'.repeat(Math.round(product.rating))}
-            </div>
+              <p className="text-9xl font-medium text-gray-900">
+                  {product.rating}<span>/5</span>
+              </p>
 
-            <p className="text-xl text-gray-80000 mt-1 pl-20">
-              ({product.reviewsCount} reviews)
-            </p>
+              <div className="text-orange-500 text-6xl tracking-wide mt-1 pl-9">
+                  {'★'.repeat(Math.round(product.rating))}
+              </div>
+
+              <p className="text-xl text-gray-800 mt-1 pl-20">
+                  ({product.reviewsCount} reviews)
+              </p>
           </div>
+          
         </div>
       
       <div>
@@ -317,15 +323,13 @@ const handleAddToCart = () => {
             <h2 className="text-xl font-medium text-gray-900 mb-6">
                 Similar Products
             </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {similarProducts.map((item) => (
-                    <ProductCard
-                        key={item.id}
-                        product={item}
-                    />
-                ))}
-            </div>
+                  <div className="flex gap-5">
+                    {similarProducts.map((item) => (
+                        <div key={item.id} className="w-[152px] shrink-0">
+                            <ProductCard product={item} />
+                        </div>
+                    ))}
+                </div>
         </div>
     )}
     </div>
