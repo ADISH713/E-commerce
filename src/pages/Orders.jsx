@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getOrdersByUserId } from "../services/orderServices";
 import { formatPrice } from "../utils/formatPrice";
+import { getProductById, updateProduct } from "../services/productServices";
+import { updateOrderStatus } from "../services/orderServices";
+import Swal from "sweetalert2";
 
 function Orders() {
   const user = useSelector((state) => state.auth.user);
@@ -27,6 +30,63 @@ function Orders() {
 
     fetchOrders();
   }, [user]);
+
+  const handleCancelOrder = async (orderId) => {
+        const result = await Swal.fire({
+          title: "Cancel Order?",
+          text: "Are you sure you want to cancel this order?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, Cancel Order",
+          cancelButtonText: "Keep Order",
+          confirmButtonColor: "#dc2626",
+          cancelButtonColor: "#6b7280",
+      });
+
+      if (!result.isConfirmed) {
+          return;
+      }
+
+    try {
+        const order = orders.find(
+            (order) => String(order.id) === String(orderId)
+        );
+
+        if (!order) {
+            throw new Error("Order not found");
+        }
+
+        if (
+            order.status === "Delivered" ||
+            order.status === "Cancelled"
+        ) {
+            return;
+        }
+
+        await Promise.all(
+            order.items.map(async (item) => {
+                const product = await getProductById(item.id);
+
+                return updateProduct(product.id, {
+                    stock: product.stock + item.quantity,
+                });
+            })
+        );
+
+        await updateOrderStatus(orderId, "Cancelled");
+
+        
+        setOrders((prevOrders) =>
+            prevOrders.map((order) =>
+                String(order.id) === String(orderId)
+                    ? { ...order, status: "Cancelled" }
+                    : order
+            )
+        );
+    } catch (error) {
+        console.error("Failed to cancel order:", error);
+    }
+};
 
   if (loading) {
     return (
@@ -143,23 +203,41 @@ function Orders() {
               </div>
 
               {/* VIEW DETAILS */}
-              <div className="mt-5 flex justify-start sm:justify-end">
+            
+              <div className="mt-5 flex flex-col sm:flex-row justify-between gap-3">
+
+                <div>
+                    {order.status !== "Delivered" &&
+                        order.status !== "Cancelled" && (
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    handleCancelOrder(order.id)
+                                }
+                                className="text-sm text-red-600 font-medium hover:text-red-700"
+                            >
+                                Cancel Order
+                            </button>
+                        )}
+                </div>
 
                 <button
-                  type="button"
-                  onClick={() =>
-                    setExpandedOrder(
-                      expandedOrder === order.id ? null : order.id
-                    )
-                  }
-                  className="text-sm text-orange-600 font-medium hover:text-orange-700"
+                    type="button"
+                    onClick={() =>
+                        setExpandedOrder(
+                            expandedOrder === order.id
+                                ? null
+                                : order.id
+                        )
+                    }
+                    className="text-sm text-orange-600 font-medium hover:text-orange-700"
                 >
-                  {expandedOrder === order.id
-                    ? "Hide Details"
-                    : "View Details"}
+                    {expandedOrder === order.id
+                        ? "Hide Details"
+                        : "View Details"}
                 </button>
 
-              </div>
+            </div>
 
               {/* EXPANDED DETAILS */}
               {expandedOrder === order.id && (

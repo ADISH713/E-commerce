@@ -1,23 +1,24 @@
 import { useState } from "react";
 
-export const useProductForm = () => {
-    const [formData, setFormData] = useState({
-        name: "",
-        brand: "",
-        category: "",
-        customCategory: "",
-        grade: "",
-        price: "",
-        stock: "",
-        images: ["", "", "", ""],
-        scale: "",
-        speed: "",
-        battery: "",
-        runtime: "",
-        driveType: "",
-        description: "",
-    });
+const initialFormData = {
+    name: "",
+    brand: "",
+    category: "",
+    customCategory: "",
+    grade: "",
+    price: "",
+    stock: "",
+    images: ["", "", "", ""],
+    scale: "",
+    speed: "",
+    battery: "",
+    runtime: "",
+    driveType: "",
+    description: "",
+};
 
+export const useProductForm = () => {
+    const [formData, setFormData] = useState(initialFormData);
     const [errors, setErrors] = useState({});
 
     const handleChange = (field, value) => {
@@ -25,6 +26,11 @@ export const useProductForm = () => {
             ...prev,
             [field]: value,
         }));
+    };
+
+    const resetForm = () => {
+        setFormData(initialFormData);
+        setErrors({});
     };
 
     const validate = () => {
@@ -55,16 +61,14 @@ export const useProductForm = () => {
         }
 
         if (!formData.price || Number(formData.price) <= 0) {
-            newErrors.price =
-                "Price must be greater than 0";
+            newErrors.price = "Price must be greater than 0";
         }
 
         if (
             formData.stock === "" ||
             Number(formData.stock) < 0
         ) {
-            newErrors.stock =
-                "Stock cannot be negative";
+            newErrors.stock = "Stock cannot be negative";
         }
 
         const validImages = formData.images.filter(
@@ -93,13 +97,11 @@ export const useProductForm = () => {
         }
 
         if (!formData.driveType.trim()) {
-            newErrors.driveType =
-                "Drive type is required";
+            newErrors.driveType = "Drive type is required";
         }
 
         if (!formData.description.trim()) {
-            newErrors.description =
-                "Description is required";
+            newErrors.description = "Description is required";
         }
 
         setErrors(newErrors);
@@ -145,6 +147,7 @@ export const useProductForm = () => {
         errors,
         setErrors,
         handleChange,
+        resetForm,
         validate,
         getProductData,
     };

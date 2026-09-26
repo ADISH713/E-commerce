@@ -44,77 +44,112 @@ function AdminDashboard() {
 
     return (
         <div className="w-full min-w-0">
-            <h2 className="text-xl sm:text-2xl font-semibold mb-5 sm:mb-6">
-                Dashboard
-            </h2>
 
+            {/* Page heading */}
+            <div className="mb-6 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
+                    Dashboard
+                </h2>
+
+                <p className="text-sm text-gray-500 mt-1">
+                    Overview of your TORQUE store
+                </p>
+            </div>
+
+            {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+
                 {stats.map((stat) => (
                     <div
                         key={stat.title}
-                        className="bg-white rounded-lg shadow p-4 sm:p-5 md:p-6"
+                        className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 md:p-6 shadow-sm hover:shadow-md hover:border-orange-200 transition duration-200"
                     >
                         <p className="text-xs sm:text-sm text-gray-500">
                             {stat.title}
                         </p>
 
-                        <p className="text-2xl sm:text-3xl font-bold mt-2">
+                        <p className="text-2xl sm:text-3xl font-semibold text-gray-900 mt-2">
                             {stat.value}
                         </p>
+
+                        <div className="w-8 h-1 bg-orange-500 rounded-full mt-3" />
                     </div>
                 ))}
+
             </div>
 
+            {/* Revenue */}
             <RevenueChart orders={orders} />
 
-            <div className="bg-white rounded-lg shadow p-4 sm:p-5 md:p-6 mt-5 sm:mt-6">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-                    <h3 className="text-lg sm:text-xl font-semibold">
-                        Recent Orders
-                    </h3>
+            {/* Recent Orders */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm mt-6 sm:mt-8 overflow-hidden">
+
+                {/* Header */}
+                <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
+                    <div>
+                        <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
+                            Recent Orders
+                        </h3>
+
+                        <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                            Latest orders placed by customers
+                        </p>
+                    </div>
 
                     <button
                         onClick={() =>
                             navigate('/admin/orders')
                         }
-                        className="text-orange-600 font-medium hover:text-orange-700 transition text-sm sm:text-base self-start sm:self-auto"
+                        className="self-start sm:self-auto text-sm font-medium text-orange-600 hover:text-orange-700 transition"
                     >
                         View All Orders →
                     </button>
+
                 </div>
 
                 {orders.length === 0 ? (
-                    <p className="text-gray-500 text-sm sm:text-base">
-                        No orders found.
-                    </p>
+
+                    <div className="px-4 sm:px-6 py-10 text-center">
+                        <p className="text-sm text-gray-500">
+                            No orders found.
+                        </p>
+                    </div>
+
                 ) : (
+
                     <div className="overflow-x-auto scrollbar-none">
+
                         <table className="w-full min-w-[700px] text-xs sm:text-sm">
+
                             <thead>
-                                <tr className="border-b text-left">
-                                    <th className="py-2.5 sm:py-3">
+                                <tr className="bg-gray-50 border-b border-gray-100 text-left">
+
+                                    <th className="px-4 sm:px-6 py-3 font-medium text-gray-500">
                                         Order ID
                                     </th>
 
-                                    <th className="py-2.5 sm:py-3">
+                                    <th className="px-4 sm:px-6 py-3 font-medium text-gray-500">
                                         Customer
                                     </th>
 
-                                    <th className="py-2.5 sm:py-3">
+                                    <th className="px-4 sm:px-6 py-3 font-medium text-gray-500">
                                         Total
                                     </th>
 
-                                    <th className="py-2.5 sm:py-3">
+                                    <th className="px-4 sm:px-6 py-3 font-medium text-gray-500">
                                         Status
                                     </th>
 
-                                    <th className="py-2.5 sm:py-3">
+                                    <th className="px-4 sm:px-6 py-3 font-medium text-gray-500">
                                         Date
                                     </th>
+
                                 </tr>
                             </thead>
 
                             <tbody>
+
                                 {orders
                                     .slice()
                                     .sort(
@@ -124,31 +159,29 @@ function AdminDashboard() {
                                     )
                                     .slice(0, 5)
                                     .map((order) => (
+
                                         <tr
                                             key={order.id}
-                                            className="border-b last:border-b-0"
+                                            className="border-b border-gray-100 last:border-b-0 hover:bg-orange-50/40 transition"
                                         >
-                                            <td className="py-2.5 sm:py-3 break-all">
+
+                                            <td className="px-4 sm:px-6 py-3 sm:py-4 text-gray-700 break-all">
                                                 {order.id}
                                             </td>
 
-                                            <td className="py-2.5 sm:py-3 break-words max-w-[180px]">
+                                            <td className="px-4 sm:px-6 py-3 sm:py-4 text-gray-700 break-words max-w-[180px]">
                                                 {order.shippingAddress?.fullName ||
                                                     'Unknown'}
                                             </td>
 
-                                            <td className="py-2.5 sm:py-3 font-medium whitespace-nowrap">
-                                                ₹
-                                                {Number(
-                                                    order.total
-                                                ).toLocaleString(
-                                                    'en-IN'
-                                                )}
+                                            <td className="px-4 sm:px-6 py-3 sm:py-4 font-medium text-gray-900 whitespace-nowrap">
+                                                ₹{Number(order.total).toLocaleString('en-IN')}
                                             </td>
 
-                                            <td className="py-2.5 sm:py-3">
+                                            <td className="px-4 sm:px-6 py-3 sm:py-4">
+
                                                 <span
-                                                    className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium whitespace-nowrap ${
+                                                    className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-medium whitespace-nowrap ${
                                                         order.status ===
                                                         'placed'
                                                             ? 'bg-orange-100 text-orange-700'
@@ -161,27 +194,36 @@ function AdminDashboard() {
                                                             : order.status ===
                                                               'cancelled'
                                                             ? 'bg-red-100 text-red-700'
-                                                            : 'bg-gray-100 text-gray-700'
+                                                            : 'bg-gray-100 text-gray-600'
                                                     }`}
                                                 >
                                                     {order.status}
                                                 </span>
+
                                             </td>
 
-                                            <td className="py-2.5 sm:py-3 whitespace-nowrap">
+                                            <td className="px-4 sm:px-6 py-3 sm:py-4 text-gray-500 whitespace-nowrap">
                                                 {new Date(
                                                     order.createdAt
                                                 ).toLocaleDateString(
                                                     'en-IN'
                                                 )}
                                             </td>
+
                                         </tr>
+
                                     ))}
+
                             </tbody>
+
                         </table>
+
                     </div>
+
                 )}
+
             </div>
+
         </div>
     );
 }

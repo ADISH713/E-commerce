@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 import { useProducts } from '../hooks/useProducts';
 import ProductCard from '../components/ProductCard';
 import { useMutation, useQuery, } from "@tanstack/react-query";
+import { useCart } from '../hooks/useCart';
 
 function ProductDetail() {
     const { id } = useParams();
@@ -22,7 +23,7 @@ function ProductDetail() {
     const navigate = useNavigate();
     const dispatch = useDispatch()
 
-    const user = useSelector((state) => state.auth.user);
+    const { user, cart } = useCart();
     const wishlist = useSelector((state) => state.wishlist);
 
     const { data: products = [] } = useProducts();
@@ -36,7 +37,7 @@ function ProductDetail() {
         (item) => String(item.id) === String(product?.id)
     ) || false;
 
-    const cart = useSelector((state) => state.cart);
+    
 
     const addToCartMutation = useMutation({
         mutationFn: async () => {
@@ -239,11 +240,11 @@ function ProductDetail() {
                         </h2>
 
                         <p className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-medium text-gray-900">
-                            {product.rating}<span>/5</span>
+                            {product.rating ?? 0}<span>/5</span>
                         </p>
 
                         <div className="text-orange-500 text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-wide mt-1 pl-0 sm:pl-4">
-                            {'★'.repeat(Math.round(product.rating))}
+                            {'★'.repeat(Math.round(product.rating ?? 0))}
                         </div>
 
                         <p className="text-base sm:text-lg md:text-xl text-gray-800 mt-1 pl-0 sm:pl-6 md:pl-10 lg:pl-20">

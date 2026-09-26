@@ -10,8 +10,7 @@ export const usePagination = (items, itemsPerPage = 5) => {
         items.length / itemsPerPage
     );
 
-    const startIndex =
-        (currentPage - 1) * itemsPerPage;
+    const startIndex = (currentPage - 1) * itemsPerPage;
 
     const paginatedItems = items.slice(
         startIndex,

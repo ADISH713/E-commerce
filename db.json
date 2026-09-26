@@ -23,7 +23,8 @@
       },
       "rating": 4.5,
       "reviewsCount": 32,
-      "grade": "hobby"
+      "grade": "hobby",
+      "deleted": false
     },
     {
       "id": "2",
@@ -31,7 +32,7 @@
       "category": "Rock Crawler",
       "brand": "FMS",
       "price": 21490,
-      "stock": 8,
+      "stock": 9,
       "images": [
         "/images/LC1.jpg",
         "/images/LC2.jpg",
@@ -56,7 +57,7 @@
       "category": "Drift car",
       "brand": "HNR",
       "price": 34990,
-      "stock": 8,
+      "stock": 7,
       "images": [
         "/images/hn1.jpg",
         "/images/hn2.jpg",
@@ -82,7 +83,7 @@
       "category": "Monster Truck",
       "brand": "FMS",
       "price": 24990,
-      "stock": 2,
+      "stock": 0,
       "images": [
         "/images/ford1.jpg",
         "/images/ford2.jpg",
@@ -334,7 +335,7 @@
       "category": "Drift car",
       "brand": "TAMIYA",
       "price": 14760,
-      "stock": 23,
+      "stock": 24,
       "images": [
         "/images/por1.webp",
         "/images/por2.webp",
@@ -364,6 +365,26 @@
       ],
       "id": "eJWGmo1nhDo",
       "deleted": false
+    },
+    {
+      "name": "Terxt Product 2",
+      "brand": "texter",
+      "category": "Off-Road Buggy",
+      "grade": "toy",
+      "price": 3000,
+      "stock": 12,
+      "images": [
+        "/images/por1.webp"
+      ],
+      "specs": {
+        "scale": "1:15",
+        "speed": "35",
+        "battery": "7.4 1500 MaH",
+        "runtime": "30 minutes",
+        "driveType": "2 wd"
+      },
+      "description": "Best car for off roading",
+      "id": "Zrf-OELmEpE"
     }
   ],
   "users": [
@@ -380,7 +401,7 @@
       "email": "user@example.com",
       "password": "user123",
       "role": "user",
-      "blocked": true
+      "blocked": false
     },
     {
       "name": "rashik",
@@ -504,7 +525,7 @@
       "subtotal": 21490,
       "shipping": 0,
       "total": 21490,
-      "status": "Processing",
+      "status": "Cancelled",
       "createdAt": "2026-05-14T15:19:22.596Z",
       "id": "L1Y2YEmpKUE"
     },
@@ -610,7 +631,7 @@
       "subtotal": 39750,
       "shipping": 0,
       "total": 39750,
-      "status": "placed",
+      "status": "Cancelled",
       "createdAt": "2026-07-03T07:56:14.103Z",
       "id": "elyFuQp_Ilo"
     },
@@ -928,7 +949,7 @@
       "subtotal": 6294,
       "shipping": 0,
       "total": 6294,
-      "status": "placed",
+      "status": "Delivered",
       "createdAt": "2026-09-15T05:14:57.646Z",
       "id": "66Tt6_oDU2c"
     },
@@ -1044,7 +1065,7 @@
           "price": 14490,
           "image": "/images/hb1.jpg",
           "stock": 16,
-          "quantity": 1
+          "quantity": 3
         }
       ],
       "id": "gVWCbiaoMNE"

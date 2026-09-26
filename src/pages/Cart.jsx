@@ -6,11 +6,12 @@ import { IconMinus, IconPlus, IconTrash } from '@tabler/icons-react';
 import { updateCart } from '../services/cartServices';
 import { setCart } from '../redux/slices/cartSlice';
 import Swal from 'sweetalert2';
+import { useCart } from '../hooks/useCart';
 
 function Cart() {
     const dispatch = useDispatch();
-    const { items, cartId } = useSelector((state) => state.cart);
-
+    const {cart} = useCart() 
+    const { items, cartId } = cart;
     const subtotal = items.reduce(
         (total, item) => total + item.price * item.quantity,
         0

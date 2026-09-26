@@ -16,11 +16,12 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useProducts } from '../hooks/useProducts';
 import Swal from 'sweetalert2';
+import { useCart } from '../hooks/useCart';
 
 function Navbar() {
   const [searchParams] = useSearchParams();
-
-  const items = useSelector((state) => state.cart.items);
+  const { user, cart } = useCart();
+  const items = cart.items;
 
   const cartCount = items.reduce(
     (total, item) => total + item.quantity,
@@ -28,7 +29,6 @@ function Navbar() {
   );
 
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
 
   const [search, setSearch] = useState('');
   const [showProfile, setShowProfile] = useState(false);

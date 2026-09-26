@@ -74,14 +74,14 @@ function Checkout() {
 
     const handlePlaceOrder = async () => {
         try {
-            // Get latest stock from backend
+         
             const latestProducts = await Promise.all(
                 items.map((item) =>
                     getProductById(item.id)
                 )
             );
 
-            // Check stock before placing order
+            
             latestProducts.forEach((product, index) => {
                 const orderedQuantity = items[index].quantity;
 
@@ -104,10 +104,8 @@ function Checkout() {
                 createdAt: new Date().toISOString(),
             };
 
-            // 1. Create order
             await createOrder(orderData);
 
-            // 2. Reduce stock
             await Promise.all(
                 latestProducts.map((product, index) => {
                     const orderedQuantity = items[index].quantity;
@@ -118,7 +116,6 @@ function Checkout() {
                 })
             );
 
-            // 3. Clear cart
             if (cartId) {
                 await updateCart(cartId, []);
             }
