@@ -1,0 +1,125 @@
+import { create } from "motion/react-m";
+import Products from "../models/productSchema.js";
+
+export const getProducts = async (req,res,next) =>{
+    try{
+        const { search,category,page = 1,limit =12,sort } = req.query;
+
+        const filter = {isActive:true};
+
+        if (category) filter.category = category;
+        
+        if(search){
+            filter.name = {$regex:search, $options:"i"};
+        }
+
+        const products = await Products.find(filter)
+                        .sort(sort === "price-low" ? {price:1} : sort === "price-high" ? {price: -1} : {createdAt: -1})
+                        .skip((Number(page)-1) * Number(limit))
+                        .limit(Number(limit));
+
+        const total = await Products.countDocuments(filter); 
+
+        res.status(200).json({
+            success:true,
+            message:"Products fetched succesfully",
+            data:{
+                products,
+                total,
+                page:Number(page),
+                pages:Math.ceil(total/Number(limit))
+            }
+        })
+    }
+    catch(error){
+        next(error);
+    }
+};
+
+
+export const getProductByID = async(req,res,next)=>{
+    try{
+        const product = await Products.findOne({
+            _id:req.params.id,
+            isActive:true
+        });
+        if(!product){
+            return res.status(404).json({
+                success:false,
+                message:"Product not found",
+                data:null
+            });
+        }
+         res.status(200).json({
+            success: true,
+            message: "Product fetched successfully",
+            data: product
+         })
+    }catch(error){
+        next(error);
+    }
+};
+
+export const createProduct = async (req,res,next) =>{
+    try{
+        const product = await Product.create(req.body);
+        res.status(201).json({
+            success:true,
+            message:"Product created successfully",
+            data:product
+        })
+    } catch(error){
+        next(error);
+    }
+}
+
+export const updateProduct = async (req,res,next)=>{
+    try{
+        const product = await Products.findOneAndUpdate(
+            {_id:req.params.id,isActive:true},
+            req.body,
+            {new:true,runValidators:true}
+        );
+
+        if(!product){
+            return res.status(404).json({
+                success:false,
+                message:"Product not found",
+                data:null
+            });
+        }
+        res.status(200).json({
+            success:true,
+            message:"Product updated successfully",
+            data:product
+        });
+    }catch(error){
+        next(error);
+    }
+};
+
+export const deleteProduct = async (req, res, next) => {
+    try {
+        const product = await Products.findOneAndUpdate(
+            { _id: req.params.id, isActive: true },
+            { isActive: false },
+            { new: true }
+        );
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found",
+                data: null
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Product deleted successfully",
+            data: null
+        });
+    } catch (error) {
+        next(error);
+    }
+};

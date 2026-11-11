@@ -252,7 +252,8 @@
       },
       "rating": 3.7,
       "reviewsCount": 12,
-      "grade": "toy"
+      "grade": "toy",
+      "deleted": false
     },
     {
       "id": "12",
