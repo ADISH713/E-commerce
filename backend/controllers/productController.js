@@ -2,18 +2,23 @@ import Products from "../models/productModel.js";
 
 export const getProducts = async (req,res,next) =>{
     try{
-        const { search,category,page = 1,limit =12,sort } = req.query;
-
+        const { search,category,page = 1,limit =12,sort,order } = req.query;
         const filter = {isActive:true};
 
         if (category) filter.category = category;
         
         if(search){
-            filter.name = {$regex:search, $options:"i"};
+            const safe = String(search).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            filter.name = {$regex:safe, $options:"i"};
         }
 
+        let sortOption = {createdAt: -1};
+        if (sort === "price") sortOption = {price: order === "desc" ? -1 : 1};
+        else if (sort === "price-low") sortOption = {price: 1};
+        else if (sort === "price-high") sortOption = {price: -1};
+
         const products = await Products.find(filter)
-                        .sort(sort === "price-low" ? {price:1} : sort === "price-high" ? {price: -1} : {createdAt: -1})
+                        .sort(sortOption)
                         .skip((Number(page)-1) * Number(limit))
                         .limit(Number(limit));
 
@@ -119,6 +124,19 @@ export const deleteProduct = async (req, res, next) => {
             data: null
         });
     } catch (error) {
+        next(error);
+    }
+};
+
+export const getCategories = async (req,res,next)=>{
+    try{
+        const categories = await Products.distinct("category",{isActive:true});
+        res.status(200).json({
+            success:true,
+            message:"Categories fetched successfully",
+            data:categories.sort()
+        });
+    }catch(error){
         next(error);
     }
 };
