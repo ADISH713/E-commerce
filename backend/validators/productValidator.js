@@ -1,6 +1,6 @@
 import {body} from "express-validator";
 
-export const createProduct = [
+export const createProductValidator = [
     body("name").trim().isLength({min:2}).withMessage("Name must contain at least 2 characters"),
     body("description").trim().notEmpty().withMessage("Description is required"),
     body("price").isFloat({min:1}).withMessage("Price must beat least 1"),

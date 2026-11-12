@@ -7,16 +7,17 @@ const errorMiddleware = (err, req, res, next) => {
 
     if (err.name === "ValidationError") {
         statusCode = 400;
+        message = err.message;
     }
 
     if (err.code === 11000) {
         statusCode = 409;
-        message = "Product already exists";
+        message = "Product already exists in this category";
     }
 
     if (err.name === "CastError") {
         statusCode = 400;
-        message = "Invalid resource ID";
+        message = "Invalid product ID";
     }
 
     res.status(statusCode).json({

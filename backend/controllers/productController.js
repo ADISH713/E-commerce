@@ -1,5 +1,4 @@
-import { create } from "motion/react-m";
-import Products from "../models/productSchema.js";
+import Products from "../models/productModel.js";
 
 export const getProducts = async (req,res,next) =>{
     try{
@@ -62,7 +61,7 @@ export const getProductByID = async(req,res,next)=>{
 
 export const createProduct = async (req,res,next) =>{
     try{
-        const product = await Product.create(req.body);
+        const product = await Products.create(req.body);
         res.status(201).json({
             success:true,
             message:"Product created successfully",
