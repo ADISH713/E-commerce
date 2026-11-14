@@ -7,6 +7,8 @@ import notFoundMiddleware from './middleware/notFoundMiddleware.js'
 import { cookie } from 'express-validator'
 import cookieParser from 'cookie-parser'
 import authRoutes from "./routes/authRoutes.js"
+import cartRoutes from "./routes/cartRoutes.js"
+import orderRoutes from "./routes/orderRoutes.js"
 
 const app = express()
 
@@ -29,6 +31,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth",authRoutes)
 app.use("/api/products", productRoutes)
+app.use("/api/cart", cartRoutes)
+app.use("/api/orders", orderRoutes)
 
 app.use(notFoundMiddleware)
 app.use(errorMiddleware)
