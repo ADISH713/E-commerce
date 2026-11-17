@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {BrowserRouter,useLocation} from 'react-router-dom';
 import Navbar from './components/Navbar';
 import { useSelector, useDispatch } from 'react-redux';
-import { getUserById } from './services/userServices';
+// import { getUserById } from './services/userServices';
 import {setCart,clearCartState} from './redux/slices/cartSlice';
 import { getWishlistByUserId } from './services/wishlistServices';
 import {setWishlist,clearWishlistState} from './redux/slices/wishlistSlice';

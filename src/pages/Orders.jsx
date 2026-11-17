@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getOrdersByUserId } from "../services/orderServices";
+// import { getOrdersByUserId } from "../services/orderServices";
+// import { formatPrice } from "../utils/formatPrice";
+// import { getProductById, updateProduct } from "../services/productServices";
+// import { updateOrderStatus } from "../services/orderServices";
+import { getMyOrders } from "../services/orderServices";
 import { formatPrice } from "../utils/formatPrice";
-import { getProductById, updateProduct } from "../services/productServices";
-import { updateOrderStatus } from "../services/orderServices";
 import Swal from "sweetalert2";
 
 function Orders() {
@@ -19,7 +21,7 @@ function Orders() {
       if (!user) return;
 
       try {
-        const data = await getOrdersByUserId(user.id);
+        const data = await getMyOrders();
         setOrders(data);
       } catch (error) {
         console.error("Failed to fetch orders:", error);
@@ -205,7 +207,7 @@ function Orders() {
               {/* VIEW DETAILS */}
             
               <div className="mt-5 flex flex-col sm:flex-row justify-between gap-3">
-
+{/* 
                 <div>
                     {order.status !== "Delivered" &&
                         order.status !== "Cancelled" && (
@@ -219,7 +221,7 @@ function Orders() {
                                 Cancel Order
                             </button>
                         )}
-                </div>
+                </div> */}
 
                 <button
                     type="button"

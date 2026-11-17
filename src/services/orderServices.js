@@ -1,18 +1,33 @@
 import axios from "axios";
+import api from "./api";
 
 const API_URL = "http://localhost:3001/orders";
 
-export const createOrder = async (orderData) => {
-    const { data } = await axios.post(API_URL, orderData);
-    return data;
-};
-export const getOrdersByUserId = async (userId) => {
-  const { data } = await axios.get(API_URL);
+const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 
-  return data.filter(
-    (order) => String(order.userId) === String(userId)
-  );
+const mapOrder = (order) => ({
+    ...order,
+    id: order._id,
+    status: capitalize(order.orderStatus),
+    subtotal: order.totalAmount,
+    shipping: 0,
+    total: order.totalAmount,
+    items: order.items.map((item) => ({
+        ...item,
+        id: item.product,
+    })),
+});
+
+export const createOrder = async ({ shippingAddress, paymentMethod }) => {
+    const { data } = await api.post("/orders", { shippingAddress, paymentMethod });
+    return mapOrder(data.data);
 };
+
+export const getMyOrders = async () => {
+    const { data } = await api.get("/orders");
+    return data.data.map(mapOrder);
+};
+
 export const getAllOrders = async () => {
     const { data } = await axios.get(API_URL);
     return data;

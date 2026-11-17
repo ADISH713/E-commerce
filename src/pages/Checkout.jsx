@@ -23,17 +23,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createOrder } from '../services/orderServices';
 import { clearCartState } from '../redux/slices/cartSlice';
 // import { updateCart } from '../services/cartServices';
-import {
-    getProductById,
-    updateProduct,
-} from '../services/productServices';
+// import {
+//     getProductById,
+//     updateProduct,
+// } from '../services/productServices';
 import toast from 'react-hot-toast';
 
 function Checkout() {
     const [step, setStep] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState('');
 
-    const { items, cartId } = useSelector((state) => state.cart);
+    const { items} = useSelector((state) => state.cart);
     const user = useSelector((state) => state.auth.user);
 
     const dispatch = useDispatch();
@@ -73,65 +73,28 @@ function Checkout() {
     };
 
     const handlePlaceOrder = async () => {
-        try {
-         
-            const latestProducts = await Promise.all(
-                items.map((item) =>
-                    getProductById(item.id)
-                )
-            );
+    try {
+        await createOrder({
+            shippingAddress: formData,
+            paymentMethod,
+        });
 
-            
-            latestProducts.forEach((product, index) => {
-                const orderedQuantity = items[index].quantity;
+        dispatch(clearCartState());
 
-                if (orderedQuantity > product.stock) {
-                    throw new Error(
-                        `Only ${product.stock} ${product.name} available.`
-                    );
-                }
-            });
+        toast.success("Order placed successfully!");
 
-            const orderData = {
-                userId: user.id,
-                items: items,
-                shippingAddress: formData,
-                paymentMethod: paymentMethod,
-                subtotal: subtotal,
-                shipping: shipping,
-                total: total,
-                status: "pending",
-                createdAt: new Date().toISOString(),
-            };
+    } catch (error) {
+        console.error("Failed to place order:", error);
 
-            await createOrder(orderData);
+        const data = error.response?.data;
+        const message =
+            Array.isArray(data?.data) && data.data.length > 0
+                ? data.data[0].message
+                : data?.message;
 
-            await Promise.all(
-                latestProducts.map((product, index) => {
-                    const orderedQuantity = items[index].quantity;
-
-                    return updateProduct(product.id, {
-                        stock: product.stock - orderedQuantity,
-                    });
-                })
-            );
-
-            if (cartId) {
-                await updateCart(cartId, []);
-            }
-
-            dispatch(clearCartState());
-
-            toast.success("Order placed successfully!");
-
-        } catch (error) {
-            console.error("Failed to place order:", error);
-
-            toast.error(
-                error.message || "Failed to place order. Please try again."
-            );
-        }
-    };
+        toast.error(message || "Failed to place order. Please try again.");
+    }
+};
 
     if (items.length === 0) {
         return (
