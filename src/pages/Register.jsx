@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
-import { registerUser } from '../services/userServices';
+import { registerUser } from '../services/authServices';
 
 import { Link } from 'react-router-dom';
 

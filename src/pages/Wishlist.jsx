@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { updateWishlist } from '../services/wishlistServices';
 import { setWishlist } from '../redux/slices/wishlistSlice';
 import { formatPrice } from '../utils/formatPrice';
-import { getCartByUserId, createCart, updateCart } from '../services/cartServices';
+// import { getCartByUserId, createCart, updateCart } from '../services/cartServices';
 import { setCart } from '../redux/slices/cartSlice';
 import { getProductById } from '../services/productServices';
 

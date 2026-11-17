@@ -1,58 +1,53 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../utils/formatPrice';
 import { IconMinus, IconPlus, IconTrash } from '@tabler/icons-react';
-import { updateCart } from '../services/cartServices';
+import { updateCartItem, removeCartItem } from '../services/cartServices';
 import { setCart } from '../redux/slices/cartSlice';
 import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
 import { useCart } from '../hooks/useCart';
 
 function Cart() {
     const dispatch = useDispatch();
-    const {cart} = useCart() 
-    const { items, cartId } = cart;
+    const { cart } = useCart();
+    const { items } = cart;
     const subtotal = items.reduce(
         (total, item) => total + item.price * item.quantity,
         0
     );
 
+    const showError = (error) => {
+        toast.error(error.response?.data?.message || 'Something went wrong');
+    };
+
     const increaseQuantity = async (item) => {
         if (item.quantity >= item.stock) return;
 
-        const updatedItems = items.map((cartItem) =>
-            cartItem.id === item.id
-                ? { ...cartItem, quantity: cartItem.quantity + 1 }
-                : cartItem
-        );
-
         try {
-            const updatedCart = await updateCart(cartId, updatedItems);
+            const updatedCart = await updateCartItem(item.id, item.quantity + 1);
             dispatch(setCart(updatedCart));
         } catch (error) {
-            console.error("failed to increase quantity : ",error);
+            console.error("failed to increase quantity : ", error);
+            showError(error);
         }
     };
 
     const decreaseQuantity = async (item) => {
         if (item.quantity <= 1) return;
 
-        const updatedItems = items.map((cartItem) =>
-            cartItem.id === item.id
-                ? { ...cartItem, quantity: cartItem.quantity - 1 }
-                : cartItem
-        );
-
         try {
-            const updatedCart = await updateCart(cartId, updatedItems);
+            const updatedCart = await updateCartItem(item.id, item.quantity - 1);
             dispatch(setCart(updatedCart));
         } catch (error) {
             console.error('Failed to decrease quantity:', error);
+            showError(error);
         }
     };
 
     const removeItem = async (item) => {
-            const result = await Swal.fire({
+        const result = await Swal.fire({
             title: 'Remove item?',
             text: `Are you sure you want to remove ${item.name} from your cart?`,
             icon: 'warning',
@@ -66,23 +61,20 @@ function Cart() {
 
         if (!result.isConfirmed) return;
 
-        const updatedItems = items.filter(
-            (cartItem) => String(cartItem.id) !== String(item.id)
-        );
-
         try {
-            const updatedCart = await updateCart(cartId, updatedItems);
+            const updatedCart = await removeCartItem(item.id);
             dispatch(setCart(updatedCart));
 
             Swal.fire({
-            title: 'Removed!',
-            text: `${item.name} has been removed from your cart.`,
-            icon: 'success',
-            confirmButtonColor: '#ea580c',
+                title: 'Removed!',
+                text: `${item.name} has been removed from your cart.`,
+                icon: 'success',
+                confirmButtonColor: '#ea580c',
             });
-            
+
         } catch (error) {
             console.error('Failed to remove item:', error);
+            showError(error);
         }
     };
 

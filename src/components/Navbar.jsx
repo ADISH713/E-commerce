@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 import { useProducts } from '../hooks/useProducts';
 import Swal from 'sweetalert2';
 import { useCart } from '../hooks/useCart';
+import { logoutUser } from '../services/authServices';
 
 function Navbar() {
   const [searchParams] = useSearchParams();
@@ -75,19 +76,33 @@ function Navbar() {
       showCancelButton: true,
       confirmButtonText: 'Logout',
       cancelButtonText: 'cancel',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(logout());
-        dispatch(clearCartState());
-        dispatch(clearWishlistState());
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       dispatch(logout());
+  //       dispatch(clearCartState());
+  //       dispatch(clearWishlistState());
 
-        setShowProfile(false);
-        setShowMobileMenu(false);
+  //       setShowProfile(false);
+  //       setShowMobileMenu(false);
 
-        toast.success('Logged out successfully');
-      }
-    });
-  };
+  //       toast.success('Logged out successfully');
+  //     }
+  //   });
+  // };
+  }).then(async (result) => {
+  if (result.isConfirmed) {
+    await logoutUser();
+    dispatch(logout());
+    dispatch(clearCartState());
+    dispatch(clearWishlistState());
+
+    setShowProfile(false);
+    setShowMobileMenu(false);
+
+    toast.success('Logged out successfully');
+  }
+});
+};
 
   const closeMobileMenu = () => {
     setShowMobileMenu(false);

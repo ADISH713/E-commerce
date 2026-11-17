@@ -6,7 +6,9 @@ import { useMutation } from '@tanstack/react-query';
 
 import { setUser } from '../redux/slices/authSlice';
 
-import { loginUser } from '../services/userServices';
+// import { loginUser } from '../services/userServices';
+
+import { loginUser } from '../services/authServices';
 
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 

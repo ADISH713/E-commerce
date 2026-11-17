@@ -22,7 +22,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { createOrder } from '../services/orderServices';
 import { clearCartState } from '../redux/slices/cartSlice';
-import { updateCart } from '../services/cartServices';
+// import { updateCart } from '../services/cartServices';
 import {
     getProductById,
     updateProduct,

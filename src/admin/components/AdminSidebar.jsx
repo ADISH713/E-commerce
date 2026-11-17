@@ -11,6 +11,7 @@ import {
 import Swal from 'sweetalert2';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
+import { logoutUser } from '../../services/authServices';
 
 function AdminSidebar() {
     const navigate = useNavigate();
@@ -55,6 +56,7 @@ function AdminSidebar() {
         });
 
         if (result.isConfirmed) {
+            await logoutUser();
             dispatch(logout());
             navigate('/login', { replace: true });
         }

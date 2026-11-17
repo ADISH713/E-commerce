@@ -4,7 +4,6 @@ import { getProductById } from '../services/productServices';
 import { formatPrice } from '../utils/formatPrice';
 import { IconCar, IconMinus, IconPlus } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux'
-import { createCart, updateCart, getCartByUserId } from '../services/cartServices';
 import { setCart } from '../redux/slices/cartSlice';
 import { getWishlistByUserId, createWishlist, updateWishlist } from '../services/wishlistServices';
 import { setWishlist } from '../redux/slices/wishlistSlice';
@@ -14,6 +13,7 @@ import { useProducts } from '../hooks/useProducts';
 import ProductCard from '../components/ProductCard';
 import { useMutation, useQuery, } from "@tanstack/react-query";
 import { useCart } from '../hooks/useCart';
+import { addToCart } from '../services/cartServices';
 
 function ProductDetail() {
     const { id } = useParams();
@@ -39,64 +39,95 @@ function ProductDetail() {
 
     
 
+    // const addToCartMutation = useMutation({
+    //     mutationFn: async () => {
+
+    //         const existingCart = await getCartByUserId(user.id);
+
+    //         const currentItems = existingCart?.items || [];
+
+    //         const existingItem = currentItems.find(
+    //             (item) => String(item.id) === String(product.id)
+    //         );
+
+    //         let newItems;
+
+    //         if (existingItem) {
+    //             const newQuantity = existingItem.quantity + quantity;
+
+    //             if (newQuantity > product.stock) {
+    //                 throw new Error(`Only ${product.stock} items are available.`);
+    //             }
+
+    //             newItems = currentItems.map((item) =>
+    //                 String(item.id) === String(product.id)
+    //                     ? { ...item, quantity: newQuantity }
+    //                     : item
+    //             );
+    //         } else {
+    //             newItems = [
+    //                 ...currentItems,
+    //                 {
+    //                     id: product.id,
+    //                     name: product.name,
+    //                     price: product.price,
+    //                     image: product.images?.[0] || '',
+    //                     stock: product.stock,
+    //                     quantity: quantity,
+    //                 },
+    //             ];
+    //         }
+
+    //         if (existingCart) {
+    //             return updateCart(existingCart.id, newItems);
+    //         }
+
+    //         return createCart(user.id, newItems);
+    //     },
+
+    //     onSuccess: (updatedCart) => {
+    //         dispatch(setCart(updatedCart));
+    //         addingToCartRef.current = false;
+    //         toast.success('Added to cart')
+    //     },
+
+    //     onError: (error) => {
+    //         console.error('Add to cart error:', error);
+    //         addingToCartRef.current = false;
+    //         toast.error(error.message);
+    //     },
+    // });
+
     const addToCartMutation = useMutation({
-        mutationFn: async () => {
+    mutationFn: async () => {
+        const existingItem = cart.items.find(
+            (item) => String(item.id) === String(product.id)
+        );
 
-            const existingCart = await getCartByUserId(user.id);
+        const newQuantity = (existingItem?.quantity || 0) + quantity;
 
-            const currentItems = existingCart?.items || [];
+        if (newQuantity > product.stock) {
+            throw new Error(`Only ${product.stock} items are available.`);
+        }
 
-            const existingItem = currentItems.find(
-                (item) => String(item.id) === String(product.id)
-            );
+        return addToCart(product.id, quantity);
+    },
 
-            let newItems;
+    onSuccess: (updatedCart) => {
+        dispatch(setCart(updatedCart));
+        addingToCartRef.current = false;
+        toast.success('Added to cart');
+    },
 
-            if (existingItem) {
-                const newQuantity = existingItem.quantity + quantity;
+    onError: (error) => {
+        console.error('Add to cart error:', error);
+        addingToCartRef.current = false;
+        toast.error(error.response?.data?.message || error.message);
+    },
+});
 
-                if (newQuantity > product.stock) {
-                    throw new Error(`Only ${product.stock} items are available.`);
-                }
 
-                newItems = currentItems.map((item) =>
-                    String(item.id) === String(product.id)
-                        ? { ...item, quantity: newQuantity }
-                        : item
-                );
-            } else {
-                newItems = [
-                    ...currentItems,
-                    {
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        image: product.images?.[0] || '',
-                        stock: product.stock,
-                        quantity: quantity,
-                    },
-                ];
-            }
 
-            if (existingCart) {
-                return updateCart(existingCart.id, newItems);
-            }
-
-            return createCart(user.id, newItems);
-        },
-
-        onSuccess: (updatedCart) => {
-            dispatch(setCart(updatedCart));
-            addingToCartRef.current = false;
-            toast.success('Added to cart')
-        },
-
-        onError: (error) => {
-            console.error('Add to cart error:', error);
-            addingToCartRef.current = false;
-            toast.error(error.message);
-        },
-    });
 
     const wishlistMutation = useMutation({
         mutationFn: async () => {
