@@ -1,113 +1,75 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { IconHeart, IconTrash, IconShoppingCart } from '@tabler/icons-react';
+// import { useMutation } from '@tanstack/react-query';
+// import { updateWishlist } from '../services/wishlistServices';
+// import { setWishlist } from '../redux/slices/wishlistSlice';
+// import { formatPrice } from '../utils/formatPrice';
+// // import { getCartByUserId, createCart, updateCart } from '../services/cartServices';
+// import { setCart } from '../redux/slices/cartSlice';
+// import { getProductById } from '../services/productServices';
 import { useMutation } from '@tanstack/react-query';
-import { updateWishlist } from '../services/wishlistServices';
+import { removeFromWishlist } from '../services/wishlistServices';
 import { setWishlist } from '../redux/slices/wishlistSlice';
 import { formatPrice } from '../utils/formatPrice';
-// import { getCartByUserId, createCart, updateCart } from '../services/cartServices';
+import { addToCart } from '../services/cartServices';
 import { setCart } from '../redux/slices/cartSlice';
-import { getProductById } from '../services/productServices';
 
 function Wishlist() {
     const dispatch = useDispatch();
     const [cartError, setCartError] = useState(null);
 
+    const cart = useSelector((state) => state.cart);
     const user = useSelector((state) => state.auth.user);
     const wishlist = useSelector((state) => state.wishlist);
 
-    const removeMutation = useMutation({
-        mutationFn: async (productId) => {
-            const updatedItems = wishlist.items.filter(
-                (item) => String(item.id) !== String(productId)
-            );
+  
 
-            return updateWishlist(wishlist.wishlistId, updatedItems);
-        },
+   const removeMutation = useMutation({
+    mutationFn: (productId) => removeFromWishlist(productId),
 
-        onSuccess: (updatedWishlist) => {
-            dispatch(setWishlist(updatedWishlist));
-        },
+    onSuccess: (updatedWishlist) => {
+        dispatch(setWishlist(updatedWishlist));
+    },
 
-        onError: (error) => {
-            console.error('Failed to remove from wishlist:', error);
-        },
-    });
+    onError: (error) => {
+        console.error('Failed to remove from wishlist:', error);
+    },
+});
 
-    const addToCartMutation = useMutation({
-        mutationFn: async (item) => {
+const addToCartMutation = useMutation({
+    mutationFn: async (item) => {
+        if (item.stock < 1) {
+            throw new Error('This product is out of stock.');
+        }
 
-            // Get the latest product data
-            const product = await getProductById(item.id);
+        const existingItem = cart.items.find(
+            (cartItem) => String(cartItem.id) === String(item.id)
+        );
 
-            const existingCart = await getCartByUserId(user.id);
-            const currentItems = existingCart?.items || [];
+        const newQuantity = (existingItem?.quantity || 0) + 1;
 
-            const existingItem = currentItems.find(
-                (cartItem) => String(cartItem.id) === String(item.id)
-            );
+        if (newQuantity > item.stock) {
+            throw new Error(`Only ${item.stock} items are available.`);
+        }
 
-            let updatedItems;
+        return addToCart(item.id, 1);
+    },
 
-            if (existingItem) {
+    onSuccess: (updatedCart) => {
+        dispatch(setCart(updatedCart));
+        setCartError(null);
+    },
 
-                const newQuantity = existingItem.quantity + 1;
+    onError: (error, item) => {
+        console.error('Failed to add to cart:', error);
 
-                if (newQuantity > product.stock) {
-                    throw new Error(
-                        `Only ${product.stock} items are available.`
-                    );
-                }
-
-                updatedItems = currentItems.map((cartItem) =>
-                    String(cartItem.id) === String(item.id)
-                        ? {
-                            ...cartItem,
-                            quantity: newQuantity
-                        }
-                        : cartItem
-                );
-
-            } else {
-
-                if (product.stock < 1) {
-                    throw new Error('This product is out of stock.');
-                }
-
-                updatedItems = [
-                    ...currentItems,
-                    {
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        image: product.images?.[0] || item.image,
-                        stock: product.stock,
-                        quantity: 1
-                    }
-                ];
-            }
-
-            if (existingCart) {
-                return updateCart(existingCart.id, updatedItems);
-            }
-
-            return createCart(user.id, updatedItems);
-        },
-
-        onSuccess: (updatedCart) => {
-            dispatch(setCart(updatedCart));
-            setCartError(null);
-        },
-
-        onError: (error, item) => {
-            console.error('Failed to add to cart:', error);
-
-            setCartError({
-                productId: item.id,
-                message: error.message,
-            });
-        },
-    });
+        setCartError({
+            productId: item.id,
+            message: error.response?.data?.message || error.message,
+        });
+    },
+});
 
     if (wishlist.items.length === 0) {
         return (

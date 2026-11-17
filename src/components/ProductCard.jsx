@@ -5,9 +5,9 @@ import { formatPrice } from '../utils/formatPrice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import { setWishlist } from '../redux/slices/wishlistSlice';
-import {createWishlist,updateWishlist} from '../services/wishlistServices';
 import { toast } from 'react-hot-toast';
 import { motion, scale } from 'motion/react';
+import { addToWishlist, removeFromWishlist } from '../services/wishlistServices';
 
 function ProductCard({product}) {
     const isOutOfStock = product.stock === 0;
@@ -18,28 +18,13 @@ function ProductCard({product}) {
 
     const wishlistMutation = useMutation({
     mutationFn: async () => {
-
         if (!user) {
             throw new Error('Please login to use wishlist');
         }
 
-        const updatedItems = isWishlisted
-            ? wishlist.items.filter(
-                (item) => String(item.id) !== String(product.id)
-            )
-            : [...wishlist.items, {id:product.id,name:product.name,price:product.price,image:product.images?.[0] || '',}];
-
-        if (wishlist.wishlistId) {
-            return updateWishlist(
-                wishlist.wishlistId,
-                updatedItems
-            );
-        }
-
-        return createWishlist(
-            user.id,
-            updatedItems
-        );
+        return isWishlisted
+            ? removeFromWishlist(product.id)
+            : addToWishlist(product.id);
     },
 
     onSuccess: (updatedWishlist) => {
@@ -53,7 +38,7 @@ function ProductCard({product}) {
     },
 
     onError: (error) => {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message || error.message);
     }
 });
   return (

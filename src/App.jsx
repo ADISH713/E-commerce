@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import { useSelector, useDispatch } from 'react-redux';
 // import { getUserById } from './services/userServices';
 import {setCart,clearCartState} from './redux/slices/cartSlice';
-import { getWishlistByUserId } from './services/wishlistServices';
+// import { getWishlistByUserId } from './services/wishlistServices';
 import {setWishlist,clearWishlistState} from './redux/slices/wishlistSlice';
 import Footer from './components/Footer';
 import { Toaster } from 'react-hot-toast';
@@ -12,6 +12,8 @@ import AppRoutes from './routes/AppRoutes';
 import { setUser, finishLoading } from './redux/slices/authSlice';
 import { refreshSession } from './services/api';
 import { getCart } from './services/cartServices';
+import { getWishlist } from './services/wishlistServices';
+
 
 function App() {
 
@@ -106,15 +108,13 @@ useEffect(() => {
             dispatch(clearCartState());
         });
 
-    getWishlistByUserId(user.id)
-        .then((existingWishlist) => {
-            if (existingWishlist) {
-                dispatch(setWishlist(existingWishlist));
-            } else {
-                dispatch(clearWishlistState());
-            }
-        })
-        .catch(() => {});
+    getWishlist()
+    .then((existingWishlist) => {
+        dispatch(setWishlist(existingWishlist));
+    })
+    .catch(() => {
+        dispatch(clearWishlistState());
+    });
 
 }, [user, dispatch]);
 

@@ -5,7 +5,6 @@ import { formatPrice } from '../utils/formatPrice';
 import { IconCar, IconMinus, IconPlus } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux'
 import { setCart } from '../redux/slices/cartSlice';
-import { getWishlistByUserId, createWishlist, updateWishlist } from '../services/wishlistServices';
 import { setWishlist } from '../redux/slices/wishlistSlice';
 import { IconHeart } from '@tabler/icons-react';
 import toast from 'react-hot-toast';
@@ -14,6 +13,7 @@ import ProductCard from '../components/ProductCard';
 import { useMutation, useQuery, } from "@tanstack/react-query";
 import { useCart } from '../hooks/useCart';
 import { addToCart } from '../services/cartServices';
+import { addToWishlist, removeFromWishlist } from '../services/wishlistServices';
 
 function ProductDetail() {
     const { id } = useParams();
@@ -129,49 +129,65 @@ function ProductDetail() {
 
 
 
+    // const wishlistMutation = useMutation({
+    //     mutationFn: async () => {
+    //         const existingWishlist = await getWishlistByUserId(user.id);
+
+    //         const currentItems = existingWishlist?.items || [];
+
+    //         const isAlreadyWishlisted = currentItems.some(
+    //             (item) => String(item.id) === String(product.id)
+    //         );
+
+    //         let updatedItems;
+
+    //         if (isAlreadyWishlisted) {
+    //             updatedItems = currentItems.filter(
+    //                 (item) => String(item.id) !== String(product.id)
+    //             );
+    //         } else {
+    //             updatedItems = [
+    //                 ...currentItems,
+    //                 {
+    //                     id: product.id,
+    //                     name: product.name,
+    //                     price: product.price,
+    //                     image: product.images?.[0] || '',
+    //                 },
+    //             ];
+    //         }
+
+    //         if (existingWishlist) {
+    //             return updateWishlist(existingWishlist.id, updatedItems);
+    //         }
+
+    //         return createWishlist(user.id, updatedItems);
+    //     },
+
+    //     onSuccess: (updatedWishlist) => {
+    //         dispatch(setWishlist(updatedWishlist));
+    //     },
+
+    //     onError: (error) => {
+    //         console.error('Wishlist error:', error);
+    //     },
+    // });
+
     const wishlistMutation = useMutation({
-        mutationFn: async () => {
-            const existingWishlist = await getWishlistByUserId(user.id);
+    mutationFn: async () => {
+        return isWishlisted
+            ? removeFromWishlist(product.id)
+            : addToWishlist(product.id);
+    },
 
-            const currentItems = existingWishlist?.items || [];
+    onSuccess: (updatedWishlist) => {
+        dispatch(setWishlist(updatedWishlist));
+    },
 
-            const isAlreadyWishlisted = currentItems.some(
-                (item) => String(item.id) === String(product.id)
-            );
-
-            let updatedItems;
-
-            if (isAlreadyWishlisted) {
-                updatedItems = currentItems.filter(
-                    (item) => String(item.id) !== String(product.id)
-                );
-            } else {
-                updatedItems = [
-                    ...currentItems,
-                    {
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        image: product.images?.[0] || '',
-                    },
-                ];
-            }
-
-            if (existingWishlist) {
-                return updateWishlist(existingWishlist.id, updatedItems);
-            }
-
-            return createWishlist(user.id, updatedItems);
-        },
-
-        onSuccess: (updatedWishlist) => {
-            dispatch(setWishlist(updatedWishlist));
-        },
-
-        onError: (error) => {
-            console.error('Wishlist error:', error);
-        },
-    });
+    onError: (error) => {
+        console.error('Wishlist error:', error);
+    },
+});
 
     if (isLoading) return <p className='px-4 sm:px-8 lg:px-12 py-6'>Loading product...</p>;
 

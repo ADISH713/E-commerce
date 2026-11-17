@@ -1,20 +1,27 @@
-import axios from "axios";
+import api from './api';
 
-const API_URL = 'http://localhost:3001/wishlists';
+const mapWishlist = (wishlist) => ({
+    items: wishlist.products.map((product) => ({
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        image: product.images?.[0] || '',
+        stock: product.stock,
+    })),
+    totalItems: wishlist.totalItems,
+});
 
-export const getWishlistByUserId = async (userId)=>{
-    const {data} = await axios.get(API_URL);
-
-    const userWishlist = data.find((wishlist)=>String(wishlist.userId) === String(userId));
-    return userWishlist || null;
+export const getWishlist = async () => {
+    const { data } = await api.get('/wishlist');
+    return mapWishlist(data.data);
 };
 
-export const createWishlist = async(userId,items)=>{
-    const {data} = await axios.post(API_URL,{userId,items});
-    return data;
+export const addToWishlist = async (productId) => {
+    const { data } = await api.post('/wishlist', { productId });
+    return mapWishlist(data.data);
 };
 
-export const updateWishlist = async (wishlistId, items)=>{
-    const {data} = await axios.patch(`${API_URL}/${wishlistId}`,{items});
-    return data;
+export const removeFromWishlist = async (productId) => {
+    const { data } = await api.delete(`/wishlist/${productId}`);
+    return mapWishlist(data.data);
 };
