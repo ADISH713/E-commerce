@@ -13,7 +13,7 @@ import { setUser, finishLoading } from './redux/slices/authSlice';
 import { refreshSession } from './services/api';
 import { getCart } from './services/cartServices';
 import { getWishlist } from './services/wishlistServices';
-
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
 
@@ -161,13 +161,11 @@ useEffect(() => {
 
     return (
         <BrowserRouter>
-
-            <Toaster position="top-right" />
-
+            <ScrollToTop />
             <AppContent />
-
+            <Toaster position="top-right" />
         </BrowserRouter>
-    );
+            );
 }
 
 export default App;

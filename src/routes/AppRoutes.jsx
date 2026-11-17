@@ -26,6 +26,8 @@ import AdminOrders from '../admin/pages/AdminOrders';
 import AdminDashboard from '../admin/pages/AdminDashboard';
 import AdminTrash from '../admin/pages/AdminTrash';
 
+import CustomerRoute from './CustomerRoute';
+
 function AppRoutes() {
     return (
         <Routes>
@@ -89,27 +91,27 @@ function AppRoutes() {
             <Route
                 path="/"
                 element={
-                    <UserProtectedRoute>
+                    <CustomerRoute>
                         <Home />
-                    </UserProtectedRoute>
+                    </CustomerRoute>
                 }
             />
 
             <Route
                 path="/products"
                 element={
-                    <UserProtectedRoute>
+                    <CustomerRoute>
                         <Productlist />
-                    </UserProtectedRoute>
+                    </CustomerRoute>
                 }
             />
 
             <Route
                 path="/product/:id"
                 element={
-                    <UserProtectedRoute>
+                    <CustomerRoute>
                         <ProductDetail />
-                    </UserProtectedRoute>
+                    </CustomerRoute>
                 }
             />
 
@@ -152,9 +154,10 @@ function AppRoutes() {
             <Route
                 path="/about"
                 element={
-                    <UserProtectedRoute>
+                    <CustomerRoute>
                         <About />
-                    </UserProtectedRoute>
+                    </CustomerRoute>
+                    
                 }
             />
 
