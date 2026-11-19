@@ -1,6 +1,7 @@
 import Wishlist from "../models/wishlistModel.js";
 import Products from "../models/productModel.js";
 import AppError from "../utils/AppError.js";
+import MESSAGES from "../constants/messages.js";
 
 const PRODUCT_FIELDS = "name price images category brand stock rating isActive";
 

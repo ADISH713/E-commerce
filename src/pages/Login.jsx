@@ -14,6 +14,8 @@ import { IconEye, IconEyeOff } from '@tabler/icons-react';
 
 import { useSelector, useDispatch } from 'react-redux';
 
+import { validateLoginForm, validateEmail, hasErrors } from '../utils/validators';
+
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -30,17 +32,6 @@ function Login() {
 
     const { user, isAuthenticated } = useSelector((state) => state.auth);
 
-    // useEffect(() => {
-    //   if (isAuthenticated) {
-    //     const user = JSON.parse(localStorage.getItem('user'));
-    //     if(user?.role === 'admin'){
-    //       navigate('/admin',{ replace: true });
-    //     }
-    //     else{
-    //       navigate('/', { replace: true });
-    //     }
-    //   }
-    // }, [isAuthenticated,user, navigate]);
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -53,7 +44,7 @@ function Login() {
     }, [isAuthenticated, user, navigate]);
 
     const { mutate, isPending, isError, error } = useMutation({
-        mutationFn: () => loginUser(email, password),
+        mutationFn: () => loginUser(email.trim(), password),
         onSuccess: (user) => {
             dispatch(setUser(user));
 
@@ -68,32 +59,10 @@ function Login() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const trimmedEmail = email.trim();
-
-        const newErrors = {
-            email: '',
-            password: '',
-        };
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!trimmedEmail) {
-            newErrors.email = 'Email is required';
-        } else if (!emailRegex.test(trimmedEmail)) {
-            newErrors.email = 'Please enter a valid email address';
-        }
-
-        if (!password) {
-            newErrors.password = 'Password is required';
-        }
-
+        const newErrors = validateLoginForm({ email, password });
         setErrors(newErrors);
 
-        const hasErrors = Object.values(newErrors).some(
-            (error) => error !== ''
-        );
-
-        if (hasErrors) return;
+        if (hasErrors(newErrors)) return;
 
         mutate();
     };
@@ -113,7 +82,7 @@ function Login() {
                     Enter your details to continue
                 </p>
 
-                <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
+                <form onSubmit={handleSubmit} noValidate className="space-y-3.5 sm:space-y-4">
 
                     <div>
                         <label className="block text-xs font-medium text-white mb-1">
@@ -131,7 +100,9 @@ function Login() {
                                     email: '',
                                 }));
                             }}
-                            required
+                            onBlur={() =>
+                                setErrors((prev) => ({ ...prev, email: validateEmail(email) }))
+                            }
                             className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2.5 sm:py-2 text-sm focus:outline-none text-white ${
                                 errors.email
                                     ? 'border-red-500 focus:border-red-500'
@@ -163,7 +134,12 @@ function Login() {
                                         password: '',
                                     }));
                                 }}
-                                required
+                                onBlur={() =>
+                                    setErrors((prev) => ({
+                                        ...prev,
+                                        password: validateLoginForm({ email, password }).password,
+                                    }))
+                                }
                                 className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2.5 sm:py-2 pr-10 text-sm focus:outline-none text-white ${
                                     errors.password
                                         ? 'border-red-500 focus:border-red-500'
@@ -171,11 +147,7 @@ function Login() {
                                 }`}
                             />
 
-                            {errors.password && (
-                                <p className="text-red-400 text-xs mt-1 break-words">
-                                    {errors.password}
-                                </p>
-                            )}
+                            
 
                             <button
                                 type="button"
@@ -185,6 +157,11 @@ function Login() {
                                 {showPassword ? <IconEye /> : <IconEyeOff />}
                             </button>
                         </div>
+                        {errors.password && (
+                                <p className="text-red-400 text-xs mt-1 break-words">
+                                    {errors.password}
+                                </p>
+                            )}
                     </div>
 
                     <button

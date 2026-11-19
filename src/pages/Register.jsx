@@ -12,6 +12,15 @@ import { IconEye, IconEyeOff } from '@tabler/icons-react';
 
 import { useSelector } from 'react-redux';
 
+import {
+    validateRegisterForm,
+    validateName,
+    validateEmail,
+    validatePassword,
+    validateConfirmPassword,
+    hasErrors,
+} from '../utils/validators';
+
 function Register() {
 
     const [name, setName] = useState('');
@@ -58,78 +67,19 @@ function Register() {
     });
 
     const handleSubmit = (e) => {
-
         e.preventDefault();
 
-        const trimmedName = name.trim();
-
-        const trimmedEmail = email.trim();
-
-        const newErrors = {
-            name: '',
-            email: '',
-            password: '',
-            cpassword: '',
-        };
-
-        if (!trimmedName) {
-            newErrors.name = 'Name cannot be empty';
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!trimmedEmail) {
-
-            newErrors.email = 'Email is required';
-
-        } else if (!emailRegex.test(trimmedEmail)) {
-
-            newErrors.email = 'Please enter a valid email address';
-
-        }
-
-        if (!password) {
-
-            newErrors.password = 'Password is required';
-
-        } else if (password.length < 6) {
-
-            newErrors.password = 'Password must be at least 6 characters';
-
-        } else if (/^\d+$/.test(password)) {
-
-            newErrors.password = 'Password cannot contain only numbers';
-
-        }
-
-        if (!cpassword) {
-
-            newErrors.cpassword = 'Please confirm your password';
-
-        } else if (password !== cpassword) {
-
-            newErrors.cpassword = 'Passwords do not match';
-
-        }
-
+        const newErrors = validateRegisterForm({ name, email, password, cpassword });
         setErrors(newErrors);
 
-        const hasErrors = Object.values(newErrors).some(
-            (error) => error !== ''
-        );
-
-        if (hasErrors) {
-            return;
-        }
+        if (hasErrors(newErrors)) return;
 
         mutate({
-            name: trimmedName,
-            email: trimmedEmail,
+            name: name.trim(),
+            email: email.trim(),
             password,
         });
-
     };
-
     return (
 
         <div
@@ -147,7 +97,7 @@ function Register() {
                     Create your account to get started
                 </p>
 
-                <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
+                <form onSubmit={handleSubmit} noValidate className="space-y-3.5 sm:space-y-4">
 
                     {/* NAME */}
                     <div>
@@ -168,7 +118,11 @@ function Register() {
                                     name: '',
                                 }));
                             }}
-                            required
+                            
+                            onBlur={() =>
+                                setErrors((prev) => ({ ...prev, name: validateName(name) }))
+                            }
+
                             className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2.5 text-sm focus:outline-none text-white ${
                                 errors.name
                                     ? 'border-red-500 focus:border-red-500'
@@ -203,7 +157,9 @@ function Register() {
                                     email: '',
                                 }));
                             }}
-                            required
+                            onBlur={() =>
+                                setErrors((prev) => ({ ...prev, email: validateEmail(email) }))
+                            }
                             className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2.5 text-sm focus:outline-none text-white ${
                                 errors.email
                                     ? 'border-red-500 focus:border-red-500'
@@ -240,7 +196,15 @@ function Register() {
                                         password: '',
                                     }));
                                 }}
-                                required
+                                onBlur={() =>
+                                    setErrors((prev) => ({
+                                        ...prev,
+                                        password: validatePassword(password),
+                                        cpassword: cpassword
+                                            ? validateConfirmPassword(password, cpassword)
+                                            : prev.cpassword,
+                                    }))
+                                }
                                 className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2.5 pr-10 text-sm focus:outline-none text-white ${
                                     errors.password
                                         ? 'border-red-500 focus:border-red-500'
@@ -287,7 +251,12 @@ function Register() {
                                         cpassword: '',
                                     }));
                                 }}
-                                required
+                                onBlur={() =>
+                                    setErrors((prev) => ({
+                                        ...prev,
+                                        cpassword: validateConfirmPassword(password, cpassword),
+                                    }))
+                                }
                                 className={`w-full placeholder-gray-300 bg-white/10 border rounded-md px-3 py-2.5 pr-10 text-sm focus:outline-none text-white ${
                                     errors.cpassword
                                         ? 'border-red-500 focus:border-red-500'

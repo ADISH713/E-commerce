@@ -56,7 +56,7 @@ const loginWithRole = (requiredRole) => async (req,res,next) => {
         }
 
         const match = await bcrypt.compare(password,user.password);
-        if(!match) throw new AppError(INVALID_CREDENTIALS,401);
+        if(!match) throw new AppError(MESSAGES.AUTH.INVALID_CREDENTIALS,401);
 
         if(user.isBlocked) throw new AppError(MESSAGES.AUTH.ACCOUNT_BLOCKED, 403);
         if(!user.isActive) throw new AppError(MESSAGES.AUTH.ACCOUNT_DEACTIVATED,403);
