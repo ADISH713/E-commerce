@@ -1,59 +1,28 @@
-import {body} from "express-validator";
+import { body } from "express-validator";
+import MESSAGES from "../constants/messages.js";
+
+const { VALIDATION } = MESSAGES;
 
 export const createProductValidator = [
-    body("name").trim().isLength({min:2}).withMessage("Name must contain at least 2 characters"),
-    body("description").trim().notEmpty().withMessage("Description is required"),
-    body("price").isFloat({min:1}).withMessage("Price must beat least 1"),
-    body("category").trim().notEmpty().withMessage("Category is required"),
-    body("brand").trim().notEmpty().withMessage("Brand is required"),
-    body("images").isArray({min:1}).withMessage("At least one image is required"),
-    body("stock").optional().isInt({min:0}).withMessage("Stock must be a non-negative integer"),
-    body("specs").isObject().withMessage("specs must be an object"),
-    body("grade").trim().notEmpty().withMessage("Grade is required")
-
+    body("name").trim().isLength({ min: 2 }).withMessage(VALIDATION.NAME_MIN),
+    body("description").trim().notEmpty().withMessage(VALIDATION.DESCRIPTION_REQUIRED),
+    body("price").isFloat({ min: 1 }).withMessage(VALIDATION.PRICE_MIN),
+    body("category").trim().notEmpty().withMessage(VALIDATION.CATEGORY_REQUIRED),
+    body("brand").trim().notEmpty().withMessage(VALIDATION.BRAND_REQUIRED),
+    body("images").isArray({ min: 1 }).withMessage(VALIDATION.IMAGES_REQUIRED),
+    body("stock").optional().isInt({ min: 0 }).withMessage(VALIDATION.STOCK_INVALID),
+    body("specs").isObject().withMessage(VALIDATION.SPECS_INVALID),
+    body("grade").trim().notEmpty().withMessage(VALIDATION.GRADE_REQUIRED)
 ];
 
 export const updateProductValidator = [
-    body("name")
-        .optional()
-        .trim()
-        .isLength({ min: 2 }),
-
-    body("description")
-        .optional()
-        .trim()
-        .notEmpty(),
-
-    body("price")
-        .optional()
-        .isFloat({ min: 1 }),
-
-    body("category")
-        .optional()
-        .trim()
-        .notEmpty(),
-
-    body("brand")
-        .optional()
-        .trim()
-        .notEmpty(),
-
-    body("images")
-        .optional()
-        .isArray({ min: 1 }),
-
-    body("stock")
-        .optional()
-        .isInt({ min: 0 }),
-
-    body("specs")
-        .optional()
-        .isObject(),
-
-    body("grade")
-        .optional()
-        .trim()
-        .notEmpty()
+    body("name").optional().trim().isLength({ min: 2 }).withMessage(VALIDATION.NAME_MIN),
+    body("description").optional().trim().notEmpty().withMessage(VALIDATION.DESCRIPTION_REQUIRED),
+    body("price").optional().isFloat({ min: 1 }).withMessage(VALIDATION.PRICE_MIN),
+    body("category").optional().trim().notEmpty().withMessage(VALIDATION.CATEGORY_REQUIRED),
+    body("brand").optional().trim().notEmpty().withMessage(VALIDATION.BRAND_REQUIRED),
+    body("images").optional().isArray({ min: 1 }).withMessage(VALIDATION.IMAGES_REQUIRED),
+    body("stock").optional().isInt({ min: 0 }).withMessage(VALIDATION.STOCK_INVALID),
+    body("specs").optional().isObject().withMessage(VALIDATION.SPECS_INVALID),
+    body("grade").optional().trim().notEmpty().withMessage(VALIDATION.GRADE_REQUIRED)
 ];
-
-

@@ -1,12 +1,15 @@
 import { body, param } from "express-validator";
+import MESSAGES from "../constants/messages.js";
+
+const { VALIDATION } = MESSAGES;
 
 export const addToWishlistValidator = [
     body("productId")
-        .notEmpty().withMessage("Product id is required")
-        .isMongoId().withMessage("Invalid product id")
+        .notEmpty().withMessage(VALIDATION.PRODUCT_ID_REQUIRED)
+        .isMongoId().withMessage(VALIDATION.PRODUCT_ID_INVALID)
 ];
 
 export const removeFromWishlistValidator = [
     param("productId")
-        .isMongoId().withMessage("Invalid product id")
+        .isMongoId().withMessage(VALIDATION.PRODUCT_ID_INVALID)
 ];

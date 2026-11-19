@@ -2,6 +2,7 @@
 import Cart from "../models/cartModel.js";
 import Products from "../models/productModel.js";
 import AppError from "../utils/AppError.js";
+import MESSAGES from "../constants/messages.js";
 
 const PRODUCT_FIELDS = "name price images category brand stock isActive";
 
@@ -32,7 +33,7 @@ export const getCart = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "Cart fetched successfully",
+            message: MESSAGES.CART.FETCHED,
             data
         });
     } catch (error) {
@@ -45,7 +46,7 @@ export const addToCart = async (req, res, next) => {
         const { productId, quantity = 1 } = req.body;
 
         const product = await Products.findOne({ _id: productId, isActive: true });
-        if (!product) throw new AppError("Product not found or unavailable", 404);
+        if (!product) throw new AppError(MESSAGES.PRODUCT.NOT_AVAILABLE, 404);
 
         let cart = await Cart.findOne({ user: req.user._id });
         if (!cart) cart = new Cart({ user: req.user._id, items: [] });
@@ -66,7 +67,7 @@ export const addToCart = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "Product added to cart",
+            message: MESSAGES.CART.ITEM_ADDED,
             data
         });
     } catch (error) {
@@ -82,10 +83,10 @@ export const updateCartItem = async (req, res, next) => {
         const item = cart?.items.find(
             (cartItem) => cartItem.product.toString() === productId
         );
-        if (!item) throw new AppError("Item not found in cart", 404);
+        if (!item) throw new AppError(MESSAGES.CART.ITEM_NOT_FOUND, 404);
 
         const product = await Products.findOne({ _id: productId, isActive: true });
-        if (!product) throw new AppError("Product not found or unavailable", 404);
+        if (!product) throw new AppError(MESSAGES.PRODUCT.NOT_AVAILABLE, 404);
 
         item.quantity = quantity;
         await cart.save();
@@ -94,7 +95,7 @@ export const updateCartItem = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "Cart updated successfully",
+            message: MESSAGES.CART.UPDATED,
             data
         });
     } catch (error) {
@@ -107,14 +108,14 @@ export const removeCartItem = async (req, res, next) => {
         const { productId } = req.params;
 
         const cart = await Cart.findOne({ user: req.user._id });
-        if (!cart) throw new AppError("Item not found in cart", 404);
+        if (!cart) throw new AppError(MESSAGES.CART.ITEM_NOT_FOUND, 404);
 
         const before = cart.items.length;
         cart.items = cart.items.filter(
             (cartItem) => cartItem.product.toString() !== productId
         );
         if (cart.items.length === before) {
-            throw new AppError("Item not found in cart", 404);
+            throw new AppError(MESSAGES.CART.ITEM_NOT_FOUND, 404);
         }
 
         await cart.save();
@@ -123,7 +124,7 @@ export const removeCartItem = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "Item removed from cart",
+            message: MESSAGES.CART.ITEM_REMOVED,
             data
         });
     } catch (error) {
@@ -134,10 +135,10 @@ export const removeCartItem = async (req, res, next) => {
 export const clearCart = async (req, res, next) => {
     try {
         await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] });
-
+ 
         res.status(200).json({
             success: true,
-            message: "Cart cleared successfully",
+            message: MESSAGES.CART.CLEARED,
             data: { items: [], totalItems: 0, totalPrice: 0 }
         });
     } catch (error) {

@@ -1,9 +1,12 @@
+import MESSAGES from "../constants/messages.js";
 
 const errorMiddleware = (err, req, res, next) => {
-    console.error(err);
-
     let statusCode = err.statusCode || 500;
-    let message = err.message || "Internal server error";
+    let message = err.message || MESSAGES.COMMON.INTERNAL_ERROR;
+
+    if (statusCode >= 500) {
+        console.error(err);
+    }
 
     if (err.name === "ValidationError") {
         statusCode = 400;
@@ -12,12 +15,14 @@ const errorMiddleware = (err, req, res, next) => {
 
     if (err.code === 11000) {
         statusCode = 409;
-        message = "Product already exists in this category";
+        message = err.keyPattern?.email
+            ? MESSAGES.AUTH.EMAIL_EXISTS
+            : MESSAGES.PRODUCT.DUPLICATE;
     }
 
     if (err.name === "CastError") {
         statusCode = 400;
-        message = "Invalid product ID";
+        message = MESSAGES.COMMON.INVALID_ID;
     }
 
     res.status(statusCode).json({

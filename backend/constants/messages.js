@@ -1,0 +1,96 @@
+const MESSAGES = {
+    COMMON: {
+        API_RUNNING: "TORQUE RC API IS RUNNING",
+        INTERNAL_ERROR: "Internal server error",
+        VALIDATION_FAILED: "Validation failed",
+        INVALID_ID: "Invalid ID",
+        ROUTE_NOT_FOUND: (url) => `Route not found: ${url}`,
+    },
+
+    VALIDATION: {
+        NAME_MIN: "Name must contain at least 2 characters",
+        EMAIL_INVALID: "Enter a valid email address",
+        PASSWORD_MIN: "Password must be at least 6 characters",
+        PASSWORD_REQUIRED: "Password is required",
+
+        PRODUCT_ID_REQUIRED: "Product id is required",
+        PRODUCT_ID_INVALID: "Invalid product id",
+        ORDER_ID_INVALID: "Invalid order id",
+        QUANTITY_REQUIRED: "Quantity is required",
+        QUANTITY_INVALID: "Quantity must be a whole number of 1 or more",
+
+        DESCRIPTION_REQUIRED: "Description is required",
+        PRICE_MIN: "Price must be at least 1",
+        CATEGORY_REQUIRED: "Category is required",
+        BRAND_REQUIRED: "Brand is required",
+        IMAGES_REQUIRED: "At least one image is required",
+        STOCK_INVALID: "Stock must be a non-negative integer",
+        SPECS_INVALID: "Specs must be an object",
+        GRADE_REQUIRED: "Grade is required",
+
+        FULL_NAME_REQUIRED: "Full name is required",
+        PHONE_INVALID: "Enter a valid phone number",
+        ADDRESS_REQUIRED: "Address is required",
+        CITY_REQUIRED: "City is required",
+        STATE_REQUIRED: "State is required",
+        PINCODE_INVALID: "Enter a valid pincode",
+        PAYMENT_METHOD_INVALID: "Payment method must be cod, upi or card",
+    },
+
+    AUTH: {
+        REGISTER_SUCCESS: "Registration successful",
+        EMAIL_EXISTS: "Email already registered",
+        INVALID_CREDENTIALS: "Invalid email or password",
+        LOGIN_SUCCESS: "Login successful",
+        LOGOUT_SUCCESS: "Logged out successfully",
+        TOKEN_REFRESHED: "Token refreshed",
+        ACCOUNT_BLOCKED: "Your account has been blocked",
+        ACCOUNT_DEACTIVATED: "Your account is deactivated",
+        NOT_AUTHORIZED: "Not authorized, please login",
+        TOKEN_INVALID: "Not authorized, invalid or expired token",
+        USER_NOT_FOUND: "Not authorized, user no longer exists",
+        SESSION_EXPIRED: "Session expired, please login again",
+        ADMIN_ONLY: "Admin access only",
+    },
+
+    PRODUCT: {
+        LIST_FETCHED: "Products fetched successfully",
+        FETCHED: "Product fetched successfully",
+        CATEGORIES_FETCHED: "Categories fetched successfully",
+        CREATED: "Product created successfully",
+        UPDATED: "Product updated successfully",
+        DELETED: "Product deleted successfully",
+        NOT_FOUND: "Product not found",
+        NOT_AVAILABLE: "Product not found or unavailable",
+        DUPLICATE: "Product already exists in this category",
+    },
+
+    CART: {
+        FETCHED: "Cart fetched successfully",
+        ITEM_ADDED: "Product added to cart",
+        UPDATED: "Cart updated successfully",
+        ITEM_REMOVED: "Item removed from cart",
+        CLEARED: "Cart cleared successfully",
+        ITEM_NOT_FOUND: "Item not found in cart",
+    },
+
+    WISHLIST: {
+        FETCHED: "Wishlist fetched successfully",
+        ADDED: "Product added to wishlist",
+        REMOVED: "Product removed from wishlist",
+        NOT_IN_WISHLIST: "Product not found in wishlist",
+    },
+
+    ORDER: {
+        PLACED: "Order placed successfully",
+        LIST_FETCHED: "Orders fetched successfully",
+        FETCHED: "Order fetched successfully",
+        NOT_FOUND: "Order not found",
+        CART_EMPTY: "Your cart is empty",
+        PRODUCT_UNAVAILABLE: (name) =>
+            `${name || "A product in your cart"} is no longer available. Please remove it and try again`,
+        INSUFFICIENT_STOCK: (stock, name) => `Only ${stock} of ${name} available`,
+    },
+};
+
+export default MESSAGES;

@@ -1,17 +1,21 @@
-import {validationResult} from "express-validator";
+import { validationResult } from "express-validator";
+import MESSAGES from "../constants/messages.js";
 
-const validateRequest = (req,res,next)=>{
+const validateRequest = (req, res, next) => {
     const errors = validationResult(req);
-    if(!errors.isEmpty()){
+
+    if (!errors.isEmpty()) {
         return res.status(400).json({
-            success:false,
-            message:"Validation failed",
-            data:errors.array().map(error=>({
-                field:error.path,
-                message:error.msg
+            success: false,
+            message: MESSAGES.COMMON.VALIDATION_FAILED,
+            data: errors.array().map((error) => ({
+                field: error.path,
+                message: error.msg
             }))
-        })
+        });
     }
+
     next();
-}
+};
+
 export default validateRequest;

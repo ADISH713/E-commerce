@@ -2,6 +2,7 @@ import Cart from "../models/cartModel.js";
 import Order from "../models/orderModel.js";
 import Products from "../models/productModel.js";
 import AppError from "../utils/AppError.js";
+import MESSAGES from "../constants/messages.js";
 
 export const createOrder = async (req, res, next) => {
     try {
@@ -11,7 +12,7 @@ export const createOrder = async (req, res, next) => {
             .populate("items.product");
 
         if (!cart || cart.items.length === 0) {
-            throw new AppError("Your cart is empty", 400);
+            throw new AppError(MESSAGES.ORDER.CART_EMPTY, 400);
         }
 
         const orderItems = [];
@@ -21,17 +22,11 @@ export const createOrder = async (req, res, next) => {
             const product = item.product;
 
             if (!product || !product.isActive) {
-                throw new AppError(
-                    `${product?.name || "A product in your cart"} is no longer available. Please remove it and try again`,
-                    400
-                );
+                throw new AppError(MESSAGES.ORDER.PRODUCT_UNAVAILABLE(product?.name), 400);
             }
 
             if (item.quantity > product.stock) {
-                throw new AppError(
-                    `Only ${product.stock} of ${product.name} available`,
-                    400
-                );
+                throw new AppError(MESSAGES.ORDER.INSUFFICIENT_STOCK(product.stock, product.name), 400);
             }
 
             orderItems.push({
@@ -69,7 +64,7 @@ export const createOrder = async (req, res, next) => {
 
         res.status(201).json({
             success: true,
-            message: "Order placed successfully",
+            message: MESSAGES.ORDER.PLACED,
             data: order
         });
     } catch (error) {
@@ -84,7 +79,7 @@ export const getMyOrders = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "Orders fetched successfully",
+            message: MESSAGES.ORDER.LIST_FETCHED,
             data: orders
         });
     } catch (error) {
@@ -99,11 +94,11 @@ export const getOrderById = async (req, res, next) => {
             user: req.user._id
         });
 
-        if (!order) throw new AppError("Order not found", 404);
+        if (!order) throw new AppError(MESSAGES.ORDER.NOT_FOUND, 404);
 
         res.status(200).json({
             success: true,
-            message: "Order fetched successfully",
+            message: MESSAGES.ORDER.FETCHED,
             data: order
         });
     } catch (error) {

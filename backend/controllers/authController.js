@@ -4,8 +4,8 @@ import User from '../models/userModel.js';
 import { generateAccessToken, generateRefreshToken } from '../utils/generateTokens.js';
 import AppError from '../utils/AppError.js';
 import jwt from 'jsonwebtoken'
+import MESSAGES from '../constants/messages.js';
 
-const INVALID_CREDENTIALS = "Invalid email or password";
 const REFRESH_MAX_AGE = 7*24*60*60*1000;
 
 const cookieOptions = {
@@ -30,14 +30,14 @@ export const register = async (req,res,next)=>{
         const {name,email,password} = req.body;
 
         const existing = await User.findOne({email});
-        if(existing) throw new AppError("Email already registered",409);
+        if(existing) throw new AppError(MESSAGES.AUTH.EMAIL_EXISTS,409);
 
         const hashed = await bcrypt.hash(password,10);
         const user = await User.create({name,email,password:hashed,role:"user"});
 
         res.status(201).json({
             success:true,
-            message:"Registration succesfull",
+            message:MESSAGES.AUTH.REGISTER_SUCCESS,
             data:userPayload(user)
         });
     }catch(error){
@@ -52,14 +52,14 @@ const loginWithRole = (requiredRole) => async (req,res,next) => {
         const user = await User.findOne({email}).select("+password");
 
         if(!user || user.role !== requiredRole){
-            throw new AppError(INVALID_CREDENTIALS,401);
+            throw new AppError(MESSAGES.AUTH.INVALID_CREDENTIALS,401);
         }
 
         const match = await bcrypt.compare(password,user.password);
         if(!match) throw new AppError(INVALID_CREDENTIALS,401);
 
-        if(user.isBlocked) throw new AppError("Your account has been blocked", 403);
-        if(!user.isActive) throw new AppError("Your account is deactivated",403);
+        if(user.isBlocked) throw new AppError(MESSAGES.AUTH.ACCOUNT_BLOCKED, 403);
+        if(!user.isActive) throw new AppError(MESSAGES.AUTH.ACCOUNT_DEACTIVATED,403);
 
         const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
@@ -76,7 +76,7 @@ const loginWithRole = (requiredRole) => async (req,res,next) => {
 
         res.status(200).json({
             success:true,
-            message:"Login successful",
+            message:MESSAGES.AUTH.LOGIN_SUCCESS,
             data:{
                 accessToken,
                 user:userPayload(user)
@@ -93,28 +93,28 @@ export const adminLogin = loginWithRole("admin");
 export const refresh = async (req,res,next) =>{
     try{
         const token = req.cookies?.refreshToken;
-        if(!token) throw new AppError("Not authorized, please login",401)
+        if(!token) throw new AppError(MESSAGES.AUTH.NOT_AUTHORIZED,401)
 
         let decoded;
         try{
             decoded = jwt.verify(token,process.env.JWT_REFRESH_SECRET);
         }catch{
             res.clearCookie("refreshToken",cookieOptions);
-            throw new AppError("Session expired,please login again",401);
+            throw new AppError(MESSAGES.AUTH.SESSION_EXPIRED,401);
 
         }
         const user = await User.findById(decoded.id).select("+refreshToken");
-
+        
         if(!user || user.refreshToken !== hashToken(token)){
             res.clearCookie("refreshToken",cookieOptions);
-            throw new AppError("Session expired, please login again",401);
+            throw new AppError(MESSAGES.AUTH.SESSION_EXPIRED,401);
         }
-        if(user.isBlocked) throw new AppError("Your account has been blocked",403);
-        if(!user.isActive) throw new AppError("Your account is deactivated",403);
+        if(user.isBlocked) throw new AppError(MESSAGES.AUTH.ACCOUNT_BLOCKED,403);
+        if(!user.isActive) throw new AppError(MESSAGES.AUTH.ACCOUNT_DEACTIVATED,403);
 
         res.status(200).json({
             success:true,
-            message:"Token refreshed",
+            message:MESSAGES.AUTH.TOKEN_REFRESHED,
             data:{
                 accessToken:generateAccessToken(user),
                 user:userPayload(user)
@@ -139,7 +139,7 @@ export const logout = async (req,res,next) =>{
 
         res.status(200).json({
             success:true,
-            message:"Logged out successfully",
+            message:MESSAGES.AUTH.LOGOUT_SUCCESS,
             data:null
         });
 
