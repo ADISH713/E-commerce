@@ -35,6 +35,8 @@ const MESSAGES = {
         STATE_REQUIRED: "State is required",
         PINCODE_INVALID: "Enter a valid pincode",
         PAYMENT_METHOD_INVALID: "Payment method must be cod, upi or card",
+
+        OTP_FORMAT: "Enter the 6-digit code",
     },
 
     AUTH: {
@@ -51,6 +53,16 @@ const MESSAGES = {
         USER_NOT_FOUND: "Not authorized, user no longer exists",
         SESSION_EXPIRED: "Session expired, please login again",
         ADMIN_ONLY: "Admin access only",
+
+        OTP_SENT: "Verification code sent to your email",
+        OTP_SEND_FAILED: "Could not send the verification email. Please try again",
+        OTP_INVALID: "Invalid verification code",
+        OTP_EXPIRED: "Verification code expired. Please request a new one",
+        OTP_TOO_MANY_ATTEMPTS: "Too many wrong attempts. Please request a new code",
+        OTP_NOT_PENDING: "No pending verification for this email",
+        EMAIL_VERIFIED: "Email verified successfully. You can now log in",
+        OTP_RESEND_WAIT: (seconds) => `Please wait ${seconds}s before requesting another code`,
+        EMAIL_NOT_VERIFIED: "Please verify your email before logging in",
     },
 
     PRODUCT: {

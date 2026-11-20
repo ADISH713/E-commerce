@@ -39,6 +39,24 @@ export const registerUser = async (newUser) => {
     }
 };
 
+export const verifyOtp = async (email, otp) => {
+    try {
+        const { data } = await api.post("/auth/verify-otp", { email, otp });
+        return data;
+    } catch (error) {
+        throw new Error(getMessage(error));
+    }
+};
+
+export const resendOtp = async (email) => {
+    try {
+        const { data } = await api.post("/auth/resend-otp", { email });
+        return data;
+    } catch (error) {
+        throw new Error(getMessage(error));
+    }
+};
+
 export const logoutUser = async () => {
     try {
         await api.post("/auth/logout");

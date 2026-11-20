@@ -11,3 +11,12 @@ export const loginValidator = [
     body("email").trim().isEmail().withMessage(MESSAGES.VALIDATION.EMAIL_INVALID).normalizeEmail(),
     body("password").notEmpty().withMessage(MESSAGES.VALIDATION.PASSWORD_REQUIRED)
 ];
+
+export const verifyOtpValidator = [
+    body("email").trim().isEmail().withMessage(MESSAGES.VALIDATION.EMAIL_INVALID).normalizeEmail(),
+    body("otp").trim().matches(/^\d{6}$/).withMessage(MESSAGES.VALIDATION.OTP_FORMAT)
+];
+
+export const resendOtpValidator = [
+    body("email").trim().isEmail().withMessage(MESSAGES.VALIDATION.EMAIL_INVALID).normalizeEmail()
+];

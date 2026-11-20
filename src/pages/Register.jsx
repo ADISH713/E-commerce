@@ -12,6 +12,8 @@ import { IconEye, IconEyeOff } from '@tabler/icons-react';
 
 import { useSelector } from 'react-redux';
 
+import OtpVerify from '../components/OtpVerify';
+
 import {
     validateRegisterForm,
     validateName,
@@ -42,6 +44,8 @@ function Register() {
 
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+    const [otpEmail, setOtpEmail] = useState('');
+
     const isAuthenticated = useSelector(
         (state) => state.auth.isAuthenticated
     );
@@ -60,8 +64,8 @@ function Register() {
 
         mutationFn: (userData) => registerUser(userData),
 
-        onSuccess: () => {
-            navigate('/login', { replace: true });
+        onSuccess: (data) => {
+            setOtpEmail(data.email);
         },
 
     });
@@ -89,6 +93,14 @@ function Register() {
 
             <div className="w-full max-w-sm bg-black/60 backdrop-blur-md border border-white/10 rounded-xl p-5 sm:p-6 md:p-8 shadow-2xl">
 
+                            {otpEmail ? (
+                    <OtpVerify
+                        email={otpEmail}
+                        onVerified={() => navigate('/login', { replace: true })}
+                        onBack={() => setOtpEmail('')}
+                    />
+                ) : (
+                <>
                 <h1 className="text-xl sm:text-2xl font-semibold text-white mb-1 tracking-wide">
                     REGISTER
                 </h1>
@@ -310,7 +322,8 @@ function Register() {
                         Login
                     </Link>
                 </p>
-
+                </>
+                )}
             </div>
 
         </div>

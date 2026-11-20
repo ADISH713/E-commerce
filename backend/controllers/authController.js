@@ -5,6 +5,8 @@ import { generateAccessToken, generateRefreshToken } from '../utils/generateToke
 import AppError from '../utils/AppError.js';
 import jwt from 'jsonwebtoken'
 import MESSAGES from '../constants/messages.js';
+import sendEmail from '../utils/sendEmail.js';
+import { generateOtp, hashOtp, isSameHash } from '../utils/otp.js';
 
 const REFRESH_MAX_AGE = 7*24*60*60*1000;
 
@@ -25,25 +27,146 @@ const userPayload = (user) =>({
     role:user.role
 });
 
+const OTP_EXPIRY_MINUTES = 10;
+const OTP_MAX_ATTEMPTS = 5;
+const OTP_RESEND_COOLDOWN_SECONDS = 60;
+
+const issueOtp = async (user) => {
+    const otp = generateOtp();
+
+    await User.updateOne(
+        {_id:user._id},
+        {
+            otpHash:hashOtp(otp,user._id),
+            otpExpires:new Date(Date.now() + OTP_EXPIRY_MINUTES*60*1000),
+            otpAttempts:0,
+            otpLastSentAt:new Date()
+        }
+    );
+
+    try{
+        await sendEmail({
+            to:user.email,
+            subject:"Your Torque RC verification code",
+            text:`Hi ${user.name}, your verification code is ${otp}. It expires in ${OTP_EXPIRY_MINUTES} minutes.`
+        });
+    }catch(error){
+        console.error("OTP email failed:",error.message);
+        throw new AppError(MESSAGES.AUTH.OTP_SEND_FAILED,502);
+    }
+};
+
+const secondsUntilResend = (user) => {
+    if(!user.otpLastSentAt) return 0;
+    const elapsed = (Date.now() - user.otpLastSentAt.getTime()) / 1000;
+    return Math.max(0,Math.ceil(OTP_RESEND_COOLDOWN_SECONDS - elapsed));
+};
+
 export const register = async (req,res,next)=>{
     try{
         const {name,email,password} = req.body;
 
         const existing = await User.findOne({email});
-        if(existing) throw new AppError(MESSAGES.AUTH.EMAIL_EXISTS,409);
-
         const hashed = await bcrypt.hash(password,10);
-        const user = await User.create({name,email,password:hashed,role:"user"});
+
+        let user;
+        if(existing){
+            // a verified account really owns this email
+            if(existing.isVerified !== false) throw new AppError(MESSAGES.AUTH.EMAIL_EXISTS,409);
+
+            // earlier sign-up was never verified, so let them try again
+            existing.name = name;
+            existing.password = hashed;
+            await existing.save();
+            user = existing;
+        }else{
+            user = await User.create({name,email,password:hashed,role:"user",isVerified:false});
+        }
+
+        await issueOtp(user);
 
         res.status(201).json({
             success:true,
-            message:MESSAGES.AUTH.REGISTER_SUCCESS,
-            data:userPayload(user)
+            message:MESSAGES.AUTH.OTP_SENT,
+            data:{email:user.email}
         });
     }catch(error){
         next(error);
     }
 }
+
+export const verifyOtp = async (req,res,next)=>{
+    try{
+        const {email,otp} = req.body;
+
+        // the otp fields are hidden by default, so ask for them with "+"
+        const user = await User.findOne({email}).select("+otpHash +otpExpires +otpAttempts");
+
+        // 1. is there a pending verification at all?
+        if(!user || user.isVerified !== false || !user.otpHash){
+            throw new AppError(MESSAGES.AUTH.OTP_NOT_PENDING,400);
+        }
+
+        // 2. has the code expired?
+        if(!user.otpExpires || user.otpExpires.getTime() < Date.now()){
+            throw new AppError(MESSAGES.AUTH.OTP_EXPIRED,400);
+        }
+
+        // 3. too many wrong guesses already?
+        if(user.otpAttempts >= OTP_MAX_ATTEMPTS){
+            throw new AppError(MESSAGES.AUTH.OTP_TOO_MANY_ATTEMPTS,429);
+        }
+
+        // 4. is the code correct?
+        if(!isSameHash(hashOtp(otp,user._id),user.otpHash)){
+            await User.updateOne({_id:user._id},{$inc:{otpAttempts:1}});
+            throw new AppError(MESSAGES.AUTH.OTP_INVALID,400);
+        }
+
+        // success: mark verified and remove the otp fields
+        await User.updateOne(
+            {_id:user._id},
+            {
+                isVerified:true,
+                $unset:{otpHash:1,otpExpires:1,otpAttempts:1,otpLastSentAt:1}
+            }
+        );
+
+        res.status(200).json({
+            success:true,
+            message:MESSAGES.AUTH.EMAIL_VERIFIED,
+            data:null
+        });
+    }catch(error){
+        next(error);
+    }
+};
+
+export const resendOtp = async (req,res,next)=>{
+    try{
+        const {email} = req.body;
+
+        const user = await User.findOne({email}).select("+otpLastSentAt");
+
+        // only people with a pending verification can ask for a new code
+        if(!user || user.isVerified !== false){
+            throw new AppError(MESSAGES.AUTH.OTP_NOT_PENDING,400);
+        }
+
+        const wait = secondsUntilResend(user);
+        if(wait > 0) throw new AppError(MESSAGES.AUTH.OTP_RESEND_WAIT(wait),429);
+
+        await issueOtp(user);
+
+        res.status(200).json({
+            success:true,
+            message:MESSAGES.AUTH.OTP_SENT,
+            data:{email:user.email}
+        });
+    }catch(error){
+        next(error);
+    }
+};
 
 const loginWithRole = (requiredRole) => async (req,res,next) => {
     try{
@@ -58,6 +181,7 @@ const loginWithRole = (requiredRole) => async (req,res,next) => {
         const match = await bcrypt.compare(password,user.password);
         if(!match) throw new AppError(MESSAGES.AUTH.INVALID_CREDENTIALS,401);
 
+        if(user.isVerified === false) throw new AppError(MESSAGES.AUTH.EMAIL_NOT_VERIFIED,403); 
         if(user.isBlocked) throw new AppError(MESSAGES.AUTH.ACCOUNT_BLOCKED, 403);
         if(!user.isActive) throw new AppError(MESSAGES.AUTH.ACCOUNT_DEACTIVATED,403);
 
