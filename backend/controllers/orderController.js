@@ -1,44 +1,18 @@
-import Cart from "../models/cartModel.js";
 import Order from "../models/orderModel.js";
-import Products from "../models/productModel.js";
 import AppError from "../utils/AppError.js";
 import MESSAGES from "../constants/messages.js";
+import { buildOrderFromCart, reduceStock, clearUserCart } from "../utils/orderHelpers.js";
 
 export const createOrder = async (req, res, next) => {
     try {
         const { shippingAddress, paymentMethod } = req.body;
 
-        const cart = await Cart.findOne({ user: req.user._id })
-            .populate("items.product");
-
-        if (!cart || cart.items.length === 0) {
-            throw new AppError(MESSAGES.ORDER.CART_EMPTY, 400);
+        // UPI orders must go through Razorpay (/api/payments/razorpay/order)
+        if (paymentMethod === "upi") {
+            throw new AppError(MESSAGES.ORDER.USE_ONLINE_PAYMENT, 400);
         }
 
-        const orderItems = [];
-        let totalAmount = 0;
-
-        for (const item of cart.items) {
-            const product = item.product;
-
-            if (!product || !product.isActive) {
-                throw new AppError(MESSAGES.ORDER.PRODUCT_UNAVAILABLE(product?.name), 400);
-            }
-
-            if (item.quantity > product.stock) {
-                throw new AppError(MESSAGES.ORDER.INSUFFICIENT_STOCK(product.stock, product.name), 400);
-            }
-
-            orderItems.push({
-                product: product._id,
-                name: product.name,
-                price: product.price,
-                image: product.images[0],
-                quantity: item.quantity
-            });
-
-            totalAmount += product.price * item.quantity;
-        }
+        const { orderItems, totalAmount } = await buildOrderFromCart(req.user._id);
 
         const order = await Order.create({
             user: req.user._id,
@@ -46,21 +20,13 @@ export const createOrder = async (req, res, next) => {
             shippingAddress,
             paymentMethod,
             totalAmount,
-            paymentStatus: "paid",
+            // COD is paid on delivery; "card" stays a dummy checkout for now
+            paymentStatus: paymentMethod === "cod" ? "pending" : "paid",
             orderStatus: "pending"
         });
 
-        await Products.bulkWrite(
-            orderItems.map((item) => ({
-                updateOne: {
-                    filter: { _id: item.product },
-                    update: { $inc: { stock: -item.quantity } }
-                }
-            }))
-        );
-
-        cart.items = [];
-        await cart.save();
+        await reduceStock(orderItems);
+        await clearUserCart(req.user._id);
 
         res.status(201).json({
             success: true,

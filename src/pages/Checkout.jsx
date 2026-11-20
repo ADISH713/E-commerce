@@ -20,18 +20,20 @@ import {
     IconCash,
 } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createOrder } from '../services/orderServices';
 import { clearCartState } from '../redux/slices/cartSlice';
-// import { updateCart } from '../services/cartServices';
-// import {
-//     getProductById,
-//     updateProduct,
-// } from '../services/productServices';
 import toast from 'react-hot-toast';
+import {
+    createOrder,
+    createRazorpayOrder,
+    verifyRazorpayPayment,
+    markPaymentFailed,
+} from '../services/orderServices';
+import { loadRazorpay } from '../utils/loadRazorpay';
 
 function Checkout() {
     const [step, setStep] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState('');
+    const [isProcessing, setIsProcessing] = useState(false);
 
     const { items} = useSelector((state) => state.cart);
     const user = useSelector((state) => state.auth.user);
@@ -72,29 +74,104 @@ function Checkout() {
         setStep(2);
     };
 
-    const handlePlaceOrder = async () => {
-    try {
-        await createOrder({
+        const getErrorMessage = (error) => {
+        const data = error.response?.data;
+        return (
+            (Array.isArray(data?.data) && data.data.length > 0
+                ? data.data[0].message
+                : data?.message) || null
+        );
+    };
+
+    const placeCodOrder = async () => {
+        await createOrder({ shippingAddress: formData, paymentMethod });
+        dispatch(clearCartState());
+        toast.success('Order placed successfully!');
+    };
+
+    const payWithUpi = async () => {
+        const loaded = await loadRazorpay();
+        if (!loaded) {
+            toast.error('Could not load payment gateway. Check your internet.');
+            return;
+        }
+
+        const { order, razorpay } = await createRazorpayOrder({
             shippingAddress: formData,
-            paymentMethod,
         });
 
-        dispatch(clearCartState());
+        let completed = false;
 
-        toast.success("Order placed successfully!");
+        const options = {
+            key: razorpay.keyId,
+            amount: razorpay.amount,
+            currency: razorpay.currency,
+            order_id: razorpay.orderId,
+            name: 'TORQUE',
+            description: 'RC car order',
+            prefill: {
+                name: formData.fullName,
+                email: formData.email,
+                contact: formData.phone,
+            },
+            theme: { color: '#ea580c' },
+            
+            handler: async (response) => {
+                completed = true;
+                try {
+                    await verifyRazorpayPayment({
+                        orderId: order._id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature,
+                    });
+                    dispatch(clearCartState());
+                    toast.success('Payment successful! Order placed.');
+                } catch (error) {
+                    toast.error(
+                        getErrorMessage(error) || 'Payment verification failed.'
+                    );
+                } finally {
+                    setIsProcessing(false);
+                }
+            },
+            modal: {
+                ondismiss: async () => {
+                    if (completed) return;
+                    try {
+                        await markPaymentFailed(order._id);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                    toast.error('Payment cancelled.');
+                    setIsProcessing(false);
+                },
+            },
+        };
 
-    } catch (error) {
-        console.error("Failed to place order:", error);
+        new window.Razorpay(options).open();
+    };
 
-        const data = error.response?.data;
-        const message =
-            Array.isArray(data?.data) && data.data.length > 0
-                ? data.data[0].message
-                : data?.message;
+    const handlePlaceOrder = async () => {
+        if (isProcessing) return;
+        setIsProcessing(true);
 
-        toast.error(message || "Failed to place order. Please try again.");
-    }
-};
+        try {
+            if (paymentMethod === 'upi') {
+                await payWithUpi();
+                return; // isProcessing is reset inside the Razorpay callbacks
+            }
+
+            await placeCodOrder();
+        } catch (error) {
+            console.error('Failed to place order:', error);
+            toast.error(
+                getErrorMessage(error) || 'Failed to place order. Please try again.'
+            );
+        }
+
+        setIsProcessing(false);
+    };
 
     if (items.length === 0) {
         return (
@@ -720,9 +797,14 @@ function Checkout() {
                                     <button
                                         type="button"
                                         onClick={handlePlaceOrder}
-                                        className="w-full sm:flex-1 bg-orange-600 text-white font-medium py-3 rounded-md hover:bg-orange-700 transition text-sm sm:text-base"
+                                        disabled={isProcessing}
+                                        className="w-full sm:flex-1 bg-orange-600 text-white font-medium py-3 rounded-md hover:bg-orange-700 transition text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed"
                                     >
-                                        Place Order
+                                        {isProcessing
+                                            ? 'Processing...'
+                                            : paymentMethod === 'upi'
+                                            ? 'Pay with UPI'
+                                            : 'Place Order'}
                                     </button>
 
                                 </div>

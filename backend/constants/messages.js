@@ -37,6 +37,8 @@ const MESSAGES = {
         PAYMENT_METHOD_INVALID: "Payment method must be cod, upi or card",
 
         OTP_FORMAT: "Enter the 6-digit code",
+
+                PAYMENT_FIELDS_REQUIRED: "Payment details are required",
     },
 
     AUTH: {
@@ -102,6 +104,15 @@ const MESSAGES = {
         PRODUCT_UNAVAILABLE: (name) =>
             `${name || "A product in your cart"} is no longer available. Please remove it and try again`,
         INSUFFICIENT_STOCK: (stock, name) => `Only ${stock} of ${name} available`,
+        USE_ONLINE_PAYMENT: "Please use the online payment option for UPI",
+    },
+
+    PAYMENT: {
+        ORDER_CREATED: "Payment order created",
+        VERIFIED: "Payment verified successfully",
+        VERIFY_FAILED: "Payment verification failed",
+        FAILED_RECORDED: "Payment failure recorded",
+        ALREADY_PAID: "This order is already paid",
     },
 };
 

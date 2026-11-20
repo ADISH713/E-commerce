@@ -23,6 +23,24 @@ export const createOrder = async ({ shippingAddress, paymentMethod }) => {
     return mapOrder(data.data);
 };
 
+export const createRazorpayOrder = async ({ shippingAddress }) => {
+    const { data } = await api.post("/payments/razorpay/order", {
+        shippingAddress,
+        paymentMethod: "upi",
+    });
+    return data.data; // { order, razorpay }
+};
+
+export const verifyRazorpayPayment = async (payload) => {
+    const { data } = await api.post("/payments/razorpay/verify", payload);
+    return data.data;
+};
+
+export const markPaymentFailed = async (orderId) => {
+    const { data } = await api.post("/payments/razorpay/failed", { orderId });
+    return data.data;
+};
+
 export const getMyOrders = async () => {
     const { data } = await api.get("/orders");
     return data.data.map(mapOrder);
