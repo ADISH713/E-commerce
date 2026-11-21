@@ -11,6 +11,7 @@ import orderRoutes from "./routes/orderRoutes.js"
 import wishlistRoutes from "./routes/wishlistRoutes.js"
 import MESSAGES from './constants/messages.js'
 import paymentRoutes from "./routes/paymentRoutes.js"
+import adminRoutes from "./routes/adminRoutes.js"
 
 const app = express()
 
@@ -37,6 +38,7 @@ app.use("/api/cart", cartRoutes)
 app.use("/api/orders", orderRoutes)
 app.use("/api/wishlist", wishlistRoutes)
 app.use("/api/payments", paymentRoutes)
+app.use("/api/admin", adminRoutes)
 
 app.use(notFoundMiddleware)
 app.use(errorMiddleware)

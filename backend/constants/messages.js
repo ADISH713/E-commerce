@@ -38,7 +38,11 @@ const MESSAGES = {
 
         OTP_FORMAT: "Enter the 6-digit code",
 
-                PAYMENT_FIELDS_REQUIRED: "Payment details are required",
+        PAYMENT_FIELDS_REQUIRED: "Payment details are required",
+
+        STATUS_INVALID: "Status must be active, trash or all",
+        PAGE_INVALID: "Page must be a whole number of 1 or more",
+        LIMIT_INVALID: "Limit must be between 1 and 100",
     },
 
     AUTH: {
@@ -77,6 +81,11 @@ const MESSAGES = {
         NOT_FOUND: "Product not found",
         NOT_AVAILABLE: "Product not found or unavailable",
         DUPLICATE: "Product already exists in this category",
+
+        ADMIN_LIST_FETCHED: "Admin products fetched successfully",
+        RESTORED: "Product restored successfully",
+        PERMANENTLY_DELETED: "Product permanently deleted",
+        TRASH_NOT_FOUND: "Product not found in trash",
     },
 
     CART: {

@@ -71,10 +71,8 @@ export const register = async (req,res,next)=>{
 
         let user;
         if(existing){
-            // a verified account really owns this email
             if(existing.isVerified !== false) throw new AppError(MESSAGES.AUTH.EMAIL_EXISTS,409);
 
-            // earlier sign-up was never verified, so let them try again
             existing.name = name;
             existing.password = hashed;
             await existing.save();
@@ -99,31 +97,25 @@ export const verifyOtp = async (req,res,next)=>{
     try{
         const {email,otp} = req.body;
 
-        // the otp fields are hidden by default, so ask for them with "+"
         const user = await User.findOne({email}).select("+otpHash +otpExpires +otpAttempts");
 
-        // 1. is there a pending verification at all?
         if(!user || user.isVerified !== false || !user.otpHash){
             throw new AppError(MESSAGES.AUTH.OTP_NOT_PENDING,400);
         }
 
-        // 2. has the code expired?
         if(!user.otpExpires || user.otpExpires.getTime() < Date.now()){
             throw new AppError(MESSAGES.AUTH.OTP_EXPIRED,400);
         }
 
-        // 3. too many wrong guesses already?
         if(user.otpAttempts >= OTP_MAX_ATTEMPTS){
             throw new AppError(MESSAGES.AUTH.OTP_TOO_MANY_ATTEMPTS,429);
         }
 
-        // 4. is the code correct?
         if(!isSameHash(hashOtp(otp,user._id),user.otpHash)){
             await User.updateOne({_id:user._id},{$inc:{otpAttempts:1}});
             throw new AppError(MESSAGES.AUTH.OTP_INVALID,400);
         }
 
-        // success: mark verified and remove the otp fields
         await User.updateOne(
             {_id:user._id},
             {
@@ -148,7 +140,6 @@ export const resendOtp = async (req,res,next)=>{
 
         const user = await User.findOne({email}).select("+otpLastSentAt");
 
-        // only people with a pending verification can ask for a new code
         if(!user || user.isVerified !== false){
             throw new AppError(MESSAGES.AUTH.OTP_NOT_PENDING,400);
         }
@@ -174,10 +165,9 @@ const loginWithRole = (requiredRole) => async (req,res,next) => {
 
         const user = await User.findOne({email}).select("+password");
 
-        if(!user || user.role !== requiredRole){
-            throw new AppError(MESSAGES.AUTH.INVALID_CREDENTIALS,401);
+        if (!user || (requiredRole && user.role !== requiredRole)) {
+            throw new AppError(MESSAGES.AUTH.INVALID_CREDENTIALS, 401);
         }
-
         const match = await bcrypt.compare(password,user.password);
         if(!match) throw new AppError(MESSAGES.AUTH.INVALID_CREDENTIALS,401);
 
@@ -211,7 +201,7 @@ const loginWithRole = (requiredRole) => async (req,res,next) => {
     }
 };
 
-export const login = loginWithRole("user");
+export const login = loginWithRole(null);
 export const adminLogin = loginWithRole("admin");
 
 export const refresh = async (req,res,next) =>{

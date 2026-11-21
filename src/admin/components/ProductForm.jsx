@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCategories } from '../../hooks/useCategories';
 
 function ProductForm({
     formData,
@@ -23,6 +24,13 @@ function ProductForm({
         driveType,
         description,
     } = formData;
+
+    const { data: categories = [] } = useCategories();
+
+    // existing categories + the product's current one, so Edit always shows it
+    const categoryOptions = Array.from(
+        new Set([...categories, category].filter((c) => c && c !== 'Other'))
+    );
 
     return (
         <div className="w-full">
@@ -92,21 +100,10 @@ function ProductForm({
                         className="w-full border rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base"
                     >
                         <option value="">Select category</option>
-                        <option value="Off-Road Buggy">
-                            Off-Road Buggy
-                        </option>
-                        <option value="Drift Car">
-                            Drift Car
-                        </option>
-                        <option value="Monster Truck">
-                            Monster Truck
-                        </option>
-                        <option value="Rock Crawler">
-                            Rock Crawler
-                        </option>
-                        <option value="Other">
-                            Other
-                        </option>
+                        {categoryOptions.map((c) => (
+                            <option key={c} value={c}>{c}</option>
+                        ))}
+                        <option value="Other">Other</option>
                     </select>
 
                     {errors.category && (

@@ -1,45 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+    useQuery,
+    useQueryClient,
+    keepPreviousData,
+} from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 
 import {
-    softDeleteProduct,
-    permanentlyDeleteProduct,
-    createProduct,
+    getAdminProducts,
     getProductById,
-    updateProduct as updateProductService,
+    createProduct,
+    updateProduct,
+    softDeleteProduct,
 } from '../../services/productServices';
 
-import {
-    softDeleteProduct as softDeleteProductAction,
-    deleteProduct,
-    addProduct,
-    updateProduct as updateProductAction,
-} from '../../redux/slices/productSlice';
-
-import { usePagination } from '../../hooks/usePagination';
+import { getErrorMessage } from '../../utils/getErrorMessage';
+import { useCategories } from '../../hooks/useCategories';
 import Pagination from '../components/Pagination';
 import ProductForm from '../components/ProductForm';
 import { useProductForm } from '../hooks/useProductForm';
 
-function AdminProducts() {
-    const dispatch = useDispatch();
+const PAGE_SIZE = 5;
 
+function AdminProducts() {
+    const queryClient = useQueryClient();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const categorySort = searchParams.get("category") || "all";
-    
+    const categorySort = searchParams.get('category') || 'all';
+    const page = Number(searchParams.get('page')) || 1;
+    const urlSearch = searchParams.get('search') || '';
+
+    const [searchInput, setSearchInput] = useState(urlSearch);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const [modalMode, setModalMode] = useState("add");
-
+    const [modalMode, setModalMode] = useState('add');
     const [editingProductId, setEditingProductId] = useState(null);
+    const [isSaving, setIsSaving] = useState(false);
 
-    const { items: products, isLoading, error } = useSelector(
-    (state) => state.products
-);
+    const { data: categories = [] } = useCategories();
+
     const {
         formData,
         setFormData,
@@ -50,127 +50,160 @@ function AdminProducts() {
         getProductData,
     } = useProductForm();
 
-    const activeProducts = products.filter(
-        (product) => !product.deleted
-        );
+    // wait 400ms after typing, then put the search in the URL
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (searchInput.trim() === urlSearch) return;
 
-    const filteredProducts = activeProducts.filter((product) =>
-        categorySort === "all"
-            ? true
-            : product.category === categorySort
-    );
-     
+            setSearchParams((prev) => {
+                const params = new URLSearchParams(prev);
+                if (searchInput.trim()) params.set('search', searchInput.trim());
+                else params.delete('search');
+                params.set('page', '1');
+                return params;
+            });
+        }, 400);
 
-        const {
-        currentPage,
-        totalPages,
-        paginatedItems: paginatedProducts,
-        goToPage,
-        nextPage,
-        previousPage,
-    } = usePagination(filteredProducts, 5);
+        return () => clearTimeout(timer);
+    }, [searchInput, urlSearch, setSearchParams]);
 
+    const {
+        data,
+        isLoading,
+        isError,
+        error: loadError,
+    } = useQuery({
+        queryKey: ['admin-products', { page, category: categorySort, search: urlSearch }],
+        queryFn: () =>
+            getAdminProducts({
+                status: 'active',
+                page,
+                limit: PAGE_SIZE,
+                category: categorySort === 'all' ? undefined : categorySort,
+                search: urlSearch || undefined,
+            }),
+        placeholderData: keepPreviousData,
+    });
+
+    const products = data?.products ?? [];
+    const totalPages = data?.pages ?? 1;
+
+    // if the last item of the last page was removed, step back one page
+    useEffect(() => {
+        if (data && data.pages > 0 && page > data.pages) {
+            setSearchParams((prev) => {
+                const params = new URLSearchParams(prev);
+                params.set('page', String(data.pages));
+                return params;
+            });
+        }
+    }, [data, page, setSearchParams]);
+
+    const goToPage = (target) => {
+        setSearchParams((prev) => {
+            const params = new URLSearchParams(prev);
+            params.set('page', String(target));
+            return params;
+        });
+    };
+    const nextPage = () => page < totalPages && goToPage(page + 1);
+    const previousPage = () => page > 1 && goToPage(page - 1);
+
+    const refreshProducts = () => {
+        queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+        queryClient.invalidateQueries({ queryKey: ['categories'] });
+        queryClient.invalidateQueries({ queryKey: ['products'] });
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        resetForm();
+        setEditingProductId(null);
+    };
 
     const openAddModal = () => {
         resetForm();
-
         setEditingProductId(null);
-        setModalMode("add");
+        setModalMode('add');
         setIsModalOpen(true);
     };
 
     const openEditModal = async (productId) => {
         try {
-            const data = await getProductById(productId);
+            const product = await getProductById(productId);
 
             setFormData({
-                name: data.name || '',
-                brand: data.brand || '',
-                category: data.category || '',
+                name: product.name || '',
+                brand: product.brand || '',
+                category: product.category || '',
                 customCategory: '',
-                grade: data.grade || '',
-                price: data.price ?? '',
-                stock: data.stock ?? '',
-
+                grade: product.grade || '',
+                price: product.price ?? '',
+                stock: product.stock ?? '',
                 images:
-                    data.images && data.images.length > 0
-                        ? data.images
+                    product.images && product.images.length > 0
+                        ? product.images
                         : ['', '', '', ''],
-
-                scale: data.specs?.scale || '',
-                speed: data.specs?.speed || '',
-                battery: data.specs?.battery || '',
-                runtime: data.specs?.runtime || '',
-                driveType: data.specs?.driveType || '',
-
-                description: data.description || '',
+                scale: product.specs?.scale || '',
+                speed: product.specs?.speed || '',
+                battery: product.specs?.battery || '',
+                runtime: product.specs?.runtime || '',
+                driveType: product.specs?.driveType || '',
+                description: product.description || '',
             });
 
             setEditingProductId(productId);
-            setModalMode("edit");
+            setModalMode('edit');
             setIsModalOpen(true);
-
         } catch (error) {
-            console.error(
-                "Failed to fetch product:",
-                error
-            );
-
-            toast.error("Failed to load product");
+            toast.error(getErrorMessage(error, 'Failed to load product'));
         }
     };
 
     const handleSubmit = async () => {
-        const isValid = validate();
-
-        if (!isValid) {
-            return;
-        }
+        if (isSaving || !validate()) return;
 
         const productData = getProductData();
+        setIsSaving(true);
 
         try {
-            if (modalMode === "add") {
-
-                const createdProduct =
-                    await createProduct(productData);
-
-                dispatch(addProduct(createdProduct));
-
-                toast.success(
-                    "Product added successfully!"
-                );
-
+            if (modalMode === 'add') {
+                await createProduct(productData);
+                toast.success('Product added successfully!');
             } else {
-
-                const updatedProduct =
-                    await updateProductService(
-                        editingProductId,
-                        productData
-                    );
-
-                dispatch(
-                    updateProductAction(updatedProduct)
-                );
-
-                toast.success(
-                    "Product updated successfully!"
-                );
+                await updateProduct(editingProductId, productData);
+                toast.success('Product updated successfully!');
             }
 
-            setIsModalOpen(false);
-            resetForm();
-            setEditingProductId(null);
-
+            refreshProducts();
+            closeModal();
         } catch (error) {
-            console.error(
-                "Failed to save product:",
-                error
-            );
+            toast.error(getErrorMessage(error, 'Failed to save product'));
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
-            toast.error(
-                "Failed to save product"
-            );
+    const handleDelete = async (product) => {
+        const result = await Swal.fire({
+            title: 'Move to trash?',
+            text: `"${product.name}" will be hidden from the store. You can restore it from Trash.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Move to trash',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#f97316',
+            cancelButtonColor: '#6b7280',
+        });
+
+        if (!result.isConfirmed) return;
+
+        try {
+            await softDeleteProduct(product.id);
+            refreshProducts();
+            toast.success('Product moved to trash');
+        } catch (error) {
+            toast.error(getErrorMessage(error, 'Failed to delete product'));
         }
     };
 
@@ -178,80 +211,9 @@ function AdminProducts() {
         return <p>Loading products...</p>;
     }
 
-    if (error) {
-        return <p className="text-red-500">{error}</p>;
+    if (isError) {
+        return <p className="text-red-500">{getErrorMessage(loadError)}</p>;
     }
-   
-    const handleDelete = async (product) => {
-        const result = await Swal.fire({
-            title: 'Delete Product',
-            text: 'How do you want to delete this product?',
-            icon: 'warning',
-            showCancelButton: true,
-            showDenyButton: true,
-
-            confirmButtonText: 'Soft Delete',
-            denyButtonText: 'Permanent Delete',
-            cancelButtonText: 'Cancel',
-
-            confirmButtonColor: '#f97316',
-            denyButtonColor: '#dc2626',
-            cancelButtonColor: '#6b7280',
-        });
-
-        if (result.isConfirmed) {
-            
-            try {
-                const updatedProduct = await softDeleteProduct(product.id);
-
-                dispatch(
-                    softDeleteProductAction(updatedProduct.id)
-                );
-
-                Swal.fire({
-                    title: 'Deleted',
-                    text: 'Product moved to trash.',
-                    icon: 'success',
-                    confirmButtonColor: '#f97316',
-                });
-            } catch (error) {
-                console.error('Failed to soft delete product:', error);
-            }
-        }
-
-        if (result.isDenied) {
-            
-            const confirmPermanent = await Swal.fire({
-                title: 'Permanently delete?',
-                text: 'This product cannot be recovered after permanent deletion.',
-                icon: 'error',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete permanently',
-                cancelButtonText: 'Cancel',
-                confirmButtonColor: '#dc2626',
-            });
-
-            if (!confirmPermanent.isConfirmed) return;
-
-            try {
-                await permanentlyDeleteProduct(product.id);
-
-                dispatch(deleteProduct(product.id));
-
-                Swal.fire({
-                    title: 'Deleted!',
-                    text: 'Product permanently deleted.',
-                    icon: 'success',
-                    confirmButtonColor: '#f97316',
-                });
-            } catch (error) {
-                console.error(
-                    'Failed to permanently delete product:',
-                    error
-                );
-            }
-        }
-    };
     
    
 return (
@@ -271,7 +233,14 @@ return (
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-
+                
+                <input
+                    type="text"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    placeholder="Search products..."
+                    className="border border-gray-200 bg-white rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition"
+                />
                     <select
                         value={categorySort}
                         onChange={(e) => {
@@ -289,10 +258,11 @@ return (
                         className="border border-gray-200 bg-white rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition"
                     >
                         <option value="all">All Categories</option>
-                        <option value="Off-Road Buggy">Off-Road Buggy</option>
-                        <option value="Drift car">Drift Car</option>
-                        <option value="Monster Truck">Monster Truck</option>
-                        <option value="Rock Crawler">Rock Crawler</option>
+                        {categories.map((category) => (
+                            <option key={category} value={category}>
+                                {category}
+                            </option>
+                        ))}
                     </select>
 
                     <button
@@ -344,7 +314,7 @@ return (
 
                         <tbody>
 
-                            {paginatedProducts.map((product) => (
+                            {products.map((product) => (
 
                                 <tr
                                     key={product.id}
@@ -442,7 +412,7 @@ return (
                 </div>
 
                 {/* Empty state */}
-                {paginatedProducts.length === 0 && (
+                {products.length === 0 && (
                     <div className="px-4 sm:px-6 py-12 text-center">
 
                         <p className="text-sm text-gray-500">
@@ -457,7 +427,7 @@ return (
             {/* Pagination */}
             <div className="mt-5 sm:mt-6">
                 <Pagination
-                    currentPage={currentPage}
+                    currentPage={page}
                     totalPages={totalPages}
                     goToPage={goToPage}
                     nextPage={nextPage}

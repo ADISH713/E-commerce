@@ -7,7 +7,6 @@ export const createOrder = async (req, res, next) => {
     try {
         const { shippingAddress, paymentMethod } = req.body;
 
-        // UPI orders must go through Razorpay (/api/payments/razorpay/order)
         if (paymentMethod === "upi") {
             throw new AppError(MESSAGES.ORDER.USE_ONLINE_PAYMENT, 400);
         }
@@ -20,7 +19,6 @@ export const createOrder = async (req, res, next) => {
             shippingAddress,
             paymentMethod,
             totalAmount,
-            // COD is paid on delivery; "card" stays a dummy checkout for now
             paymentStatus: paymentMethod === "cod" ? "pending" : "paid",
             orderStatus: "pending"
         });

@@ -2,6 +2,19 @@ import Products from "../models/productModel.js";
 import AppError from "../utils/AppError.js";
 import MESSAGES from "../constants/messages.js";
 
+const PRODUCT_FIELDS = [
+    "name", "description", "price", "category",
+    "brand", "images", "stock", "specs", "grade"
+];
+
+// only these fields can be written by the admin; everything else is ignored
+const pickProductFields = (body) =>
+    Object.fromEntries(
+        PRODUCT_FIELDS
+            .filter((field) => body[field] !== undefined)
+            .map((field) => [field, body[field]])
+    );
+
 export const getProducts = async (req, res, next) => {
     try {
         const { search, category, page = 1, limit = 12, sort, order } = req.query;
@@ -61,7 +74,9 @@ export const getProductByID = async (req, res, next) => {
 
 export const createProduct = async (req, res, next) => {
     try {
-        const product = await Products.create(req.body);
+        // const product = await Products.create(req.body);
+        const product = await Products.create(pickProductFields(req.body));
+
 
         res.status(201).json({
             success: true,
@@ -77,9 +92,10 @@ export const updateProduct = async (req, res, next) => {
     try {
         const product = await Products.findOneAndUpdate(
             { _id: req.params.id, isActive: true },
-            req.body,
+            pickProductFields(req.body),
             { new: true, runValidators: true }
         );
+        
         if (!product) throw new AppError(MESSAGES.PRODUCT.NOT_FOUND, 404);
 
         res.status(200).json({

@@ -3,6 +3,7 @@ import ProductCard from '../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
 import { useProductFilters } from '../hooks/useProductFilters';
+import CategoryFilter from '../components/CategoryFilter';
 
 function Productlist() {
     const navigate = useNavigate();
@@ -90,42 +91,10 @@ function Productlist() {
                             Grade
                         </h4>
 
-                        <div className='space-y-3'>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.delete('grade');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                All grades
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('grade', 'toy');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Toy grade
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('grade', 'hobby');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Hobby grade
-                            </button>
-
-                        </div>
+                        <CategoryFilter
+                            searchParams={searchParams}
+                            categoryFilter={categoryFilter}
+                        />
                     </div>
 
                     {/* Category */}
@@ -134,65 +103,11 @@ function Productlist() {
                         <h4 className='text-sm font-medium text-gray-900 mb-3'>
                             Category
                         </h4>
-
-                        <div className='space-y-3'>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.delete('category');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                All categories
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('category', 'Off-Road Buggy');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Off-Road Buggy
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('category', 'Drift car');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Drift Car
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('category', 'Monster Truck');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Monster Truck
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('category', 'Rock Crawler');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Rock Crawler
-                            </button>
-
-                        </div>
+                        <CategoryFilter
+                            searchParams={searchParams}
+                            categoryFilter={categoryFilter}
+                        />
+                                                
                     </div>
 
                     {/* Price */}
@@ -252,31 +167,11 @@ function Productlist() {
                             Sort by price
                         </h4>
 
-                        <div className='space-y-3'>
+                        <CategoryFilter
+                            searchParams={searchParams}
+                            categoryFilter={categoryFilter}
+                        />
 
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('sort', 'price-low');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Low to High
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('sort', 'price-high');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                High to Low
-                            </button>
-
-                        </div>
                     </div>
 
                 </div>
@@ -323,42 +218,11 @@ function Productlist() {
                             Grade
                         </h4>
 
-                        <div className='space-y-3'>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.delete('grade');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                All grades
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('grade', 'toy');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Toy grade
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('grade', 'hobby');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Hobby grade
-                            </button>
-
-                        </div>
+                        <CategoryFilter
+                            searchParams={searchParams}
+                            categoryFilter={categoryFilter}
+                        />
+                        
                     </div>
 
                     {/* Category */}
@@ -368,64 +232,10 @@ function Productlist() {
                             Category
                         </h4>
 
-                        <div className='space-y-3'>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.delete('category');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                All categories
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('category', 'Off-Road Buggy');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Off-Road Buggy
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('category', 'Drift car');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Drift Car
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('category', 'Monster Truck');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Monster Truck
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('category', 'Rock Crawler');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Rock Crawler
-                            </button>
-
-                        </div>
+                        <CategoryFilter
+                            searchParams={searchParams}
+                            categoryFilter={categoryFilter}
+                        />        
                     </div>
 
                     {/* Price */}
@@ -485,31 +295,10 @@ function Productlist() {
                             Sort by price
                         </h4>
 
-                        <div className='space-y-3'>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('sort', 'price-low');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                Low to High
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    const params = new URLSearchParams(searchParams);
-                                    params.set('sort', 'price-high');
-                                    navigate(`/products?${params.toString()}`);
-                                }}
-                                className='block w-full text-left text-sm text-gray-600 hover:text-orange-600 transition'
-                            >
-                                High to Low
-                            </button>
-
-                        </div>
+                        <CategoryFilter
+                            searchParams={searchParams}
+                            categoryFilter={categoryFilter}
+                        />
                     </div>
 
                 </aside>

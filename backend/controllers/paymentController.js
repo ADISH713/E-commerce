@@ -5,7 +5,6 @@ import AppError from "../utils/AppError.js";
 import MESSAGES from "../constants/messages.js";
 import { buildOrderFromCart, reduceStock, clearUserCart } from "../utils/orderHelpers.js";
 
-// Step 1: create Razorpay order + our pending order
 export const createRazorpayOrder = async (req, res, next) => {
     try {
         const { shippingAddress } = req.body;
@@ -48,7 +47,6 @@ export const createRazorpayOrder = async (req, res, next) => {
     }
 };
 
-// Step 2: verify signature, then mark paid
 export const verifyRazorpayPayment = async (req, res, next) => {
     try {
         const { orderId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
@@ -82,7 +80,6 @@ export const verifyRazorpayPayment = async (req, res, next) => {
             throw new AppError(MESSAGES.PAYMENT.VERIFY_FAILED, 400);
         }
 
-        // Atomic pending -> paid, so a double request can't reduce stock twice
         const paidOrder = await Order.findOneAndUpdate(
             { _id: order._id, paymentStatus: { $ne: "paid" } },
             { paymentStatus: "paid", razorpayPaymentId: razorpay_payment_id },
@@ -104,7 +101,6 @@ export const verifyRazorpayPayment = async (req, res, next) => {
     }
 };
 
-// Called when the user closes the popup or the payment fails
 export const markPaymentFailed = async (req, res, next) => {
     try {
         const { orderId } = req.body;

@@ -159,7 +159,7 @@ function Checkout() {
         try {
             if (paymentMethod === 'upi') {
                 await payWithUpi();
-                return; // isProcessing is reset inside the Razorpay callbacks
+                return;
             }
 
             await placeCodOrder();
