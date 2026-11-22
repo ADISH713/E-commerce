@@ -1,83 +1,133 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { blockUser, unblockUser } from '../../redux/slices/userSlice';
-import { updateUser } from '../../services/userServices';
-import { usePagination } from '../../hooks/usePagination';
+import {
+    useQuery,
+    useQueryClient,
+    keepPreviousData,
+} from '@tanstack/react-query';
+import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
+
+import { getAdminUsers, setUserBlocked } from '../../services/userServices';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 import Pagination from '../components/Pagination';
 
+const PAGE_SIZE = 5;
+
 function AdminUsers() {
-    const dispatch = useDispatch();
+    const queryClient = useQueryClient();
     const [searchParams, setSearchParams] = useSearchParams();
-    const search = searchParams.get('search') || '';
+
+    const urlSearch = searchParams.get('search') || '';
     const statusFilter = searchParams.get('status') || 'all';
+    const page = Number(searchParams.get('page')) || 1;
 
-    const {
-        items: users,
-        isLoading,
-        error,
-    } = useSelector((state) => state.users);
+    const [searchInput, setSearchInput] = useState(urlSearch);
+    const [busyId, setBusyId] = useState(null);
 
-    const filteredUser = users.filter((user) => {
-        const matchesSearch =
-            user.name.toLowerCase().includes(search.toLowerCase()) ||
-            user.email.toLowerCase().includes(search.toLowerCase());
-
-        const matchesStatus =
-            statusFilter === 'all'
-                ? true
-                : statusFilter === 'active'
-                ? !user.blocked
-                : user.blocked;
-
-        return matchesSearch && matchesStatus;
-    });
-
-    const {
-        currentPage,
-        totalPages,
-        paginatedItems: paginatedUsers,
-        goToPage,
-        nextPage,
-        previousPage,
-    } = usePagination(filteredUser, 5);
-
-    const handleBlock = async (userId) => {
-        try {
-            await updateUser(userId, {
-                blocked: true,
+    // change several URL params at once; null removes a param
+    const updateParams = (changes) => {
+        setSearchParams((prev) => {
+            const params = new URLSearchParams(prev);
+            Object.entries(changes).forEach(([key, value]) => {
+                if (value === null || value === '') params.delete(key);
+                else params.set(key, String(value));
             });
-
-            dispatch(blockUser(userId));
-        } catch (error) {
-            console.error(error);
-        }
+            return params;
+        });
     };
 
-    const handleUnblock = async (userId) => {
-        try {
-            await updateUser(userId, {
-                blocked: false,
+    // wait 400ms after typing, then put the search in the URL
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (searchInput.trim() === urlSearch) return;
+
+            setSearchParams((prev) => {
+                const params = new URLSearchParams(prev);
+                if (searchInput.trim()) params.set('search', searchInput.trim());
+                else params.delete('search');
+                params.set('page', '1');
+                return params;
+            });
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, [searchInput, urlSearch, setSearchParams]);
+
+    const {
+        data,
+        isLoading,
+        isError,
+        error: loadError,
+    } = useQuery({
+        queryKey: ['admin-users', { page, status: statusFilter, search: urlSearch }],
+        queryFn: () =>
+            getAdminUsers({
+                page,
+                limit: PAGE_SIZE,
+                status: statusFilter === 'all' ? undefined : statusFilter,
+                search: urlSearch || undefined,
+            }),
+        placeholderData: keepPreviousData,
+    });
+
+    const users = data?.users ?? [];
+    const totalPages = data?.pages ?? 1;
+
+    // if the last user on the last page leaves this filter, step back one page
+    useEffect(() => {
+        if (data && data.pages > 0 && page > data.pages) {
+            setSearchParams((prev) => {
+                const params = new URLSearchParams(prev);
+                params.set('page', String(data.pages));
+                return params;
+            });
+        }
+    }, [data, page, setSearchParams]);
+
+    const goToPage = (target) => updateParams({ page: target });
+    const nextPage = () => page < totalPages && goToPage(page + 1);
+    const previousPage = () => page > 1 && goToPage(page - 1);
+
+    const handleBlockChange = async (user, isBlocked) => {
+        if (busyId) return;
+
+        if (isBlocked) {
+            const result = await Swal.fire({
+                title: 'Block this user?',
+                text: `${user.name} will no longer be able to log in or use their account.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Block',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
             });
 
-            dispatch(unblockUser(userId));
+            if (!result.isConfirmed) return;
+        }
+
+        setBusyId(user.id);
+
+        try {
+            await setUserBlocked(user.id, isBlocked);
+            queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+            toast.success(isBlocked ? 'User blocked' : 'User unblocked');
         } catch (error) {
-            console.error(error);
+            toast.error(getErrorMessage(error, 'Failed to update user'));
+        } finally {
+            setBusyId(null);
         }
     };
 
     if (isLoading) {
-        return (
-            <p className="text-sm text-gray-500">
-                Loading users...
-            </p>
-        );
+        return <p className="text-sm text-gray-500">Loading users...</p>;
     }
 
-    if (error) {
+    if (isError) {
         return (
             <p className="text-sm text-red-600">
-                Error: {error}
+                Error: {getErrorMessage(loadError)}
             </p>
         );
     }
@@ -104,38 +154,20 @@ function AdminUsers() {
                     <input
                         type="text"
                         placeholder="Search users..."
-                        value={search}
-                        onChange={(e) => {
-                            const params = new URLSearchParams(searchParams);
-
-                            if (e.target.value) {
-                                params.set('search', e.target.value);
-                            } else {
-                                params.delete('search');
-                            }
-
-                            params.set('page', '1');
-
-                            setSearchParams(params);
-                        }}
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
                         className="w-full sm:w-64 border border-gray-200 bg-white rounded-lg px-4 py-2.5 text-sm text-gray-700 placeholder:text-gray-400 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition"
                     />
 
                     <select
                         value={statusFilter}
-                        onChange={(e) => {
-                            const params = new URLSearchParams(searchParams);
-
-                            if (e.target.value === 'all') {
-                                params.delete('status');
-                            } else {
-                                params.set('status', e.target.value);
-                            }
-
-                            params.set('page', '1');
-
-                            setSearchParams(params);
-                        }}
+                        onChange={(e) =>
+                            updateParams({
+                                status: e.target.value === 'all' ? null : e.target.value,
+                                page: 1,
+                            })
+                        }
+                    
                         className="w-full sm:w-auto border border-gray-200 bg-white rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition"
                     >
                         <option value="all">All Users</option>
@@ -147,7 +179,7 @@ function AdminUsers() {
             </div>
 
             {/* Empty state */}
-            {filteredUser.length === 0 ? (
+            {users.length === 0 ? (
 
                 <div className="bg-white border border-gray-200 rounded-xl shadow-sm px-6 py-12 text-center">
 
@@ -196,7 +228,7 @@ function AdminUsers() {
 
                             <tbody>
 
-                                {paginatedUsers.map((user) => (
+                                {users.map((user) => (
 
                                     <tr
                                         key={user.id}
@@ -273,9 +305,8 @@ function AdminUsers() {
                                             ) : user.blocked ? (
 
                                                 <button
-                                                    onClick={() =>
-                                                        handleUnblock(user.id)
-                                                    }
+                                                    onClick={() => handleBlockChange(user, false)}
+                                                    disabled={busyId === user.id}
                                                     className="px-3.5 py-2 bg-green-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-green-700 active:bg-green-800 transition shadow-sm"
                                                 >
                                                     Unblock
@@ -284,9 +315,8 @@ function AdminUsers() {
                                             ) : (
 
                                                 <button
-                                                    onClick={() =>
-                                                        handleBlock(user.id)
-                                                    }
+                                                    onClick={() => handleBlockChange(user, true)}
+                                                    disabled={busyId === user.id}
                                                     className="px-3.5 py-2 bg-red-500 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-red-600 active:bg-red-700 transition shadow-sm"
                                                 >
                                                     Block
@@ -309,7 +339,7 @@ function AdminUsers() {
                     {/* Pagination */}
                     <div className="px-4 sm:px-6 py-4 border-t border-gray-100">
                         <Pagination
-                            currentPage={currentPage}
+                            currentPage={page}
                             totalPages={totalPages}
                             goToPage={goToPage}
                             nextPage={nextPage}

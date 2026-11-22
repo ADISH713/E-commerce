@@ -16,20 +16,20 @@ export const useAdminData = () => {
 
     useEffect(() => {
         const fetchAdminData = async () => {
-            try {
+                        try {
                 dispatch(setProductLoading(true));
                 dispatch(setUserLoading(true));
                 dispatch(setOrderLoading(true));
 
-                const [products, users, orders] = await Promise.all([
+                const [products, users, orders] = await Promise.allSettled([
                     getProducts(),
                     getUsers(),
                     getAllOrders(),
                 ]);
 
-                dispatch(setProducts(products));
-                dispatch(setUsers(users));
-                dispatch(setOrders(orders));
+                if (products.status === 'fulfilled') dispatch(setProducts(products.value));
+                if (users.status === 'fulfilled') dispatch(setUsers(users.value));
+                if (orders.status === 'fulfilled') dispatch(setOrders(orders.value));
             } catch (error) {
                 console.error('Failed to load admin data:', error);
             } finally {

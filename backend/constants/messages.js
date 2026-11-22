@@ -43,6 +43,11 @@ const MESSAGES = {
         STATUS_INVALID: "Status must be active, trash or all",
         PAGE_INVALID: "Page must be a whole number of 1 or more",
         LIMIT_INVALID: "Limit must be between 1 and 100",
+
+        USER_ID_INVALID: "Invalid user id",
+        USER_STATUS_INVALID: "Status must be all, active or blocked",
+        USER_ROLE_INVALID: "Role must be all, user or admin",
+        BLOCK_FLAG_INVALID: "isBlocked must be true or false",
     },
 
     AUTH: {
@@ -122,6 +127,14 @@ const MESSAGES = {
         VERIFY_FAILED: "Payment verification failed",
         FAILED_RECORDED: "Payment failure recorded",
         ALREADY_PAID: "This order is already paid",
+    },
+    USERS: {
+        LIST_FETCHED: "Users fetched successfully",
+        BLOCKED: "User blocked successfully",
+        UNBLOCKED: "User unblocked successfully",
+        NOT_FOUND: "User not found",
+        CANNOT_BLOCK_SELF: "You cannot block your own account",
+        CANNOT_BLOCK_ADMIN: "Admin accounts cannot be blocked",
     },
 };
 

@@ -1,58 +1,27 @@
-import axios from "axios";
+import api from './api';
 
-const API_URL = 'http://localhost:3001/users';
+// the backend sends isBlocked and _id, the existing UI reads blocked and id
+const mapUser = (user) => ({
+    ...user,
+    id: user._id,
+    blocked: user.isBlocked,
+});
 
-export const loginUser = async (email, password) => {
-    const { data } = await axios.get(
-        `${API_URL}?email=${email}&password=${password}`
-    );
-
-    if (data.length === 0) {
-        throw new Error('Invalid email or password');
-    }
-
-    const user = data[0];
-
-    if (user.blocked) {
-        throw new Error('Your account has been blocked.');
-    }
-
-    return user;
+// params: page, limit, status (all | active | blocked), role, search
+export const getAdminUsers = async (params) => {
+    const { data } = await api.get('/admin/users', { params });
+    const { users, ...rest } = data.data;
+    return { ...rest, users: users.map(mapUser) };
 };
 
-export const getUserById = async (userId) => {
-    try {
-        const { data } = await axios.get(`${API_URL}/${userId}`);
-        return data;
-    } catch (err) {
-        if (err.response?.status === 404) {
-            throw new Error('User not found');
-        }
-        throw err;
-    }
+export const setUserBlocked = async (id, isBlocked) => {
+    const { data } = await api.patch(`/admin/users/${id}/status`, { isBlocked });
+    return mapUser(data.data);
 };
 
+// TEMPORARY: useAdminData still calls this for the dashboard.
+// It goes away on Day 4 when the dashboard gets its own stats endpoint.
 export const getUsers = async () => {
-    const { data } = await axios.get(API_URL);
-    return data;
-};
-
-export const updateUser = async (id, user) => {
-    const { data } = await axios.patch(
-        `${API_URL}/${id}`,
-        user
-    );
-    return data;
-};
-
-export const registerUser = async (newUser) => {
-    const { data: existing } = await axios.get(`${API_URL}?email=${newUser.email}`);
-
-    if (existing.length > 0) {
-        throw new Error('Email already registered');
-    }
-
-    const { data } = await axios.post(API_URL,{...newUser,role: 'user'});
-
-    return data;
+    const { users } = await getAdminUsers({ limit: 100 });
+    return users;
 };
