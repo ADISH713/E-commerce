@@ -59,6 +59,7 @@ export const verifyRazorpayPayment = async (req, res, next) => {
 
         if (!order) throw new AppError(MESSAGES.ORDER.NOT_FOUND, 404);
         if (order.paymentStatus === "paid") throw new AppError(MESSAGES.PAYMENT.ALREADY_PAID, 400);
+        if (order.orderStatus === "cancelled") throw new AppError(MESSAGES.PAYMENT.ORDER_CANCELLED, 400);
 
         const expected = crypto
             .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -81,12 +82,20 @@ export const verifyRazorpayPayment = async (req, res, next) => {
         }
 
         const paidOrder = await Order.findOneAndUpdate(
-            { _id: order._id, paymentStatus: { $ne: "paid" } },
+            { _id: order._id, paymentStatus: { $ne: "paid" }, orderStatus: { $ne: "cancelled" } },
             { paymentStatus: "paid", razorpayPaymentId: razorpay_payment_id },
             { returnDocument: "after" }
         );
 
-        if (!paidOrder) throw new AppError(MESSAGES.PAYMENT.ALREADY_PAID, 400);
+        if (!paidOrder) {
+            const latest = await Order.findById(order._id);
+            throw new AppError(
+                latest?.orderStatus === "cancelled"
+                    ? MESSAGES.PAYMENT.ORDER_CANCELLED
+                    : MESSAGES.PAYMENT.ALREADY_PAID,
+                400
+            );
+        }
 
         await reduceStock(paidOrder.items);
         await clearUserCart(req.user._id);

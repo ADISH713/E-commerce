@@ -49,6 +49,17 @@ export const reduceStock = async (orderItems) => {
     );
 };
 
+export const restoreStock = async (orderItems) => {
+    await Products.bulkWrite(
+        orderItems.map((item) => ({
+            updateOne: {
+                filter: { _id: item.product },
+                update: { $inc: { stock: item.quantity } }
+            }
+        }))
+    );
+};
+
 export const clearUserCart = async (userId) => {
     await Cart.updateOne({ user: userId }, { $set: { items: [] } });
 };

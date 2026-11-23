@@ -9,7 +9,8 @@ import validateRequest from "../middleware/validateRequest.js";
 import { protect, adminOnly } from "../middleware/authMiddleware.js";
 import { getAdminUsers, updateUserBlockStatus } from "../controllers/adminUserController.js";
 import { adminUserListValidator, blockStatusValidator } from "../validators/adminUserValidator.js";
-
+import { getAdminOrders, getAdminOrderById, updateAdminOrderStatus } from "../controllers/adminOrderController.js";
+import { adminOrderListValidator, orderIdValidator, orderStatusValidator } from "../validators/adminOrderValidator.js";
 const router = express.Router();
 
 
@@ -20,5 +21,8 @@ router.patch("/products/:id/restore", productIdValidator, validateRequest, resto
 router.delete("/products/:id/permanent", productIdValidator, validateRequest, permanentDeleteProduct);
 router.get("/users", adminUserListValidator, validateRequest, getAdminUsers);
 router.patch("/users/:id/status", blockStatusValidator, validateRequest, updateUserBlockStatus);
+router.get("/orders", adminOrderListValidator, validateRequest, getAdminOrders);
+router.get("/orders/:id", orderIdValidator, validateRequest, getAdminOrderById);
+router.patch("/orders/:id/status", orderStatusValidator, validateRequest, updateAdminOrderStatus);
 
 export default router;

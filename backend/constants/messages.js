@@ -48,6 +48,11 @@ const MESSAGES = {
         USER_STATUS_INVALID: "Status must be all, active or blocked",
         USER_ROLE_INVALID: "Role must be all, user or admin",
         BLOCK_FLAG_INVALID: "isBlocked must be true or false",
+
+        ORDER_STATUS_INVALID: "Invalid order status",
+        PAYMENT_STATUS_INVALID: "Invalid payment status",
+        SEARCH_TOO_LONG: "Search text is too long",
+        SORT_INVALID: "Invalid sort option",
     },
 
     AUTH: {
@@ -119,6 +124,11 @@ const MESSAGES = {
             `${name || "A product in your cart"} is no longer available. Please remove it and try again`,
         INSUFFICIENT_STOCK: (stock, name) => `Only ${stock} of ${name} available`,
         USE_ONLINE_PAYMENT: "Please use the online payment option for UPI",
+
+        STATUS_UPDATED: "Order status updated successfully",
+        INVALID_TRANSITION: (from, to) => `An order that is ${from} cannot be changed to ${to}`,
+        PAYMENT_NOT_COMPLETED: "Online payment must be completed before this order can move forward",
+        STATUS_CHANGED: "This order was just changed by someone else. Refresh and try again",
     },
 
     PAYMENT: {
@@ -127,6 +137,7 @@ const MESSAGES = {
         VERIFY_FAILED: "Payment verification failed",
         FAILED_RECORDED: "Payment failure recorded",
         ALREADY_PAID: "This order is already paid",
+        ORDER_CANCELLED: "This order was cancelled",
     },
     USERS: {
         LIST_FETCHED: "Users fetched successfully",
