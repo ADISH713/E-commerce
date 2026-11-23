@@ -19,8 +19,7 @@ import UserProtectedRoute from './UserProtectedRoute';
 
 import AdminLayout from '../admin/AdminLayout';
 import AdminProducts from '../admin/pages/AdminProducts';
-import AddProduct from '../admin/pages/AddProduct';
-import EditProduct from '../admin/pages/EditProduct';
+
 import AdminUsers from '../admin/pages/AdminUsers';
 import AdminOrders from '../admin/pages/AdminOrders';
 import AdminDashboard from '../admin/pages/AdminDashboard';
@@ -46,16 +45,6 @@ function AppRoutes() {
                 <Route
                     path="products"
                     element={<AdminProducts />}
-                />
-
-                <Route
-                    path="products/add"
-                    element={<AddProduct />}
-                />
-
-                <Route
-                    path="products/edit/:id"
-                    element={<EditProduct />}
                 />
 
                 <Route

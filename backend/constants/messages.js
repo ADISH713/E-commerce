@@ -147,6 +147,9 @@ const MESSAGES = {
         CANNOT_BLOCK_SELF: "You cannot block your own account",
         CANNOT_BLOCK_ADMIN: "Admin accounts cannot be blocked",
     },
+    STATS: {
+        FETCHED: "Dashboard stats fetched successfully",
+    },
 };
 
 export default MESSAGES;

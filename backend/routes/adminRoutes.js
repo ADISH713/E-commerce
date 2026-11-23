@@ -11,6 +11,7 @@ import { getAdminUsers, updateUserBlockStatus } from "../controllers/adminUserCo
 import { adminUserListValidator, blockStatusValidator } from "../validators/adminUserValidator.js";
 import { getAdminOrders, getAdminOrderById, updateAdminOrderStatus } from "../controllers/adminOrderController.js";
 import { adminOrderListValidator, orderIdValidator, orderStatusValidator } from "../validators/adminOrderValidator.js";
+import { getDashboardStats } from "../controllers/adminStatsController.js";
 const router = express.Router();
 
 
@@ -24,5 +25,6 @@ router.patch("/users/:id/status", blockStatusValidator, validateRequest, updateU
 router.get("/orders", adminOrderListValidator, validateRequest, getAdminOrders);
 router.get("/orders/:id", orderIdValidator, validateRequest, getAdminOrderById);
 router.patch("/orders/:id/status", orderStatusValidator, validateRequest, updateAdminOrderStatus);
+router.get("/stats", getDashboardStats);
 
 export default router;
