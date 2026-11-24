@@ -12,6 +12,10 @@ import { adminUserListValidator, blockStatusValidator } from "../validators/admi
 import { getAdminOrders, getAdminOrderById, updateAdminOrderStatus } from "../controllers/adminOrderController.js";
 import { adminOrderListValidator, orderIdValidator, orderStatusValidator } from "../validators/adminOrderValidator.js";
 import { getDashboardStats } from "../controllers/adminStatsController.js";
+import { getAdminReviews } from "../controllers/adminReviewController.js";
+import { adminReviewListValidator } from "../validators/adminReviewValidator.js";
+
+
 const router = express.Router();
 
 
@@ -26,5 +30,6 @@ router.get("/orders", adminOrderListValidator, validateRequest, getAdminOrders);
 router.get("/orders/:id", orderIdValidator, validateRequest, getAdminOrderById);
 router.patch("/orders/:id/status", orderStatusValidator, validateRequest, updateAdminOrderStatus);
 router.get("/stats", getDashboardStats);
+router.get("/reviews", adminReviewListValidator, validateRequest, getAdminReviews);
 
 export default router;

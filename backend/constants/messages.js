@@ -58,6 +58,12 @@ const MESSAGES = {
         GRADE_INVALID: "Invalid grade",
         PRICE_FILTER_INVALID: "Prices must be numbers of 0 or more",
         PRICE_RANGE_INVALID: "Maximum price cannot be less than minimum price",
+
+        REVIEW_ID_INVALID: "Invalid review id",
+        RATING_INVALID: "Rating must be a whole number from 1 to 5",
+        COMMENT_INVALID: "Comment must be between 3 and 1000 characters",
+        REVIEW_EMPTY_UPDATE: "Send a rating or a comment to update",
+        RATING_FILTER_INVALID: "Rating filter must be a whole number from 1 to 5",
     },
 
     AUTH: {
@@ -101,6 +107,18 @@ const MESSAGES = {
         RESTORED: "Product restored successfully",
         PERMANENTLY_DELETED: "Product permanently deleted",
         TRASH_NOT_FOUND: "Product not found in trash",
+    },
+
+    REVIEW: {
+        LIST_FETCHED: "Reviews fetched successfully",
+        STATUS_FETCHED: "Review status fetched successfully",
+        CREATED: "Review added successfully",
+        UPDATED: "Review updated successfully",
+        DELETED: "Review deleted successfully",
+        NOT_FOUND: "Review not found",
+        NOT_PURCHASED: "Only customers who received this product can review it",
+        ALREADY_REVIEWED: "You have already reviewed this product",
+        ADMIN_LIST_FETCHED: "Reviews fetched successfully",
     },
 
     CART: {

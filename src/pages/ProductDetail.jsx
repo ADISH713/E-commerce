@@ -14,6 +14,8 @@ import { useMutation, useQuery, } from "@tanstack/react-query";
 import { useCart } from '../hooks/useCart';
 import { addToCart } from '../services/cartServices';
 import { addToWishlist, removeFromWishlist } from '../services/wishlistServices';
+import StarRating from '../components/StarRating';
+import ProductReviews from '../components/ProductReviews';
 
 function ProductDetail() {
     const { id } = useParams();
@@ -176,25 +178,7 @@ function ProductDetail() {
                     )}
 
                     {/* RATING & REVIEW */}
-                    <div className="mt-10 sm:mt-16 text-left pl-0 sm:pl-8 md:pl-10 lg:pl-14">
-
-                        <h2 className="text-xl sm:text-2xl md:text-3xl pl-0 sm:pl-4 underline">
-                            Rating & Review
-                        </h2>
-
-                        <p className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-medium text-gray-900">
-                            {product.rating ?? 0}<span>/5</span>
-                        </p>
-
-                        <div className="text-orange-500 text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-wide mt-1 pl-0 sm:pl-4">
-                            {'★'.repeat(Math.round(product.rating ?? 0))}
-                        </div>
-
-                        <p className="text-base sm:text-lg md:text-xl text-gray-800 mt-1 pl-0 sm:pl-6 md:pl-10 lg:pl-20">
-                            ({product.reviewsCount} reviews)
-                        </p>
-
-                    </div>
+                    
 
                 </div>
 
@@ -218,6 +202,18 @@ function ProductDetail() {
                     <p className='text-gray-500 text-sm mb-4 break-words'>
                         {product.brand} {product.category}
                     </p>
+
+                    <a
+                        href='#reviews'
+                        className='flex items-center gap-2 mb-4 text-sm text-gray-600 hover:text-orange-600 transition w-fit'
+                    >
+                        <StarRating value={product.rating} size='text-lg' />
+                        <span>
+                            {product.reviewsCount > 0
+                                ? `${product.rating} (${product.reviewsCount} ${product.reviewsCount === 1 ? 'review' : 'reviews'})`
+                                : 'No reviews yet'}
+                        </span>
+                    </a>
 
                     <p className="text-xl sm:text-2xl font-medium text-gray-900 mb-4">
                         {formatPrice(product.price)}
@@ -359,6 +355,15 @@ function ProductDetail() {
 
                     </div>
 
+                </div>
+
+                
+                {/* REVIEWS */}
+                <div
+                    id='reviews'
+                    className='md:col-span-2 mt-4 sm:mt-8 border-t border-gray-200 pt-8 scroll-mt-28'
+                >
+                    <ProductReviews productId={product.id} />
                 </div>
 
                 {/* SIMILAR PRODUCTS */}

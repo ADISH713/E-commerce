@@ -1,17 +1,18 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/slices/authSlice';
+import { logoutUser } from '../../services/authServices';
 import {
     IconLayoutDashboard,
     IconShoppingCart,
     IconUsers,
     IconPackage,
+    IconStar,
     IconTrash,
     IconLogout,
 } from '@tabler/icons-react';
-import Swal from 'sweetalert2';
-import { useDispatch } from 'react-redux';
-import { logout } from '../../redux/slices/authSlice';
-import { logoutUser } from '../../services/authServices';
 
 function AdminSidebar() {
     const navigate = useNavigate();
@@ -37,6 +38,11 @@ function AdminSidebar() {
             name: 'Orders',
             path: '/admin/orders',
             icon: <IconShoppingCart size={20} />,
+        },
+        {
+            name: 'Reviews',
+            path: '/admin/reviews',
+            icon: <IconStar size={20} />,
         },
         {
             name: 'Trash',

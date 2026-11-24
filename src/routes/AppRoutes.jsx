@@ -24,8 +24,10 @@ import AdminUsers from '../admin/pages/AdminUsers';
 import AdminOrders from '../admin/pages/AdminOrders';
 import AdminDashboard from '../admin/pages/AdminDashboard';
 import AdminTrash from '../admin/pages/AdminTrash';
+import AdminReviews from '../admin/pages/AdminReviews';
 
 import CustomerRoute from './CustomerRoute';
+
 
 function AppRoutes() {
     return (
@@ -55,6 +57,11 @@ function AppRoutes() {
                 <Route
                     path="orders"
                     element={<AdminOrders />}
+                />
+
+                <Route
+                    path="reviews"
+                    element={<AdminReviews />}
                 />
 
                 <Route
