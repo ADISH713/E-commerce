@@ -26,77 +26,21 @@ function ProductDetail() {
     const { user, cart } = useCart();
     const wishlist = useSelector((state) => state.wishlist);
 
-    const { data: products = [] } = useProducts();
-
     const { data: product, isLoading, isError, error } = useQuery({
         queryKey: ['product', id],
         queryFn: () => getProductById(id),
     });
 
+    
+    const { data: similarData } = useProducts(
+        { category: product?.category, limit: 5 },
+        { enabled: Boolean(product?.category) }
+    );
+
+    
     const isWishlisted = wishlist?.items?.some(
         (item) => String(item.id) === String(product?.id)
     ) || false;
-
-    
-
-    // const addToCartMutation = useMutation({
-    //     mutationFn: async () => {
-
-    //         const existingCart = await getCartByUserId(user.id);
-
-    //         const currentItems = existingCart?.items || [];
-
-    //         const existingItem = currentItems.find(
-    //             (item) => String(item.id) === String(product.id)
-    //         );
-
-    //         let newItems;
-
-    //         if (existingItem) {
-    //             const newQuantity = existingItem.quantity + quantity;
-
-    //             if (newQuantity > product.stock) {
-    //                 throw new Error(`Only ${product.stock} items are available.`);
-    //             }
-
-    //             newItems = currentItems.map((item) =>
-    //                 String(item.id) === String(product.id)
-    //                     ? { ...item, quantity: newQuantity }
-    //                     : item
-    //             );
-    //         } else {
-    //             newItems = [
-    //                 ...currentItems,
-    //                 {
-    //                     id: product.id,
-    //                     name: product.name,
-    //                     price: product.price,
-    //                     image: product.images?.[0] || '',
-    //                     stock: product.stock,
-    //                     quantity: quantity,
-    //                 },
-    //             ];
-    //         }
-
-    //         if (existingCart) {
-    //             return updateCart(existingCart.id, newItems);
-    //         }
-
-    //         return createCart(user.id, newItems);
-    //     },
-
-    //     onSuccess: (updatedCart) => {
-    //         dispatch(setCart(updatedCart));
-    //         addingToCartRef.current = false;
-    //         toast.success('Added to cart')
-    //     },
-
-    //     onError: (error) => {
-    //         console.error('Add to cart error:', error);
-    //         addingToCartRef.current = false;
-    //         toast.error(error.message);
-    //     },
-    // });
 
     const addToCartMutation = useMutation({
     mutationFn: async () => {
@@ -127,52 +71,6 @@ function ProductDetail() {
 });
 
 
-
-
-    // const wishlistMutation = useMutation({
-    //     mutationFn: async () => {
-    //         const existingWishlist = await getWishlistByUserId(user.id);
-
-    //         const currentItems = existingWishlist?.items || [];
-
-    //         const isAlreadyWishlisted = currentItems.some(
-    //             (item) => String(item.id) === String(product.id)
-    //         );
-
-    //         let updatedItems;
-
-    //         if (isAlreadyWishlisted) {
-    //             updatedItems = currentItems.filter(
-    //                 (item) => String(item.id) !== String(product.id)
-    //             );
-    //         } else {
-    //             updatedItems = [
-    //                 ...currentItems,
-    //                 {
-    //                     id: product.id,
-    //                     name: product.name,
-    //                     price: product.price,
-    //                     image: product.images?.[0] || '',
-    //                 },
-    //             ];
-    //         }
-
-    //         if (existingWishlist) {
-    //             return updateWishlist(existingWishlist.id, updatedItems);
-    //         }
-
-    //         return createWishlist(user.id, updatedItems);
-    //     },
-
-    //     onSuccess: (updatedWishlist) => {
-    //         dispatch(setWishlist(updatedWishlist));
-    //     },
-
-    //     onError: (error) => {
-    //         console.error('Wishlist error:', error);
-    //     },
-    // });
-
     const wishlistMutation = useMutation({
     mutationFn: async () => {
         return isWishlisted
@@ -199,11 +97,9 @@ function ProductDetail() {
         );
     }
 
-    const similarProducts = products.filter(
-        (item) =>
-            item.category === product.category &&
-            String(item.id) !== String(product.id)
-    ).slice(0, 4);
+    const similarProducts = (similarData?.products ?? [])
+    .filter((item) => String(item.id) !== String(product.id))
+    .slice(0, 4);
 
     const isOutOfStock = product.stock === 0;
 

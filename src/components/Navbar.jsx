@@ -18,6 +18,7 @@ import { useProducts } from '../hooks/useProducts';
 import Swal from 'sweetalert2';
 import { useCart } from '../hooks/useCart';
 import { logoutUser } from '../services/authServices';
+import { useDebounce } from '../hooks/useDebounce';
 
 function Navbar() {
   const [searchParams] = useSearchParams();
@@ -38,23 +39,23 @@ function Navbar() {
 
   const navigate = useNavigate();
 
-  const { data: products = [] } = useProducts();
+    const debouncedSearch = useDebounce(search.trim(), 300);
 
-  const searchSuggestions = search.trim()
-    ? products
-        .filter((product) =>
-          product.name
-            .toLowerCase()
-            .includes(search.trim().toLowerCase())
-        )
-        .slice(0, 5)
-    : [];
+  const { data: suggestionData } = useProducts(
+    { search: debouncedSearch, limit: 5 },
+    { enabled: debouncedSearch.length > 0 }
+  );
+
+  const searchSuggestions =
+    search.trim() && debouncedSearch ? suggestionData?.products ?? [] : [];
 
   const handleSearch = (e) => {
     if (e.key === 'Enter' && search.trim()) {
       const params = new URLSearchParams(searchParams);
 
       params.set('search', search.trim());
+      
+      params.delete('page');
 
       navigate(`/products?${params.toString()}`);
 

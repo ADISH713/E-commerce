@@ -8,6 +8,7 @@ function CategoryFilter({ searchParams, categoryFilter }) {
 
     const selectCategory = (category) => {
         const params = new URLSearchParams(searchParams);
+        params.delete('page');
 
         if (category) {
             params.set('category', category);

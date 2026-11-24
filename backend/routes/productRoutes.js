@@ -1,12 +1,12 @@
 import express from "express"
 import { createProduct, deleteProduct, getCategories, getProductByID, getProducts, updateProduct } from "../controllers/productController.js";
-import { createProductValidator, updateProductValidator } from "../validators/productValidator.js";
+import { createProductValidator, productListValidator, updateProductValidator } from "../validators/productValidator.js";
 import validateRequest from "../middleware/validateRequest.js";
 import { protect, adminOnly } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getProducts);
+router.get("/",productListValidator,validateRequest,getProducts);
 router.get("/categories", getCategories);
 router.get("/:id", getProductByID);
 

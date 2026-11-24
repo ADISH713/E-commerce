@@ -53,6 +53,11 @@ const MESSAGES = {
         PAYMENT_STATUS_INVALID: "Invalid payment status",
         SEARCH_TOO_LONG: "Search text is too long",
         SORT_INVALID: "Invalid sort option",
+
+        CATEGORY_INVALID: "Invalid category",
+        GRADE_INVALID: "Invalid grade",
+        PRICE_FILTER_INVALID: "Prices must be numbers of 0 or more",
+        PRICE_RANGE_INVALID: "Maximum price cannot be less than minimum price",
     },
 
     AUTH: {

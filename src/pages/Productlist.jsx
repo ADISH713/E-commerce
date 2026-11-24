@@ -1,25 +1,78 @@
-import React from 'react'
+import React, { useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
-import { useNavigate } from 'react-router-dom';
+import Pagination from '../admin/components/Pagination';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
 import { useProductFilters } from '../hooks/useProductFilters';
+import { getErrorMessage } from '../utils/getErrorMessage';
 import CategoryFilter from '../components/CategoryFilter';
+import FilterOptions from '../components/FilterOptions';
 
 function Productlist() {
-    const navigate = useNavigate();
 
-    const { data: products = [], isLoading, isError, error } = useProducts();
+    const GRADE_OPTIONS = [
+        { value: null, label: 'All grades' },
+        { value: 'toy', label: 'Toy grade' },
+        { value: 'hobby', label: 'Hobby grade' },
+    ];
+
+    const SORT_OPTIONS = [
+        { value: null, label: 'Newest' },
+        { value: 'price-low', label: 'Low to High' },
+        { value: 'price-high', label: 'High to Low' },
+    ];
+
+    const rawNavigate = useNavigate();
+    const [, setSearchParams] = useSearchParams();
+
+    // every filter button calls this, so a filter change always starts again from page 1
+    const navigate = (to) => {
+        const [path, query = ''] = to.split('?');
+        const params = new URLSearchParams(query);
+        params.delete('page');
+        const queryString = params.toString();
+        rawNavigate(queryString ? `${path}?${queryString}` : path);
+    };
 
     const {
-        filteredProducts,
         gradeFilter,
         categoryFilter,
         searchFilter,
         sortFilter,
         minPrice,
         maxPrice,
+        page,
+        queryParams,
         searchParams,
-    } = useProductFilters(products);
+    } = useProductFilters();
+
+    const { data, isLoading, isError, error } = useProducts(queryParams);
+
+    const products = data?.products ?? [];
+    const totalPages = data?.pages ?? 1;
+
+    // a shared link can point past the last page, so step back to it
+    useEffect(() => {
+        if (data && data.pages > 0 && page > data.pages) {
+            setSearchParams(
+                (prev) => {
+                    const params = new URLSearchParams(prev);
+                    params.set('page', String(data.pages));
+                    return params;
+                },
+                { replace: true }
+            );
+        }
+    }, [data, page, setSearchParams]);
+
+    const goToPage = (target) => {
+        setSearchParams((prev) => {
+            const params = new URLSearchParams(prev);
+            params.set('page', String(target));
+            return params;
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     if (isLoading) {
         return <p className='px-5 sm:px-8 lg:px-12 py-6'>Loading...</p>;
@@ -28,7 +81,7 @@ function Productlist() {
     if (isError) {
         return (
             <p className='px-5 sm:px-8 lg:px-12 py-6 text-red-600'>
-                Error:{error.message}
+                Error: {getErrorMessage(error)}
             </p>
         );
     }
@@ -218,9 +271,10 @@ function Productlist() {
                             Grade
                         </h4>
 
-                        <CategoryFilter
+                        <FilterOptions
+                            paramName='grade'
+                            options={GRADE_OPTIONS}
                             searchParams={searchParams}
-                            categoryFilter={categoryFilter}
                         />
                         
                     </div>
@@ -295,9 +349,10 @@ function Productlist() {
                             Sort by price
                         </h4>
 
-                        <CategoryFilter
+                        <FilterOptions
+                            paramName='sort'
+                            options={SORT_OPTIONS}
                             searchParams={searchParams}
-                            categoryFilter={categoryFilter}
                         />
                     </div>
 
@@ -306,21 +361,30 @@ function Productlist() {
                 {/* PRODUCTS */}
                 <div className='flex-1 min-w-0'>
 
-                    {filteredProducts.length === 0 ? (
+                    {products.length === 0 ? (
                         <p className='text-gray-500 text-sm'>
                             No cars matches
                         </p>
                     ) : (
                         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5'>
-                            {filteredProducts.map((product) => (
+                            {products.map((product) => (
                                 <ProductCard
                                     key={product.id}
                                     product={product}
                                 />
                             ))}
                         </div>
+                        
                     )}
-
+                                                <div className='mt-8'>
+                            <Pagination
+                                currentPage={page}
+                                totalPages={totalPages}
+                                goToPage={goToPage}
+                                nextPage={() => page < totalPages && goToPage(page + 1)}
+                                previousPage={() => page > 1 && goToPage(page - 1)}
+                            />
+                        </div>
                 </div>
 
             </div>

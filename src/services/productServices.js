@@ -6,11 +6,11 @@ const mapProduct = (product) => ({
     deleted: !product.isActive,
 });
 
-export const getProducts = async () => {
-    const { data } = await api.get('/products', { params: { limit: 1000 } });
-    return data.data.products.map(mapProduct);
+export const getProducts = async (params) => {
+    const { data } = await api.get('/products', { params });
+    const { products, ...rest } = data.data;
+    return { ...rest, products: products.map(mapProduct) };
 };
-
 export const getProductById = async (id) => {
     const { data } = await api.get(`/products/${id}`);
     return mapProduct(data.data);

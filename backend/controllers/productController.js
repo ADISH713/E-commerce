@@ -15,29 +15,42 @@ const pickProductFields = (body) =>
             .map((field) => [field, body[field]])
     );
 
+const SORT_OPTIONS = {
+    newest: { createdAt: -1 },
+    "price-low": { price: 1 },
+    "price-high": { price: -1 },
+    rating: { rating: -1, reviewsCount: -1 }
+};
+
 export const getProducts = async (req, res, next) => {
     try {
-        const { search, category, page = 1, limit = 12, sort, order } = req.query;
+        const { search, category, grade, minPrice, maxPrice, sort } = req.query;
+        const page = Math.max(1, Number(req.query.page) || 1);
+        const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 12));
+
         const filter = { isActive: true };
 
         if (category) filter.category = category;
+        if (grade) filter.grade = grade;
+
+        if (minPrice || maxPrice) {
+            filter.price = {};
+            if (minPrice) filter.price.$gte = Number(minPrice);
+            if (maxPrice) filter.price.$lte = Number(maxPrice);
+        }
 
         if (search) {
             const safe = String(search).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
             filter.name = { $regex: safe, $options: "i" };
         }
 
-        let sortOption = { createdAt: -1 };
-        if (sort === "price") sortOption = { price: order === "desc" ? -1 : 1 };
-        else if (sort === "price-low") sortOption = { price: 1 };
-        else if (sort === "price-high") sortOption = { price: -1 };
-
-        const products = await Products.find(filter)
-            .sort(sortOption)
-            .skip((Number(page) - 1) * Number(limit))
-            .limit(Number(limit));
-
-        const total = await Products.countDocuments(filter);
+        const [products, total] = await Promise.all([
+            Products.find(filter)
+                .sort(SORT_OPTIONS[sort] || SORT_OPTIONS.newest)
+                .skip((page - 1) * limit)
+                .limit(limit),
+            Products.countDocuments(filter)
+        ]);
 
         res.status(200).json({
             success: true,
@@ -45,8 +58,8 @@ export const getProducts = async (req, res, next) => {
             data: {
                 products,
                 total,
-                page: Number(page),
-                pages: Math.ceil(total / Number(limit))
+                page,
+                pages: Math.ceil(total / limit)
             }
         });
     } catch (error) {

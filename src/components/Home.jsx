@@ -9,20 +9,13 @@ import {
   IconCheck,
   IconX,
 } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
-import { getProducts } from '../services/productServices';
+import { useProducts } from '../hooks/useProducts';
 import ProductCard from './ProductCard';
 
 function Home() {
-  const {data: products = []} = useQuery({
-    queryKey : ['products'],
-    queryFn : getProducts
-  });
-
-  const featuredProducts = [...products]
-    .sort((a,b)=>b.rating - a.rating)
-    .slice(0,8);
-
+  const { data } = useProducts({ sort: 'rating', limit: 8 });
+  const featuredProducts = data?.products ?? [];
+  
   return (
     <div className="bg-white">
 
