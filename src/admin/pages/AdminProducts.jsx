@@ -21,6 +21,8 @@ import { useCategories } from '../../hooks/useCategories';
 import Pagination from '../components/Pagination';
 import ProductForm from '../components/ProductForm';
 import { useProductForm } from '../hooks/useProductForm';
+import PageLoader from '../../components/PageLoader';
+import ErrorState from '../../components/ErrorState';
 
 const PAGE_SIZE = 5;
 
@@ -67,12 +69,7 @@ function AdminProducts() {
         return () => clearTimeout(timer);
     }, [searchInput, urlSearch, setSearchParams]);
 
-    const {
-        data,
-        isLoading,
-        isError,
-        error: loadError,
-    } = useQuery({
+        const { data, isLoading, isError, error: loadError, refetch } = useQuery({
         queryKey: ['admin-products', { page, category: categorySort, search: urlSearch }],
         queryFn: () =>
             getAdminProducts({
@@ -207,13 +204,8 @@ function AdminProducts() {
         }
     };
 
-    if (isLoading) {
-        return <p>Loading products...</p>;
-    }
-
-    if (isError) {
-        return <p className="text-red-500">{getErrorMessage(loadError)}</p>;
-    }
+    if (isLoading) return <PageLoader label='Loading orders...' />;
+    if (isError) return <ErrorState error={loadError} onRetry={refetch} />;
     
    
 return (

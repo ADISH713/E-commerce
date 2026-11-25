@@ -66,19 +66,31 @@ export const register = async (req,res,next)=>{
     try{
         const {name,email,password} = req.body;
 
-        const existing = await User.findOne({email});
-        const hashed = await bcrypt.hash(password,10);
+        // otpLastSentAt is hidden by default, so ask for it with "+"
+        const existing = await User.findOne({email}).select("+otpLastSentAt");
 
         let user;
         if(existing){
+            // a verified account really owns this email
             if(existing.isVerified !== false) throw new AppError(MESSAGES.AUTH.EMAIL_EXISTS,409);
 
+            // same cooldown as "resend", so sign-ups cannot be used to flood an inbox
+            const wait = secondsUntilResend(existing);
+            if(wait > 0) throw new AppError(MESSAGES.AUTH.OTP_RESEND_WAIT(wait),429);
+
+            // earlier sign-up was never verified, so let them try again
             existing.name = name;
-            existing.password = hashed;
+            existing.password = await bcrypt.hash(password,10);
             await existing.save();
             user = existing;
         }else{
-            user = await User.create({name,email,password:hashed,role:"user",isVerified:false});
+            user = await User.create({
+                name,
+                email,
+                password: await bcrypt.hash(password,10),
+                role:"user",
+                isVerified:false
+            });
         }
 
         await issueOtp(user);

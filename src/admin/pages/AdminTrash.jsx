@@ -16,6 +16,8 @@ import {
 } from '../../services/productServices';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import Pagination from '../components/Pagination';
+import PageLoader from '../../components/PageLoader';
+import ErrorState from '../../components/ErrorState';
 
 const PAGE_SIZE = 10;
 
@@ -24,7 +26,7 @@ function AdminTrash() {
     const [searchParams, setSearchParams] = useSearchParams();
     const page = Number(searchParams.get('page')) || 1;
 
-    const { data, isLoading, isError, error } = useQuery({
+        const { data, isLoading, isError, error: loadError, refetch } = useQuery({
         queryKey: ['admin-products', { status: 'trash', page }],
         queryFn: () =>
             getAdminProducts({ status: 'trash', page, limit: PAGE_SIZE }),
@@ -80,9 +82,9 @@ function AdminTrash() {
         }
     };
 
-    if (isLoading) return <p>Loading trash...</p>;
-    if (isError) return <p className="text-red-500">{getErrorMessage(error)}</p>;
-
+    if (isLoading) return <PageLoader label='Loading orders...' />;
+    if (isError) return <ErrorState error={loadError} onRetry={refetch} />;
+    
     return (
         <div>
             <h2 className="text-2xl font-semibold mb-6">Trash</h2>

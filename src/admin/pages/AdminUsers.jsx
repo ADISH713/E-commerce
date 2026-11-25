@@ -11,6 +11,8 @@ import toast from 'react-hot-toast';
 import { getAdminUsers, setUserBlocked } from '../../services/userServices';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import Pagination from '../components/Pagination';
+import PageLoader from '../../components/PageLoader';
+import ErrorState from '../../components/ErrorState';
 
 const PAGE_SIZE = 5;
 
@@ -54,12 +56,7 @@ function AdminUsers() {
         return () => clearTimeout(timer);
     }, [searchInput, urlSearch, setSearchParams]);
 
-    const {
-        data,
-        isLoading,
-        isError,
-        error: loadError,
-    } = useQuery({
+        const { data, isLoading, isError, error: loadError, refetch } = useQuery({
         queryKey: ['admin-users', { page, status: statusFilter, search: urlSearch }],
         queryFn: () =>
             getAdminUsers({
@@ -120,17 +117,8 @@ function AdminUsers() {
         }
     };
 
-    if (isLoading) {
-        return <p className="text-sm text-gray-500">Loading users...</p>;
-    }
-
-    if (isError) {
-        return (
-            <p className="text-sm text-red-600">
-                Error: {getErrorMessage(loadError)}
-            </p>
-        );
-    }
+    if (isLoading) return <PageLoader label='Loading orders...' />;
+    if (isError) return <ErrorState error={loadError} onRetry={refetch} />;
 
     return (
         <div className="w-full min-w-0">

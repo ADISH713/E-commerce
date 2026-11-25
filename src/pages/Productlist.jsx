@@ -7,6 +7,8 @@ import { useProductFilters } from '../hooks/useProductFilters';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import CategoryFilter from '../components/CategoryFilter';
 import FilterOptions from '../components/FilterOptions';
+import PageLoader from '../components/PageLoader';
+import ErrorState from '../components/ErrorState';
 
 function Productlist() {
 
@@ -46,7 +48,7 @@ function Productlist() {
         searchParams,
     } = useProductFilters();
 
-    const { data, isLoading, isError, error } = useProducts(queryParams);
+    const { data, isLoading, isError, error, refetch } = useProducts(queryParams);
 
     const products = data?.products ?? [];
     const totalPages = data?.pages ?? 1;
@@ -75,14 +77,16 @@ function Productlist() {
     };
 
     if (isLoading) {
-        return <p className='px-5 sm:px-8 lg:px-12 py-6'>Loading...</p>;
+        return <PageLoader label='Loading products...' />;
     }
 
     if (isError) {
         return (
-            <p className='px-5 sm:px-8 lg:px-12 py-6 text-red-600'>
-                Error: {getErrorMessage(error)}
-            </p>
+            <ErrorState
+                error={error}
+                onRetry={refetch}
+                className='mx-4 sm:mx-6 lg:mx-12 my-6'
+            />
         );
     }
 

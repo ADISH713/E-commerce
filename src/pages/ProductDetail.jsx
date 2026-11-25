@@ -16,6 +16,8 @@ import { addToCart } from '../services/cartServices';
 import { addToWishlist, removeFromWishlist } from '../services/wishlistServices';
 import StarRating from '../components/StarRating';
 import ProductReviews from '../components/ProductReviews';
+import PageLoader from '../components/PageLoader';
+import ErrorState from '../components/ErrorState';
 
 function ProductDetail() {
     const { id } = useParams();
@@ -26,9 +28,10 @@ function ProductDetail() {
     const dispatch = useDispatch()
 
     const { user, cart } = useCart();
+
     const wishlist = useSelector((state) => state.wishlist);
 
-    const { data: product, isLoading, isError, error } = useQuery({
+        const { data: product, isLoading, isError, error, refetch } = useQuery({
         queryKey: ['product', id],
         queryFn: () => getProductById(id),
     });
@@ -89,13 +92,15 @@ function ProductDetail() {
     },
 });
 
-    if (isLoading) return <p className='px-4 sm:px-8 lg:px-12 py-6'>Loading product...</p>;
+    if (isLoading) return <PageLoader label='Loading product...' />;
 
     if (isError) {
         return (
-            <p className='px-4 sm:px-8 lg:px-12 py-6 text-red-600'>
-                Error:{error.message}
-            </p>
+            <ErrorState
+                error={error}
+                onRetry={refetch}
+                className='mx-4 sm:mx-6 lg:mx-12 my-6'
+            />
         );
     }
 

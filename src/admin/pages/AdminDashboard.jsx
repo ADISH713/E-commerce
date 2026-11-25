@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import RevenueChart from '../components/RevenueChart';
 import { useDashboardStats } from '../hooks/useDashboardStats';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import PageLoader from '../../components/PageLoader';
+import ErrorState from '../../components/ErrorState';
 
 const money = (value) => `₹${Number(value || 0).toLocaleString('en-IN')}`;
 
@@ -16,28 +18,30 @@ const STATUS_BADGE = {
 
 function AdminDashboard() {
     const navigate = useNavigate();
-    const { data, isLoading, isError, error, refetch } = useDashboardStats();
+    const { data, isLoading, isError, error: loadError, refetch } = useDashboardStats();
 
-    if (isLoading) {
-        return <p className="text-sm text-gray-500">Loading dashboard...</p>;
-    }
+    if (isLoading) return <PageLoader label='Loading orders...' />;
+    if (isError) return <ErrorState error={loadError} onRetry={refetch} />;
+    // if (isLoading) {
+    //     return <p className="text-sm text-gray-500">Loading dashboard...</p>;
+    // }
 
-    if (isError) {
-        return (
-            <div className="bg-red-50 border border-red-100 rounded-xl p-4">
-                <p className="text-sm text-red-600 break-words">
-                    Error: {getErrorMessage(error)}
-                </p>
-                <button
-                    type="button"
-                    onClick={() => refetch()}
-                    className="mt-3 text-sm font-medium text-orange-600 hover:text-orange-700"
-                >
-                    Try again
-                </button>
-            </div>
-        );
-    }
+    // if (isError) {
+    //     return (
+    //         <div className="bg-red-50 border border-red-100 rounded-xl p-4">
+    //             <p className="text-sm text-red-600 break-words">
+    //                 Error: {getErrorMessage(error)}
+    //             </p>
+    //             <button
+    //                 type="button"
+    //                 onClick={() => refetch()}
+    //                 className="mt-3 text-sm font-medium text-orange-600 hover:text-orange-700"
+    //             >
+    //                 Try again
+    //             </button>
+    //         </div>
+    //     );
+    // }
 
     const { counts, revenue, series, lowStock, topProducts, recentOrders } = data;
 

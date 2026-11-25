@@ -5,6 +5,8 @@ const MESSAGES = {
         VALIDATION_FAILED: "Validation failed",
         INVALID_ID: "Invalid ID",
         ROUTE_NOT_FOUND: (url) => `Route not found: ${url}`,
+        TOO_MANY_REQUESTS: "Too many requests, please try again later",
+        TOO_MANY_LOGIN_ATTEMPTS: "Too many failed login attempts. Please try again in 15 minutes",
     },
 
     VALIDATION: {

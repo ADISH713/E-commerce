@@ -16,6 +16,8 @@ import {
     getAdminOrderById, 
     updateOrderStatus,
 } from '../../services/orderServices';
+import PageLoader from '../../components/PageLoader';
+import ErrorState from '../../components/ErrorState';
 
 const PAGE_SIZE = 5;
 const STATUS_TABS = ['all', 'pending', 'processing', 'shipped', 'delivered', 'cancelled'];
@@ -71,12 +73,7 @@ function AdminOrders() {
         return () => clearTimeout(timer);
     }, [searchInput, urlSearch, setSearchParams]);
 
-    const {
-        data,
-        isLoading,
-        isError,
-        error: loadError,
-    } = useQuery({
+        const { data, isLoading, isError, error: loadError, refetch } = useQuery({
         queryKey: [
             'admin-orders',
             { page, status: statusFilter, payment: paymentFilter, search: urlSearch, sort: sortOption },
@@ -163,23 +160,8 @@ function AdminOrders() {
             }
     };
 
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center py-16">
-                <p className="text-sm text-gray-500">Loading orders...</p>
-            </div>
-        );
-    }
-
-    if (isError) {
-        return (
-            <div className="bg-red-50 border border-red-100 rounded-xl p-4">
-                <p className="text-sm text-red-600 break-words">
-                    Error: {getErrorMessage(loadError)}
-                </p>
-            </div>
-        );
-    }
+    if (isLoading) return <PageLoader label='Loading orders...' />;
+    if (isError) return <ErrorState error={loadError} onRetry={refetch} />;
 
     return (
         <div className="w-full min-w-0 text-gray-900">

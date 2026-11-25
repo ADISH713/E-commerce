@@ -13,6 +13,9 @@ import Pagination from '../components/Pagination';
 import { getAdminReviews, deleteReview } from '../../services/reviewServices';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
+import PageLoader from '../../components/PageLoader';
+import ErrorState from '../../components/ErrorState';
+
 const PAGE_SIZE = 8;
 const RATING_TABS = ['all', '5', '4', '3', '2', '1'];
 
@@ -57,12 +60,7 @@ function AdminReviews() {
         return () => clearTimeout(timer);
     }, [searchInput, urlSearch, setSearchParams]);
 
-    const {
-        data,
-        isLoading,
-        isError,
-        error: loadError,
-    } = useQuery({
+        const { data, isLoading, isError, error: loadError, refetch } = useQuery({
         queryKey: ['admin-reviews', { page, rating: ratingFilter, search: urlSearch, sort: sortOption }],
         queryFn: () =>
             getAdminReviews({
@@ -130,17 +128,8 @@ function AdminReviews() {
         }
     };
 
-    if (isLoading) {
-        return <p className="text-sm text-gray-500">Loading reviews...</p>;
-    }
-
-    if (isError) {
-        return (
-            <p className="text-sm text-red-600">
-                Error: {getErrorMessage(loadError)}
-            </p>
-        );
-    }
+    if (isLoading) return <PageLoader label='Loading orders...' />;
+    if (isError) return <ErrorState error={loadError} onRetry={refetch} />;
 
     return (
         <div className="w-full min-w-0">
